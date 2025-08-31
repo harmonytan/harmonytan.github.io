@@ -1,16 +1,16 @@
 # Harmony Tan - AI Research 个人主页
 
-一个现代化的AI研究个人主页，支持Markdown文章展示、PDF文件上传和响应式设计。
+一个极简风格的AI研究个人主页，采用侧边栏导航和分页布局，支持黑白主题切换。
 
 ## ✨ 功能特性
 
-- 🎨 **现代化设计**: 采用渐变色彩和卡片式布局
+- 🎨 **极简设计**: 清爽的侧边栏布局，专注于内容展示
+- 🌓 **主题切换**: 支持亮色/暗色主题，自动跟随系统设置
 - 📱 **响应式设计**: 完美适配桌面端和移动端
-- 📝 **Markdown支持**: 支持Markdown格式的文章内容
-- 📄 **PDF支持**: 可上传和查看PDF文档
-- 🧠 **AI动画**: 神经网络动画效果
-- 🚀 **平滑滚动**: 优雅的页面导航体验
-- 📊 **研究展示**: 研究领域、演讲、论文等模块
+- 📝 **分页布局**: 首页、文章、链接三个独立页面
+- 📄 **Markdown支持**: 支持Markdown格式的文章内容
+- 🚀 **平滑动画**: 优雅的页面切换和悬停效果
+- 🔧 **现代化技术**: 使用CSS变量和现代JavaScript特性
 
 ## 🚀 快速开始
 
@@ -40,17 +40,33 @@ php -S localhost:8000
 
 ```
 harmonytan.github.io/
-├── index.html          # 主页面
-├── styles.css          # 样式文件
-├── script.js           # JavaScript功能
+├── index.html          # 主页面（侧边栏 + 分页布局）
+├── styles.css          # 极简风格CSS样式
+├── script.js           # 分页导航和主题切换功能
 ├── articles/           # Markdown文章目录
 │   └── transformer-evolution.md
 └── README.md           # 项目说明
 ```
 
+## 🎨 设计特点
+
+### 侧边栏导航
+- **首页**: 个人介绍、研究领域、统计数据
+- **Post**: 研究文章和技术分享
+- **Link**: 有用的资源和链接
+
+### 主题系统
+- **亮色主题**: 清爽的白色背景，适合白天使用
+- **暗色主题**: 护眼的深色背景，适合夜间使用
+- **自动检测**: 跟随系统主题设置自动切换
+- **手动切换**: 点击侧边栏底部的主题按钮
+
+### 响应式布局
+- **桌面端**: 固定侧边栏 + 主内容区域
+- **移动端**: 可折叠侧边栏 + 全屏内容
+
 ## 📝 添加新文章
 
-### 方法1: 通过JavaScript数组添加
 在 `script.js` 文件中的 `blogPosts` 数组添加新文章：
 
 ```javascript
@@ -71,9 +87,6 @@ harmonytan.github.io/
 }
 ```
 
-### 方法2: 创建Markdown文件
-在 `articles/` 目录下创建 `.md` 文件，然后修改JavaScript代码来读取这些文件。
-
 ## 🎨 自定义样式
 
 ### 修改颜色主题
@@ -81,9 +94,11 @@ harmonytan.github.io/
 
 ```css
 :root {
-    --primary-color: #2563eb;
-    --secondary-color: #7c3aed;
-    --accent-color: #60a5fa;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-sidebar: #f1f3f4;
+    --text-primary: #1a1a1a;
+    --accent-color: #1a73e8;
 }
 ```
 
@@ -96,63 +111,50 @@ harmonytan.github.io/
 
 ## 📱 响应式断点
 
-- **桌面端**: > 768px
-- **平板端**: 768px - 480px
-- **移动端**: < 480px
+- **桌面端**: > 768px（固定侧边栏）
+- **移动端**: ≤ 768px（可折叠侧边栏）
 
 ## 🔧 技术栈
 
 - **HTML5**: 语义化标签和现代HTML特性
-- **CSS3**: Flexbox、Grid、动画、渐变
-- **JavaScript ES6+**: 模块化、异步处理、DOM操作
+- **CSS3**: CSS变量、Flexbox、Grid、动画
+- **JavaScript ES6+**: 模块化、事件处理、DOM操作
 - **Font Awesome**: 图标库
 - **Google Fonts**: 字体库
 
 ## 📚 内容管理
 
-### 研究领域
-在 `index.html` 中修改研究领域卡片：
+### 首页内容
+在 `index.html` 中修改首页的三个卡片：
 
 ```html
+<div class="intro-card">
+    <!-- 个人介绍 -->
+</div>
+
 <div class="research-card">
-    <div class="research-icon">
-        <i class="fas fa-robot"></i>
-    </div>
-    <h3>你的研究领域</h3>
-    <p>研究描述...</p>
+    <!-- 研究领域 -->
+</div>
+
+<div class="stats-card">
+    <!-- 统计数据 -->
 </div>
 ```
 
-### 演讲记录
-在 `index.html` 中修改演讲卡片：
+### 文章管理
+在 `script.js` 中修改 `blogPosts` 数组来管理文章。
+
+### 链接管理
+在 `index.html` 中修改链接页面的内容：
 
 ```html
-<div class="talk-card">
-    <div class="talk-date">2024</div>
-    <h3>演讲标题</h3>
-    <p>演讲描述...</p>
-    <div class="talk-links">
-        <a href="#" class="talk-link"><i class="fas fa-video"></i> 视频</a>
-        <a href="#" class="talk-link"><i class="fas fa-file-pdf"></i> 幻灯片</a>
-    </div>
-</div>
-```
-
-### 论文发表
-在 `index.html` 中修改论文条目：
-
-```html
-<div class="publication-item">
-    <div class="publication-year">2024</div>
-    <div class="publication-content">
-        <h3>论文标题</h3>
-        <p class="publication-authors">作者列表</p>
-        <p class="publication-venue">发表会议/期刊</p>
-        <div class="publication-links">
-            <a href="#" class="publication-link"><i class="fas fa-external-link-alt"></i> 论文</a>
-            <a href="#" class="publication-link"><i class="fas fa-file-pdf"></i> PDF</a>
-            <a href="#" class="publication-link"><i class="fab fa-github"></i> 代码</a>
-        </div>
+<div class="link-category">
+    <h3>分类标题</h3>
+    <div class="link-list">
+        <a href="#" class="link-item">
+            <i class="fas fa-external-link-alt"></i>
+            <span>链接名称</span>
+        </a>
     </div>
 </div>
 ```
@@ -164,13 +166,18 @@ harmonytan.github.io/
 3. 选择主分支作为源
 4. 访问 `https://你的用户名.github.io/仓库名`
 
+## ⌨️ 键盘快捷键
+
+- **Esc**: 关闭模态框
+- **Ctrl/Cmd + T**: 切换主题
+
 ## 🔮 未来计划
 
 - [ ] 添加搜索功能
 - [ ] 支持评论系统
 - [ ] 添加访问统计
 - [ ] 支持多语言
-- [ ] 添加暗色主题
+- [ ] 添加文章分类
 - [ ] 集成CMS系统
 
 ## 🤝 贡献

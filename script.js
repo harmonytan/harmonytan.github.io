@@ -1,43 +1,74 @@
-// 导航栏交互
-const hamburger = document.querySelector('.hamburger');
-const navMenu = document.querySelector('.nav-menu');
+// 主题管理
+let currentTheme = localStorage.getItem('theme') || 'light';
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
+// 初始化主题
+function initTheme() {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeIcon();
+}
 
-// 关闭移动端菜单
-document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navMenu.classList.remove('active');
-}));
+// 切换主题
+function toggleTheme() {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('theme', currentTheme);
+    updateThemeIcon();
+}
 
-// 平滑滚动
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+// 更新主题图标
+function updateThemeIcon() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const icon = themeToggle.querySelector('i');
+
+    if (currentTheme === 'dark') {
+        icon.className = 'fas fa-sun';
+    } else {
+        icon.className = 'fas fa-moon';
+    }
+}
+
+// 页面导航管理
+function initNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pages = document.querySelectorAll('.page');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // 移除所有活动状态
+            navLinks.forEach(l => l.classList.remove('active'));
+            pages.forEach(p => p.classList.remove('active'));
+
+            // 添加活动状态
+            link.classList.add('active');
+            const targetPage = link.getAttribute('data-page');
+            document.getElementById(targetPage).classList.add('active');
+
+            // 移动端关闭侧边栏
+            if (window.innerWidth <= 768) {
+                document.querySelector('.sidebar').classList.remove('active');
+            }
+        });
+    });
+}
+
+// 移动端菜单切换
+function initMobileMenu() {
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    // 点击外部关闭菜单
+    document.addEventListener('click', (e) => {
+        if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+            sidebar.classList.remove('active');
         }
     });
-});
-
-// 导航栏滚动效果
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-    } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.boxShadow = 'none';
-    }
-});
+}
 
 // 博客文章数据
 const blogPosts = [
@@ -186,28 +217,28 @@ Transformer架构仍在快速发展中，未来将出现更多创新技术。
 
 // 渲染博客文章
 function renderBlogPosts() {
-    const blogContainer = document.getElementById('blog-container');
+    const postsContainer = document.getElementById('posts-container');
 
     blogPosts.forEach(post => {
-        const blogCard = document.createElement('div');
-        blogCard.className = 'blog-card';
-        blogCard.innerHTML = `
-            <div class="blog-image">
+        const postCard = document.createElement('div');
+        postCard.className = 'post-card';
+        postCard.innerHTML = `
+            <div class="post-image">
                 ${post.image}
             </div>
-            <div class="blog-content">
-                <div class="blog-date">${post.date}</div>
-                <h3 class="blog-title">${post.title}</h3>
-                <p class="blog-excerpt">${post.excerpt}</p>
-                <div class="blog-tags">
-                    ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
+            <div class="post-content">
+                <div class="post-date">${post.date}</div>
+                <h3 class="post-title">${post.title}</h3>
+                <p class="post-excerpt">${post.excerpt}</p>
+                <div class="post-tags">
+                    ${post.tags.map(tag => `<span class="post-tag">${tag}</span>`).join('')}
                 </div>
-                <button class="btn btn-primary" style="margin-top: 1rem; width: 100%;" onclick="openArticle(${post.id})">
+                <button class="read-more-btn" onclick="openArticle(${post.id})">
                     阅读全文
                 </button>
             </div>
         `;
-        blogContainer.appendChild(blogCard);
+        postsContainer.appendChild(postCard);
     });
 }
 
@@ -242,6 +273,8 @@ function convertMarkdownToHtml(markdown) {
         .replace(/<\/h[1-6]><\/p>/g, '</h$1>');
 }
 
+
+
 // 关闭模态框
 document.querySelector('.close').addEventListener('click', () => {
     document.getElementById('article-modal').style.display = 'none';
@@ -255,121 +288,96 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// 添加PDF上传功能
-function addPDFUpload() {
-    const blogContainer = document.getElementById('blog-container');
 
-    const uploadCard = document.createElement('div');
-    uploadCard.className = 'blog-card';
-    uploadCard.innerHTML = `
-        <div class="blog-image">
-            📄
-        </div>
-        <div class="blog-content">
-            <h3 class="blog-title">上传PDF文章</h3>
-            <p class="blog-excerpt">支持PDF格式的研究论文、技术报告等文档</p>
-            <input type="file" id="pdf-upload" accept=".pdf" style="display: none;">
-            <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;" onclick="document.getElementById('pdf-upload').click()">
-                选择PDF文件
-            </button>
-            <div id="pdf-preview" style="margin-top: 1rem;"></div>
-        </div>
-    `;
-
-    blogContainer.appendChild(uploadCard);
-
-    // PDF文件上传处理
-    document.getElementById('pdf-upload').addEventListener('change', function (e) {
-        const file = e.target.files[0];
-        if (file && file.type === 'application/pdf') {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const pdfPreview = document.getElementById('pdf-preview');
-                pdfPreview.innerHTML = `
-                    <div style="background: #e0e7ff; padding: 1rem; border-radius: 8px; text-align: center;">
-                        <p style="margin: 0; color: #2563eb; font-weight: 500;">
-                            📎 ${file.name} 已选择
-                        </p>
-                        <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #6b7280;">
-                            文件大小: ${(file.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
-                        <button class="btn btn-primary" style="margin-top: 0.5rem;" onclick="viewPDF('${e.target.result}')">
-                            查看PDF
-                        </button>
-                    </div>
-                `;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
-
-// 查看PDF
-function viewPDF(pdfDataUrl) {
-    const modal = document.getElementById('article-modal');
-    const content = document.getElementById('article-content');
-
-    content.innerHTML = `
-        <h2>PDF文档查看器</h2>
-        <iframe src="${pdfDataUrl}" width="100%" height="500px" style="border: none; border-radius: 8px;"></iframe>
-        <div style="margin-top: 1rem;">
-            <a href="${pdfDataUrl}" download class="btn btn-primary">下载PDF</a>
-        </div>
-    `;
-
-    modal.style.display = 'block';
-}
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
+    // 初始化主题
+    initTheme();
+    detectSystemTheme();
+    watchSystemTheme();
+
+    // 初始化导航
+    initNavigation();
+
+    // 初始化移动端菜单
+    initMobileMenu();
+
+    // 渲染博客文章
     renderBlogPosts();
-    addPDFUpload();
 
-    // 添加滚动动画
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+    // 绑定事件
+    document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+    document.querySelector('.close').addEventListener('click', closeModal);
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
+    // 点击模态框外部关闭
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('article-modal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
 
-    // 观察所有卡片元素
-    document.querySelectorAll('.research-card, .talk-card, .publication-item, .blog-card').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
+    // 键盘快捷键
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+        if (e.key === 't' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            toggleTheme();
+        }
     });
 });
 
-// 添加打字机效果
-function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.innerHTML = '';
-
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
+// 系统主题检测
+function detectSystemTheme() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        if (!localStorage.getItem('theme')) {
+            currentTheme = 'dark';
+            initTheme();
         }
     }
-
-    type();
 }
 
-// 为英雄标题添加打字机效果
+// 监听系统主题变化
+function watchSystemTheme() {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            currentTheme = e.matches ? 'dark' : 'light';
+            initTheme();
+        }
+    });
+}
+
+// 平滑滚动到顶部
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// 添加返回顶部按钮
+function addBackToTopButton() {
+    const backToTop = document.createElement('button');
+    backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    backToTop.className = 'back-to-top';
+    backToTop.onclick = scrollToTop;
+
+    document.body.appendChild(backToTop);
+
+    // 显示/隐藏按钮
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTop.style.display = 'block';
+        } else {
+            backToTop.style.display = 'none';
+        }
+    });
+}
+
+// 页面完全加载后添加返回顶部按钮
 window.addEventListener('load', () => {
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        const originalText = heroTitle.textContent;
-        typeWriter(heroTitle, originalText, 150);
-    }
+    addBackToTopButton();
 });
