@@ -1,0 +1,99 @@
+# 网站基本信息
+title: Lil'Log
+subtitle: 学习笔记博客
+description: 记录学习笔记和技术思考的个人博客
+author: Lilian
+email: your-email@example.com
+language: zh-CN
+timezone: Asia/Shanghai
+
+# 网站URL设置
+url: https://harmonytan.github.io
+baseurl: ""
+
+# 社交媒体链接
+social:
+  github: harmonytan
+  twitter: your-twitter-handle
+  instagram: your-instagram-handle
+  linkedin: your-linkedin-profile
+
+# 导航菜单
+navigation:
+  - title: Posts
+    url: /
+  - title: Archive
+    url: /archive
+  - title: Search
+    url: /search
+  - title: Tags
+    url: /tags
+  - title: FAQ
+    url: /faq
+
+# SEO设置
+seo:
+  title: Lil'Log - 学习笔记博客
+  description: 记录学习笔记和技术思考的个人博客，涵盖机器学习、深度学习、编程技术等领域
+  keywords: 博客,学习笔记,技术,机器学习,深度学习,编程
+  author: Lilian
+  robots: index, follow
+  canonical: true
+
+# 评论系统设置
+comments:
+  provider: disqus
+  shortname: your-disqus-shortname
+
+# 分析工具
+analytics:
+  provider: google
+  id: your-google-analytics-id
+
+# 搜索设置
+search:
+  provider: algolia
+  app_id: your-algolia-app-id
+  search_key: your-algolia-search-key
+  index_name: your-algolia-index-name
+
+# 分页设置
+pagination:
+  per_page: 10
+  permalink: /page/:num/
+
+# 主题设置
+theme:
+  primary_color: "#4a90e2"
+  secondary_color: "#7b68ee"
+  accent_color: "#ff6b9d"
+  background_color: "#1a1a1a"
+  text_color: "#ffffff"
+  card_background: "#2a2a2a"
+
+# 功能开关
+features:
+  dark_mode: true
+  search: true
+  comments: true
+  social_sharing: true
+  reading_time: true
+  scroll_progress: true
+  back_to_top: true
+  keyboard_shortcuts: true
+
+# 文章设置
+posts:
+  excerpt_length: 200
+  show_reading_time: true
+  show_author: true
+  show_date: true
+  show_tags: true
+  show_categories: true
+
+# 部署设置
+deploy:
+  provider: github
+  repository: harmonytan/harmonytan.github.io
+  branch: gh-pages
+  strategy: git

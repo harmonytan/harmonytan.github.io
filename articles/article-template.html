@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章标题 - Lil'Log</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            margin-top: 2rem;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .article-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .article-meta {
+            color: #888888;
+            font-size: 1rem;
+        }
+
+        .article-body {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #cccccc;
+        }
+
+        .article-body h2 {
+            color: #ffffff;
+            margin: 2rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        .article-body h3 {
+            color: #ffffff;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.5rem;
+        }
+
+        .article-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-body code {
+            background-color: #333;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .article-body pre {
+            background-color: #333;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .back-to-home {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.8rem 1.5rem;
+            background-color: #4a90e2;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-home:hover {
+            background-color: #357abd;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <h1 class="blog-title">Lil'Log</h1>
+            <i class="fas fa-sun"></i>
+            <div class="vertical-line"></div>
+        </div>
+        <nav class="nav">
+            <a href="../index.html" class="nav-link">Posts</a>
+            <a href="#" class="nav-link">Archive</a>
+            <a href="#" class="nav-link">Search</a>
+            <a href="#" class="nav-link">Tags</a>
+            <a href="#" class="nav-link">FAQ</a>
+        </nav>
+    </header>
+
+    <main class="main">
+        <article class="article-content">
+            <header class="article-header">
+                <h1 class="article-title">文章标题</h1>
+                <div class="article-meta">
+                    <span>发布日期: 2024年12月</span> |
+                    <span>阅读时间: 10分钟</span> |
+                    <span>作者: Lilian</span>
+                </div>
+            </header>
+
+            <div class="article-body">
+                <h2>引言</h2>
+                <p>这是文章的引言部分。在这里，你可以简要介绍文章的主题和将要讨论的内容。</p>
+
+                <h2>主要内容</h2>
+                <p>这是文章的主要内容部分。你可以在这里详细展开你的观点和想法。</p>
+
+                <h3>子标题</h3>
+                <p>使用子标题来组织你的内容，让文章结构更清晰。</p>
+
+                <h2>代码示例</h2>
+                <p>如果需要展示代码，可以使用以下格式：</p>
+                <pre><code>// 这是一个代码示例
+function example() {
+    console.log("Hello, World!");
+}</code></pre>
+
+                <h2>总结</h2>
+                <p>在文章的最后，总结你的主要观点和结论。</p>
+
+                <a href="../index.html" class="back-to-home">
+                    <i class="fas fa-arrow-left"></i> 返回首页
+                </a>
+            </div>
+        </article>
+    </main>
+
+    <div class="scroll-to-top">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+
+</html>

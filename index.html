@@ -4,186 +4,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harmony Tan - AI Research</title>
+    <title>Lil'Log - 学习笔记博客</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
-    <!-- 移动端菜单按钮 -->
-    <button class="mobile-menu-toggle" id="mobile-menu-toggle">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- 侧边栏 -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h2 class="logo">Harmony Tan</h2>
-            <p class="subtitle">AI Researcher</p>
+    <header class="header">
+        <div class="header-left">
+            <h1 class="blog-title">Lil'Log</h1>
+            <i class="fas fa-sun"></i>
+            <div class="vertical-line"></div>
         </div>
-
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a href="#home" class="nav-link active" data-page="home">
-                        <i class="fas fa-home"></i>
-                        <span>首页</span>
-                    </a></li>
-                <li><a href="#posts" class="nav-link" data-page="posts">
-                        <i class="fas fa-file-alt"></i>
-                        <span>Post</span>
-                    </a></li>
-                <li><a href="#links" class="nav-link" data-page="links">
-                        <i class="fas fa-link"></i>
-                        <span>Link</span>
-                    </a></li>
-            </ul>
+        <nav class="nav">
+            <a href="#" class="nav-link active">Posts</a>
+            <a href="#" class="nav-link">Archive</a>
+            <a href="#" class="nav-link">Search</a>
+            <a href="#" class="nav-link">Tags</a>
+            <a href="#" class="nav-link">FAQ</a>
         </nav>
+    </header>
 
-        <div class="sidebar-footer">
-            <button id="theme-toggle" class="theme-toggle">
-                <i class="fas fa-moon"></i>
-            </button>
-        </div>
-    </aside>
-
-    <!-- 主内容区域 -->
-    <main class="main-content">
-        <!-- 首页页面 -->
-        <div id="home" class="page active">
-            <div class="page-header">
-                <h1>Welcome</h1>
-                <p>专注于人工智能、机器学习和深度学习的前沿研究</p>
+    <main class="main">
+        <section class="welcome-section">
+            <h2 class="welcome-title">👋 Welcome to Lil'Log</h2>
+            <p class="welcome-text">
+                Hi, this is Lilian. I'm documenting my learning notes in this blog since 2017.
+                Based on the number of grammar mistakes in my posts, you can tell how much ChatGPT is involved 😉.
+            </p>
+            <div class="social-icons">
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fas fa-link"></i></a>
+                <a href="#" class="social-icon"><i class="fas fa-rss"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
             </div>
+        </section>
 
-            <div class="content-grid">
-                <div class="intro-card">
-                    <div class="avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <h2>Harmony Tan</h2>
-                    <p>AI Researcher & Machine Learning Engineer</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
-                    </div>
+        <section class="posts-section">
+            <article class="post-card">
+                <h3 class="post-title">Why We Think</h3>
+                <p class="post-excerpt">
+                    Special thanks to John Schulman for a lot of super valuable feedback and direct edits on this post.
+                    Test time compute (Graves et al. 2016, Ling, et al. 2017, Cobbe et al. 2021) and Chain-of-thought
+                    (CoT) (W...
+                </p>
+                <div class="post-meta">
+                    <span class="post-date">Date: May 1, 2025</span>
+                    <span class="post-reading-time">Estimated Reading Time: 40 min</span>
+                    <span class="post-author">Author: Lilian Weng</span>
                 </div>
+            </article>
 
-                <div class="research-card">
-                    <h3>研究领域</h3>
-                    <div class="research-tags">
-                        <span class="tag">深度学习</span>
-                        <span class="tag">机器学习</span>
-                        <span class="tag">自然语言处理</span>
-                        <span class="tag">计算机视觉</span>
-                    </div>
+            <article class="post-card">
+                <h3 class="post-title">Reward Hacking in Reinforcement Learning</h3>
+                <p class="post-excerpt">
+                    Reward hacking occurs when a reinforcement learning (RL) agent exploits flaws or ambiguities in the
+                    reward function
+                    to achieve high rewards, without genuinely learning or completing the intended task....
+                </p>
+                <div class="post-meta">
+                    <span class="post-date">Date: November 28, 2024</span>
+                    <span class="post-reading-time">Estimated Reading Time: 37 min</span>
+                    <span class="post-author">Author: Lilian Weng</span>
                 </div>
+            </article>
 
-                <div class="stats-card">
-                    <h3>统计</h3>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <span class="stat-number">15+</span>
-                            <span class="stat-label">论文发表</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">8+</span>
-                            <span class="stat-label">研究项目</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">5+</span>
-                            <span class="stat-label">国际会议</span>
-                        </div>
-                    </div>
+            <article class="post-card">
+                <h3 class="post-title">Extrinsic Hallucinations in LLMs</h3>
+                <p class="post-excerpt">
+                    Hallucination in large language models usually refers to the model generating unfaithful,
+                    fabricated,
+                    inconsistent, or nonsensical content. As a term, hallucination has been somewhat generalized to
+                    case...
+                </p>
+                <div class="post-meta">
+                    <span class="post-date">Date: July 7, 2024</span>
+                    <span class="post-reading-time">Estimated Reading Time: 29 min</span>
+                    <span class="post-author">Author: Lilian Weng</span>
                 </div>
-            </div>
-        </div>
+            </article>
 
-        <!-- 文章页面 -->
-        <div id="posts" class="page">
-            <div class="page-header">
-                <h1>Posts</h1>
-                <p>研究笔记和技术分享</p>
-            </div>
-
-            <div class="posts-grid" id="posts-container">
-                <!-- 文章将通过JavaScript动态加载 -->
-            </div>
-        </div>
-
-        <!-- 链接页面 -->
-        <div id="links" class="page">
-            <div class="page-header">
-                <h1>Links</h1>
-                <p>有用的资源和链接</p>
-            </div>
-
-            <div class="links-grid">
-                <div class="link-category">
-                    <h3>研究资源</h3>
-                    <div class="link-list">
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>arXiv</span>
-                        </a>
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Papers With Code</span>
-                        </a>
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Google Scholar</span>
-                        </a>
-                    </div>
+            <article class="post-card">
+                <h3 class="post-title">Diffusion Models for Video Generation</h3>
+                <p class="post-excerpt">
+                    Diffusion models have demonstrated strong results on image synthesis in recent years.
+                    Now the research community is exploring their application to video generation...
+                </p>
+                <div class="post-meta">
+                    <span class="post-date">Date: June 15, 2024</span>
+                    <span class="post-reading-time">Estimated Reading Time: 35 min</span>
+                    <span class="post-author">Author: Lilian Weng</span>
                 </div>
-
-                <div class="link-category">
-                    <h3>工具</h3>
-                    <div class="link-list">
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>GitHub</span>
-                        </a>
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Colab</span>
-                        </a>
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>Kaggle</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="link-category">
-                    <h3>会议</h3>
-                    <div class="link-list">
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>NeurIPS</span>
-                        </a>
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>ICML</span>
-                        </a>
-                        <a href="#" class="link-item">
-                            <i class="fas fa-external-link-alt"></i>
-                            <span>ICLR</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+            </article>
+        </section>
     </main>
 
-    <!-- 文章查看模态框 -->
-    <div id="article-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div id="article-content"></div>
-        </div>
+    <div class="scroll-to-top">
+        <i class="fas fa-comments"></i>
     </div>
 
     <script src="script.js"></script>

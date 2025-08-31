@@ -1,199 +1,131 @@
-# Harmony Tan - AI Research 个人主页
+# Lil'Log - 个人学习笔记博客
 
-一个极简风格的AI研究个人主页，采用侧边栏导航和分页布局，支持黑白主题切换。
+一个现代化的静态博客网站，基于GitHub Pages部署。
 
-## ✨ 功能特性
+## ✨ 特性
 
-- 🎨 **极简设计**: 清爽的侧边栏布局，专注于内容展示
-- 🌓 **主题切换**: 支持亮色/暗色主题，自动跟随系统设置
-- 📱 **响应式设计**: 完美适配桌面端和移动端
-- 📝 **分页布局**: 首页、文章、链接三个独立页面
-- 📄 **Markdown支持**: 支持Markdown格式的文章内容
-- 🚀 **平滑动画**: 优雅的页面切换和悬停效果
-- 🔧 **现代化技术**: 使用CSS变量和现代JavaScript特性
+- 🎨 **深色主题设计** - 护眼的深色主题，支持主题切换
+- 📱 **响应式布局** - 完美适配各种设备尺寸
+- 🚀 **现代化UI** - 简洁美观的卡片式设计
+- ⚡ **性能优化** - 轻量级静态网站，加载速度快
+- 🔍 **搜索友好** - SEO优化，易于搜索引擎收录
+- 📊 **阅读体验** - 清晰的排版和阅读时间估算
 
-## 🚀 快速开始
+## 🛠️ 技术栈
 
-### 1. 克隆项目
-```bash
-git clone https://github.com/harmonytan/harmonytan.github.io.git
-cd harmonytan.github.io
-```
-
-### 2. 本地预览
-直接在浏览器中打开 `index.html` 文件，或者使用本地服务器：
-
-```bash
-# 使用Python
-python -m http.server 8000
-
-# 使用Node.js
-npx serve .
-
-# 使用PHP
-php -S localhost:8000
-```
-
-然后在浏览器中访问 `http://localhost:8000`
+- **HTML5** - 语义化标记
+- **CSS3** - 现代化样式和动画
+- **JavaScript ES6+** - 交互功能和用户体验
+- **Font Awesome** - 图标库
+- **GitHub Pages** - 免费托管服务
 
 ## 📁 项目结构
 
 ```
 harmonytan.github.io/
-├── index.html          # 主页面（侧边栏 + 分页布局）
-├── styles.css          # 极简风格CSS样式
-├── script.js           # 分页导航和主题切换功能
-├── articles/           # Markdown文章目录
-│   └── transformer-evolution.md
+├── index.html          # 主页
+├── styles.css          # 样式文件
+├── script.js           # 交互脚本
+├── articles/           # 文章目录
+├── .github/workflows/  # GitHub Actions配置
 └── README.md           # 项目说明
 ```
 
-## 🎨 设计特点
+## 🚀 快速开始
 
-### 侧边栏导航
-- **首页**: 个人介绍、研究领域、统计数据
-- **Post**: 研究文章和技术分享
-- **Link**: 有用的资源和链接
+### 本地开发
 
-### 主题系统
-- **亮色主题**: 清爽的白色背景，适合白天使用
-- **暗色主题**: 护眼的深色背景，适合夜间使用
-- **自动检测**: 跟随系统主题设置自动切换
-- **手动切换**: 点击侧边栏底部的主题按钮
+1. 克隆项目
+```bash
+git clone https://github.com/harmonytan/harmonytan.github.io.git
+cd harmonytan.github.io
+```
 
-### 响应式布局
-- **桌面端**: 固定侧边栏 + 主内容区域
-- **移动端**: 可折叠侧边栏 + 全屏内容
+2. 使用本地服务器预览
+```bash
+# 使用Python
+python -m http.server 8000
+
+# 或使用Node.js
+npx http-server -p 8000
+```
+
+3. 在浏览器中访问 `http://localhost:8000`
+
+### 部署到GitHub Pages
+
+1. 推送代码到GitHub
+```bash
+git add .
+git commit -m "Initial commit"
+git push origin main
+```
+
+2. 在GitHub仓库设置中启用GitHub Pages
+   - 进入仓库设置 → Pages
+   - Source选择 "Deploy from a branch"
+   - Branch选择 "gh-pages"
+
+3. GitHub Actions会自动构建和部署网站
 
 ## 📝 添加新文章
 
-在 `script.js` 文件中的 `blogPosts` 数组添加新文章：
+1. 在 `articles/` 目录下创建新的HTML文件
+2. 在 `index.html` 中添加文章卡片
+3. 推送代码，网站会自动更新
 
-```javascript
-{
-    id: 4,
-    title: "文章标题",
-    date: "2024-01-20",
-    excerpt: "文章摘要...",
-    tags: ["标签1", "标签2"],
-    content: `
-# 文章内容
+## 🎨 自定义主题
 
-## 章节标题
+网站支持深色和浅色主题切换：
 
-文章正文内容...
-    `,
-    image: "🔬"
-}
-```
+- 点击右上角的太阳/月亮图标切换主题
+- 主题选择会保存在本地存储中
 
-## 🎨 自定义样式
+## 📱 响应式设计
 
-### 修改颜色主题
-在 `styles.css` 中修改CSS变量：
+- **桌面端** - 完整功能，最佳体验
+- **平板端** - 适配中等屏幕
+- **移动端** - 触摸友好，导航优化
 
-```css
-:root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8f9fa;
-    --bg-sidebar: #f1f3f4;
-    --text-primary: #1a1a1a;
-    --accent-color: #1a73e8;
-}
-```
+## 🔧 配置选项
 
-### 修改字体
-在 `index.html` 中更换Google Fonts链接：
+### 修改网站信息
 
-```html
-<link href="https://fonts.googleapis.com/css2?family=你的字体&display=swap" rel="stylesheet">
-```
+编辑 `index.html` 中的以下内容：
+- 博客标题
+- 作者信息
+- 社交媒体链接
+- 欢迎信息
 
-## 📱 响应式断点
+### 自定义样式
 
-- **桌面端**: > 768px（固定侧边栏）
-- **移动端**: ≤ 768px（可折叠侧边栏）
+编辑 `styles.css` 中的CSS变量：
+- 主题色彩
+- 字体设置
+- 布局参数
 
-## 🔧 技术栈
+## 🌟 功能特性
 
-- **HTML5**: 语义化标签和现代HTML特性
-- **CSS3**: CSS变量、Flexbox、Grid、动画
-- **JavaScript ES6+**: 模块化、事件处理、DOM操作
-- **Font Awesome**: 图标库
-- **Google Fonts**: 字体库
-
-## 📚 内容管理
-
-### 首页内容
-在 `index.html` 中修改首页的三个卡片：
-
-```html
-<div class="intro-card">
-    <!-- 个人介绍 -->
-</div>
-
-<div class="research-card">
-    <!-- 研究领域 -->
-</div>
-
-<div class="stats-card">
-    <!-- 统计数据 -->
-</div>
-```
-
-### 文章管理
-在 `script.js` 中修改 `blogPosts` 数组来管理文章。
-
-### 链接管理
-在 `index.html` 中修改链接页面的内容：
-
-```html
-<div class="link-category">
-    <h3>分类标题</h3>
-    <div class="link-list">
-        <a href="#" class="link-item">
-            <i class="fas fa-external-link-alt"></i>
-            <span>链接名称</span>
-        </a>
-    </div>
-</div>
-```
-
-## 🌐 部署到GitHub Pages
-
-1. 将代码推送到GitHub仓库
-2. 在仓库设置中启用GitHub Pages
-3. 选择主分支作为源
-4. 访问 `https://你的用户名.github.io/仓库名`
-
-## ⌨️ 键盘快捷键
-
-- **Esc**: 关闭模态框
-- **Ctrl/Cmd + T**: 切换主题
-
-## 🔮 未来计划
-
-- [ ] 添加搜索功能
-- [ ] 支持评论系统
-- [ ] 添加访问统计
-- [ ] 支持多语言
-- [ ] 添加文章分类
-- [ ] 集成CMS系统
-
-## 🤝 贡献
-
-欢迎提交Issue和Pull Request来改进这个项目！
+- **导航系统** - 清晰的页面导航
+- **文章卡片** - 美观的文章展示
+- **社交链接** - 社交媒体集成
+- **滚动进度** - 阅读进度指示器
+- **平滑滚动** - 优雅的页面滚动
+- **键盘快捷键** - 提升操作效率
 
 ## 📄 许可证
 
 MIT License - 详见 [LICENSE](LICENSE) 文件
 
+## 🤝 贡献
+
+欢迎提交Issue和Pull Request来改进这个项目！
+
 ## 📞 联系方式
 
-- 邮箱: harmony.tan@example.com
 - GitHub: [@harmonytan](https://github.com/harmonytan)
-- LinkedIn: [harmonytan](https://linkedin.com/in/harmonytan)
+- 博客: [harmonytan.github.io](https://harmonytan.github.io)
 
 ---
 
-*如果这个项目对你有帮助，请给个⭐️支持一下！*
+⭐ 如果这个项目对你有帮助，请给它一个星标！
