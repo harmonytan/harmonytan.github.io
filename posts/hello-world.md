@@ -4,7 +4,7 @@ date: 2025-10-25
 summary: Why this minimalist log exists and how I plan to fill it with steady notes.
 ---
 
-# Hello, Again
+# Hello
 
 This site is intentionally spare: centered type, a few quiet rules, and a simple index of the ideas I am tracing.
 
