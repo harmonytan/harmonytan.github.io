@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Articles · Harmony Tan</title>
     <link rel="stylesheet" href="styles/main.css" />
-    <script type="module" src="scripts/article.js" defer></script>
+    <script type="module" src="scripts/articles.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -20,20 +20,13 @@
     </header>
 
     <main class="site-main">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <time data-article-date></time>
-          </div>
-          <h1 data-article-title>Loading...</h1>
-        </header>
-        <div class="article-body" data-article-content>
-          <p class="muted">Retrieving markdown content…</p>
+      <section class="section article-index">
         </div>
-      </article>
-      <aside class="article-actions">
-        <a class="button ghost" href="articles.html">Back to articles</a>
-      </aside>
+        <hr class="section-divider" />
+        <div class="post-list" data-article-list>
+          <p class="muted">Gathering the index…</p>
+        </div>
+      </section>
     </main>
   </body>
 </html>

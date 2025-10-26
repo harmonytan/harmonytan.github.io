@@ -1,4 +1,4 @@
-import { updateCurrentYear, formatDate, setDocumentTitle } from "./site.js";
+import { updateCurrentYear, formatDate, setDocumentTitle, parseFrontMatter } from "./site.js";
 import { renderMarkdown } from "./markdown.js";
 
 updateCurrentYear();
@@ -9,42 +9,48 @@ const contentNode = document.querySelector("[data-article-content]");
 
 async function loadArticle() {
   try {
-    const posts = await loadPosts();
-    if (!posts || posts.length === 0) {
+    const slugs = await loadSlugs();
+    if (!slugs || slugs.length === 0) {
       renderEmptyState("No posts yet. Check back soon.");
       return;
     }
 
-    const targetSlug = resolveSlug(posts);
-    const post = posts.find((item) => item.slug === targetSlug) ?? posts[0];
-    if (!post) {
+    const targetSlug = resolveSlug(slugs);
+    if (!targetSlug) {
       renderEmptyState("We couldn't find that article.");
       return;
     }
 
-    const markdown = await fetchMarkdown(post.slug);
-    renderArticle(post, markdown);
+    const { attributes, body } = await fetchMarkdown(targetSlug);
+    renderArticle(
+      {
+        slug: targetSlug,
+        title: attributes.title ?? targetSlug,
+        date: attributes.date ?? "",
+      },
+      body
+    );
   } catch (error) {
     console.error(error);
     renderEmptyState("Article failed to load. Please try again later.");
   }
 }
 
-async function loadPosts() {
+async function loadSlugs() {
   const response = await fetch("data/posts.json");
   if (!response.ok) {
-    throw new Error(`Failed to load posts meta: ${response.status}`);
+    throw new Error(`Failed to load post list: ${response.status}`);
   }
   return response.json();
 }
 
-function resolveSlug(posts) {
+function resolveSlug(slugs) {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("post");
-  if (slug) {
+  if (slug && slugs.includes(slug)) {
     return slug;
   }
-  return posts[0]?.slug;
+  return slugs[0];
 }
 
 async function fetchMarkdown(slug) {
@@ -52,10 +58,11 @@ async function fetchMarkdown(slug) {
   if (!response.ok) {
     throw new Error(`Failed to load markdown for: ${slug}`);
   }
-  return response.text();
+  const raw = await response.text();
+  return parseFrontMatter(raw);
 }
 
-function renderArticle(post, markdown) {
+function renderArticle(post, markdownBody) {
   if (titleNode) {
     titleNode.textContent = post.title;
   }
@@ -64,7 +71,7 @@ function renderArticle(post, markdown) {
     dateNode.setAttribute("datetime", post.date);
   }
   if (contentNode) {
-    contentNode.innerHTML = renderMarkdown(markdown);
+    contentNode.innerHTML = renderMarkdown(markdownBody);
   }
   setDocumentTitle(post.title);
 }
