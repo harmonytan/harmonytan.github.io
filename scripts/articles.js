@@ -1,4 +1,4 @@
-import { formatDate, escapeHtml } from "./site.js";
+import { formatDate, escapeHtml, BASE_URL } from "./site.js";
 
 const listElement = document.querySelector("[data-article-list]");
 
@@ -17,7 +17,7 @@ async function loadIndex() {
 }
 
 async function loadPosts() {
-  const response = await fetch("data/posts.json");
+  const response = await fetch(`${BASE_URL}/data/posts.json`);
   if (!response.ok) {
     throw new Error(`Failed to load posts index: ${response.status}`);
   }
@@ -55,7 +55,9 @@ function renderList(posts) {
       const safeTitle = escapeHtml(post.title);
       const safeSummary = escapeHtml(post.summary ?? "");
       const date = formatDate(post.date);
-      const href = `article.html?post=${encodeURIComponent(post.slug)}`;
+      const href = `${BASE_URL}/article.html?post=${encodeURIComponent(
+        post.slug
+      )}`;
 
       return `
         <a class="post-card" href="${href}">

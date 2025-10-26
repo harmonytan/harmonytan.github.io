@@ -39,6 +39,12 @@ export function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
+const scriptUrl = new URL(import.meta.url);
+const scriptsIndex = scriptUrl.pathname.lastIndexOf("/scripts/");
+const derivedBase = scriptsIndex >= 0 ? scriptUrl.pathname.slice(0, scriptsIndex) : "";
+
+export const BASE_URL = window.__BLOG_BASE_PATH__ ?? derivedBase;
+
 export function parseFrontMatter(markdown) {
   const FRONT_MATTER_REGEX = /^---\n([\s\S]*?)\n---\n?/;
   const match = markdown.match(FRONT_MATTER_REGEX);

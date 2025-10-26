@@ -1,4 +1,4 @@
-import { formatDate, setDocumentTitle, parseFrontMatter } from "./site.js";
+import { formatDate, setDocumentTitle, parseFrontMatter, BASE_URL } from "./site.js";
 import { renderMarkdown } from "./markdown.js";
 
 const titleNode = document.querySelector("[data-article-title]");
@@ -43,7 +43,7 @@ async function loadPosts() {
   if (cachedPosts) {
     return cachedPosts;
   }
-  const response = await fetch("data/posts.json");
+  const response = await fetch(`${BASE_URL}/data/posts.json`);
   if (!response.ok) {
     throw new Error(`Failed to load post list: ${response.status}`);
   }
@@ -68,7 +68,9 @@ function resolveSlug(posts) {
 }
 
 async function fetchMarkdown(slug) {
-  const response = await fetch(`posts/${encodeURIComponent(slug)}.md`);
+  const response = await fetch(
+    `${BASE_URL}/posts/${encodeURIComponent(slug)}.md`
+  );
   if (!response.ok) {
     throw new Error(`Failed to load markdown for: ${slug}`);
   }
