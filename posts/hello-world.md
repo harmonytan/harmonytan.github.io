@@ -1,6 +1,6 @@
 ---
-title: Hello, Again
-date: 2024-05-01
+title: Hello
+date: 2025-10-25
 summary: Why this minimalist log exists and how I plan to fill it with steady notes.
 ---
 

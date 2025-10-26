@@ -1,7 +1,5 @@
-import { updateCurrentYear, formatDate, setDocumentTitle, parseFrontMatter } from "./site.js";
+import { formatDate, setDocumentTitle, parseFrontMatter } from "./site.js";
 import { renderMarkdown } from "./markdown.js";
-
-updateCurrentYear();
 
 const titleNode = document.querySelector("[data-article-title]");
 const dateNode = document.querySelector("[data-article-date]");
@@ -9,25 +7,28 @@ const contentNode = document.querySelector("[data-article-content]");
 
 async function loadArticle() {
   try {
-    const slugs = await loadSlugs();
-    if (!slugs || slugs.length === 0) {
+    const posts = await loadPosts();
+    if (!posts || posts.length === 0) {
       renderEmptyState("No posts yet. Check back soon.");
       return;
     }
 
-    const targetSlug = resolveSlug(slugs);
+    const targetSlug = resolveSlug(posts);
     if (!targetSlug) {
       renderEmptyState("We couldn't find that article.");
       return;
     }
 
+    const postMeta = posts.find((post) => post.slug === targetSlug);
     const { attributes, body } = await fetchMarkdown(targetSlug);
+    const mergedMeta = {
+      slug: targetSlug,
+      title: postMeta?.title ?? attributes.title ?? targetSlug,
+      date: postMeta?.date ?? attributes.date ?? "",
+    };
+
     renderArticle(
-      {
-        slug: targetSlug,
-        title: attributes.title ?? targetSlug,
-        date: attributes.date ?? "",
-      },
+      mergedMeta,
       body
     );
   } catch (error) {
@@ -36,21 +37,34 @@ async function loadArticle() {
   }
 }
 
-async function loadSlugs() {
+let cachedPosts = null;
+
+async function loadPosts() {
+  if (cachedPosts) {
+    return cachedPosts;
+  }
   const response = await fetch("data/posts.json");
   if (!response.ok) {
     throw new Error(`Failed to load post list: ${response.status}`);
   }
-  return response.json();
+  const posts = await response.json();
+  if (!Array.isArray(posts)) {
+    return [];
+  }
+  cachedPosts = posts.filter((post) => post && post.slug);
+  return cachedPosts;
 }
 
-function resolveSlug(slugs) {
+function resolveSlug(posts) {
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("post");
-  if (slug && slugs.includes(slug)) {
-    return slug;
+  if (slug) {
+    const match = posts.find((post) => post.slug === slug);
+    if (match) {
+      return slug;
+    }
   }
-  return slugs[0];
+  return posts[0]?.slug;
 }
 
 async function fetchMarkdown(slug) {

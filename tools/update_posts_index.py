@@ -17,29 +17,38 @@ POSTS_DIR = ROOT / "posts"
 OUTPUT_PATH = ROOT / "data" / "posts.json"
 
 
-@dataclass
-class PostMeta:
-    slug: str
-    date: datetime | None
-
-
 def main() -> None:
     if not POSTS_DIR.exists():
         raise SystemExit(f"Posts directory not found: {POSTS_DIR}")
 
-    posts: List[PostMeta] = []
+    posts: List[dict] = []
 
     for path in POSTS_DIR.glob("*.md"):
         slug = path.stem
         attributes, _ = parse_front_matter(path.read_text(encoding="utf-8"))
-        posts.append(PostMeta(slug=slug, date=parse_date(attributes.get("date"))))
+        posts.append(
+            {
+                "slug": slug,
+                "title": attributes.get("title", slug),
+                "summary": attributes.get("summary", ""),
+                "date": attributes.get("date", ""),
+                "_sort_key": parse_date(attributes.get("date")),
+            }
+        )
 
-    posts.sort(key=lambda post: (_sort_key(post.date), post.slug))
-    posts.reverse()
+    posts.sort(
+        key=lambda post: (
+            post.get("_sort_key") or datetime.min,
+            post["slug"],
+        ),
+        reverse=True,
+    )
 
-    slugs = [post.slug for post in posts]
-    OUTPUT_PATH.write_text(json.dumps(slugs, indent=2) + "\n", encoding="utf-8")
-    print(f"Updated {OUTPUT_PATH} with {len(slugs)} post(s).")
+    for post in posts:
+        post.pop("_sort_key", None)
+
+    OUTPUT_PATH.write_text(json.dumps(posts, indent=2) + "\n", encoding="utf-8")
+    print(f"Updated {OUTPUT_PATH} with {len(posts)} post(s).")
 
 
 def parse_front_matter(source: str) -> Tuple[Dict[str, str], str]:
@@ -78,10 +87,6 @@ def parse_date(value: str | None) -> datetime | None:
             return datetime.strptime(value, "%Y-%m-%d")
         except ValueError:
             return None
-
-
-def _sort_key(value: datetime | None) -> float:
-    return value.timestamp() if value else float("-inf")
 
 
 if __name__ == "__main__":

@@ -15,11 +15,23 @@ Minimal three-page blog with a centered home intro, an article index, and Markdo
    ---
    ```
 
-3. 在 `data/posts.json` 中追加对应的 slug（例如 `"new-post-slug"`）。
-4. 同步文章索引（任选其一）：
+3. 同步文章索引（任选其一）：
    - `node tools/update-posts-index.js`
    - `python tools/update_posts_index.py`
-5. 文章列表会在 `articles.html` 自动呈现；访问 `article.html?post=your-slug` 查看渲染结果。
+   该脚本会扫描 `posts/` 并更新 `data/posts.json` 为如下格式：
+
+   ```json
+   [
+     {
+       "slug": "hello-world",
+       "title": "Hello, Again",
+       "summary": "Why this minimalist log exists and how I plan to fill it with steady notes.",
+       "date": "2024-05-01"
+     }
+   ]
+   ```
+
+4. 文章列表会在 `articles.html` 自动呈现；访问 `article.html?post=your-slug` 查看渲染结果。
 
 ## 结构一览
 

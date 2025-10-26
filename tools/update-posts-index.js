@@ -28,22 +28,26 @@ async function main() {
 
     posts.push({
       slug,
-      date: parsedDate,
+      title: attributes.title ?? slug,
+      summary: attributes.summary ?? "",
+      date: attributes.date ?? "",
+      sortKey: parsedDate,
     });
   }
 
   posts.sort((a, b) => {
-    if (b.date !== a.date) {
-      return (b.date ?? 0) - (a.date ?? 0);
+    const diff = (b.sortKey ?? 0) - (a.sortKey ?? 0);
+    if (diff !== 0) {
+      return diff;
     }
     return a.slug.localeCompare(b.slug);
   });
 
-  const slugs = posts.map((post) => post.slug);
-  const json = `${JSON.stringify(slugs, null, 2)}\n`;
+  const payload = posts.map(({ sortKey, ...rest }) => rest);
+  const json = `${JSON.stringify(payload, null, 2)}\n`;
 
   await fs.writeFile(OUTPUT_PATH, json, "utf8");
-  console.log(`Updated ${OUTPUT_PATH} with ${slugs.length} post(s).`);
+  console.log(`Updated ${OUTPUT_PATH} with ${payload.length} post(s).`);
 }
 
 function parseFrontMatter(source) {

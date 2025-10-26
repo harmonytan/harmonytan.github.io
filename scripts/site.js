@@ -1,11 +1,3 @@
-export function updateCurrentYear() {
-  const target = document.querySelectorAll("[data-current-year]");
-  const year = new Date().getFullYear();
-  target.forEach((node) => {
-    node.textContent = year;
-  });
-}
-
 export function formatDate(isoString) {
   if (!isoString) {
     return "";

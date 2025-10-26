@@ -1,6 +1,4 @@
-import { updateCurrentYear, formatDate, escapeHtml, parseFrontMatter } from "./site.js";
-
-updateCurrentYear();
+import { formatDate, escapeHtml } from "./site.js";
 
 const listElement = document.querySelector("[data-article-list]");
 
@@ -10,8 +8,7 @@ async function loadIndex() {
   }
 
   try {
-    const slugs = await loadSlugs();
-    const posts = await loadPostsMetadata(slugs);
+    const posts = await loadPosts();
     renderList(posts);
   } catch (error) {
     console.error(error);
@@ -19,37 +16,23 @@ async function loadIndex() {
   }
 }
 
-async function loadSlugs() {
+async function loadPosts() {
   const response = await fetch("data/posts.json");
   if (!response.ok) {
-    throw new Error(`Failed to load index: ${response.status}`);
+    throw new Error(`Failed to load posts index: ${response.status}`);
   }
-  return response.json();
-}
-
-async function loadPostsMetadata(slugs) {
-  if (!Array.isArray(slugs)) {
+  const posts = await response.json();
+  if (!Array.isArray(posts)) {
     return [];
   }
-
-  const posts = await Promise.all(
-    slugs.map(async (slug) => {
-      try {
-        const { attributes } = await fetchMarkdownWithMeta(slug);
-        return {
-          slug,
-          title: attributes.title ?? slug,
-          summary: attributes.summary ?? "",
-          date: attributes.date ?? "",
-        };
-      } catch (error) {
-        console.error(`Failed to load metadata for ${slug}`, error);
-        return null;
-      }
-    })
-  );
-
-  return posts.filter((post) => post && post.title);
+  return posts
+    .map((post) => ({
+      slug: post.slug,
+      title: post.title ?? post.slug,
+      summary: post.summary ?? "",
+      date: post.date ?? "",
+    }))
+    .filter((post) => post.slug && post.title);
 }
 
 function renderList(posts) {
@@ -85,15 +68,6 @@ function renderList(posts) {
     .join("");
 
   listElement.innerHTML = html;
-}
-
-async function fetchMarkdownWithMeta(slug) {
-  const response = await fetch(`posts/${encodeURIComponent(slug)}.md`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch markdown for ${slug}`);
-  }
-  const raw = await response.text();
-  return parseFrontMatter(raw);
 }
 
 loadIndex();
