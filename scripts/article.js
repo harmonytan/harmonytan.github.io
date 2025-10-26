@@ -11,14 +11,14 @@ async function loadArticle() {
   try {
     const posts = await loadPosts();
     if (!posts || posts.length === 0) {
-      renderEmptyState("还没有文章，稍后再来看看。");
+      renderEmptyState("No posts yet. Check back soon.");
       return;
     }
 
     const targetSlug = resolveSlug(posts);
     const post = posts.find((item) => item.slug === targetSlug) ?? posts[0];
     if (!post) {
-      renderEmptyState("未找到对应的文章。");
+      renderEmptyState("We couldn't find that article.");
       return;
     }
 
@@ -26,7 +26,7 @@ async function loadArticle() {
     renderArticle(post, markdown);
   } catch (error) {
     console.error(error);
-    renderEmptyState("文章加载失败，请稍后再试。");
+    renderEmptyState("Article failed to load. Please try again later.");
   }
 }
 
@@ -71,7 +71,7 @@ function renderArticle(post, markdown) {
 
 function renderEmptyState(message) {
   if (titleNode) {
-    titleNode.textContent = "没有文章";
+    titleNode.textContent = "No article selected";
   }
   if (dateNode) {
     dateNode.textContent = "";

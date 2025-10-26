@@ -1,24 +1,22 @@
-# 我的创作工具箱
+# Tools, Not Distractions
 
-每位创作者都有一套趁手的工具。这里整理我在写作、整理资料与发布内容时常用的三个层面。
+Each note on this site starts in a lightweight stack that keeps friction low and output honest.
 
-## 采集：速记与收集
+## Capture
 
-- **Drafts**：随手记录灵感的入口，语音或文字都很快
-- **Matter**：阅读文章时顺手高亮，之后统一整理
+- **Drafts** — fastest path for voice or text when an idea appears mid-walk.
+- **Matter** — highlights while reading, with simple export for later synthesis.
 
-## 沉淀：建立长期记忆
+## Processing
 
-我将所有内容同步到 Obsidian，以双向链接的方式搭建自己的知识图谱。每个笔记都包含三个部分：
+Everything flows into Obsidian. Every note has three small fields:
 
-1. 触发：是什么促使我记录这条内容
-2. 摘要：原文摘录或自己的理解
-3. 下一步：这条信息可能触发的行动
+1. **Trigger** — what prompted the note.
+2. **Summary** — the distilled idea or quote.
+3. **Next step** — where this might be applied or investigated.
 
-通过结构化的描述，我能在后续创作时快速检索到上下文。
+The structure keeps fragments from turning into clutter.
 
-## 发布：保持极简
+## Publishing
 
-最终成稿依然用 Markdown 撰写，简洁、可读、易于版本管理。配合一个纯静态的站点（就像你现在看到的这个），我可以在任何地方完成更新。
-
-希望这份清单能启发你找到属于自己的创作流程。
+Posts stay in Markdown so version history is preserved, diffs remain readable, and deployment is just a commit. The less I fight the tooling, the more likely I am to keep writing.

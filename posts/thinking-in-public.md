@@ -1,27 +1,19 @@
-# 公开写作的价值
+# The Case For Writing In Public
 
-> 写下来是第一步，分享出去才是真正的总结。
+> Drafts deserve an audience, even if that audience is just one curious stranger.
 
-我越来越相信“边学边写”的力量。把尚在成形的观点公开，有助于在早期获得反馈，也能暴露认知上的盲点。下面是我持续输出的几个理由。
+Publishing early exposes the soft spots in my reasoning. People ask better questions than I do, and their questions guide the next revision.
 
-## 1. 内化知识
+## What openness does
 
-当我尝试向别人解释一个问题时，才会发现自己真正理解了多少。写作是最直接的“输出倒逼输入”方法，它迫使我查漏补缺。
+1. **Condenses learning.** Summarising an idea for someone else reveals which part of the model is still hazy.
+2. **Builds a map.** A dated archive becomes a record of progress and a reminder that pace matters less than consistency.
+3. **Invites counterparts.** Interesting replies tend to come from people working on adjacent problems—collaboration starts there.
 
-## 2. 建立记忆坐标
+## Keeping the rhythm
 
-文字会成为时间的锚点。我经常翻回过去的文章，重新感受当时的状态。那不仅仅是回顾，更是用历史补全当前的视角。
+- Keep tools simple so I can start writing within seconds.
+- Publish on a cadence that still feels generous to myself.
+- Flag open questions and update posts when I learn something new.
 
-## 3. 获得连接
-
-公开写作让志同道合的人更容易找到你。一次偶然的留言、一次邮件往来，都可能产生新的合作机会，或单纯带来一段愉快的对话。
-
-## 如何保持节奏
-
-我通常遵循以下原则：
-
-1. 使用极简的写作工具，降低启动成本
-2. 设定一个松弛的更新频率（例如“两周一篇”）
-3. 记录过程而不拘泥于结论，先完成再完善
-
-写作没有标准答案。重要的是建立属于自己的节奏，并在过程中不断调整。
+None of this is a formula, but the habit of pressing “share” has made the work sharper.

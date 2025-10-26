@@ -19,13 +19,13 @@ async function loadPosts() {
     renderPosts(posts);
   } catch (error) {
     console.error(error);
-    listElement.innerHTML = `<p class="muted">暂时无法加载文章，请稍后再试。</p>`;
+    listElement.innerHTML = `<p class="muted">Unable to load posts right now. Try again soon.</p>`;
   }
 }
 
 function renderPosts(posts) {
   if (!Array.isArray(posts) || posts.length === 0) {
-    listElement.innerHTML = `<p class="muted">写点什么吧，第一篇文章会出现在这里。</p>`;
+    listElement.innerHTML = `<p class="muted">Empty for now. The first post will land here.</p>`;
     return;
   }
 

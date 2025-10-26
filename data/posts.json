@@ -1,20 +1,20 @@
 [
   {
     "slug": "hello-world",
-    "title": "你好，世界",
+    "title": "Hello, Again",
     "date": "2024-05-01",
-    "summary": "搭建这个极简博客的初衷，以及我想在这里记录的内容。"
+    "summary": "Why this minimalist log exists and how I plan to fill it with steady notes."
   },
   {
     "slug": "thinking-in-public",
-    "title": "公开写作的价值",
+    "title": "The Case For Writing In Public",
     "date": "2024-04-18",
-    "summary": "为什么选择在公开场域记录思考，以及如何保持持续输出。"
+    "summary": "A reminder to publish unfinished thoughts and let the internet collaborate."
   },
   {
     "slug": "toolbox",
-    "title": "我的创作工具箱",
+    "title": "Tools, Not Distractions",
     "date": "2024-03-22",
-    "summary": "整理日常使用的笔记、写作与研究工具，帮助内容沉淀。"
+    "summary": "A short inventory of the notes, research, and publishing tools I return to daily."
   }
 ]
