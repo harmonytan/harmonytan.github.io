@@ -1,9 +1,20 @@
-import { formatDate, setDocumentTitle, parseFrontMatter, BASE_URL } from "./site.js";
+import {
+  formatDate,
+  setDocumentTitle,
+  parseFrontMatter,
+  BASE_URL,
+} from "./site.js";
 import { renderMarkdown } from "./markdown.js";
 
 const titleNode = document.querySelector("[data-article-title]");
 const dateNode = document.querySelector("[data-article-date]");
 const contentNode = document.querySelector("[data-article-content]");
+const tocNode = document.querySelector("[data-article-toc]");
+const readingTimeNode = document.querySelector("[data-article-reading-time]");
+const topicNode = document.querySelector("[data-article-topic]");
+const strapNode = document.querySelector("[data-article-strap]");
+const authorNode = document.querySelector("[data-article-author]");
+const heroReadingNode = document.querySelector("[data-article-meta-reading]");
 
 async function loadArticle() {
   try {
@@ -25,12 +36,12 @@ async function loadArticle() {
       slug: targetSlug,
       title: postMeta?.title ?? attributes.title ?? targetSlug,
       date: postMeta?.date ?? attributes.date ?? "",
+      topic: postMeta?.topic ?? attributes.category ?? "",
+      subtitle: postMeta?.summary ?? attributes.subtitle ?? "",
+      author: postMeta?.author ?? attributes.author ?? "Harmony Tan",
     };
 
-    renderArticle(
-      mergedMeta,
-      body
-    );
+    renderArticle(mergedMeta, body);
   } catch (error) {
     console.error(error);
     renderEmptyState("Article failed to load. Please try again later.");
@@ -86,9 +97,15 @@ function renderArticle(post, markdownBody) {
     dateNode.textContent = formatDate(post.date);
     dateNode.setAttribute("datetime", post.date);
   }
+  let headings = [];
   if (contentNode) {
     contentNode.innerHTML = renderMarkdown(markdownBody);
+    headings = prepareHeadingAnchors(contentNode);
   }
+  buildTableOfContents(headings);
+  const textStats = computeTextStats(markdownBody);
+  setArticleStatsDisplay(textStats);
+  updateHeroMeta(post, textStats);
   setDocumentTitle(post.title);
 }
 
@@ -102,6 +119,147 @@ function renderEmptyState(message) {
   if (contentNode) {
     contentNode.innerHTML = `<p class="muted">${message}</p>`;
   }
+  if (tocNode) {
+    tocNode.innerHTML = `<p class="muted">Add headings (##, ###) to show a table of contents.</p>`;
+  }
+  if (topicNode) {
+    topicNode.textContent = "Notebook";
+  }
+  if (strapNode) {
+    strapNode.textContent = "";
+    strapNode.style.display = "none";
+  }
+  if (authorNode) {
+    authorNode.textContent = "Harmony Tan";
+  }
+  if (heroReadingNode) {
+    heroReadingNode.textContent = "";
+  }
+  setArticleStatsDisplay();
+}
+
+function prepareHeadingAnchors(root) {
+  if (!root) {
+    return [];
+  }
+  const headingNodes = Array.from(root.querySelectorAll("h2, h3, h4"));
+  if (headingNodes.length === 0) {
+    return [];
+  }
+  const slugCounts = Object.create(null);
+  return headingNodes.map((node, index) => {
+    const text = node.textContent?.trim() ?? `Section ${index + 1}`;
+    const level = Number(node.tagName.replace("H", ""));
+    const baseId = slugifyHeading(text) || `section-${index + 1}`;
+    const id = ensureUniqueSlug(baseId, slugCounts);
+    node.id = id;
+    return { id, text, level };
+  });
+}
+
+function buildTableOfContents(headings) {
+  if (!tocNode) {
+    return;
+  }
+  if (!headings || headings.length === 0) {
+    tocNode.innerHTML =
+      '<p class="muted">Use h2/h3 headings to auto-generate the outline.</p>';
+    return;
+  }
+  const list = document.createElement("ol");
+  list.className = "toc-list";
+  headings.forEach((heading) => {
+    if (heading.level < 2 || heading.level > 3) {
+      return;
+    }
+    const item = document.createElement("li");
+    item.className = `toc-item level-${heading.level}`;
+    const link = document.createElement("a");
+    link.href = `#${heading.id}`;
+    link.textContent = heading.text;
+    item.appendChild(link);
+    list.appendChild(item);
+  });
+  if (!list.hasChildNodes()) {
+    tocNode.innerHTML =
+      '<p class="muted">Use h2/h3 headings to auto-generate the outline.</p>';
+    return;
+  }
+  tocNode.innerHTML = "";
+  tocNode.appendChild(list);
+}
+
+function computeTextStats(markdown) {
+  if (!markdown) {
+    return null;
+  }
+  const cleaned = markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/[#>*_`~\-]/g, " ");
+  const wordUnits = cleaned
+    .split(/\s+/)
+    .filter(Boolean).length;
+  const hanMatches = cleaned.match(/[\u4e00-\u9fff]/g) ?? [];
+  const totalUnits = wordUnits + hanMatches.length;
+  const formatter = new Intl.NumberFormat("en-US");
+  const formatted = formatter.format(totalUnits);
+  return {
+    units: totalUnits,
+    formatted,
+    shortLabel: `${formatted} words`,
+    sidebarLabel: `${formatted} words`,
+  };
+}
+
+function setArticleStatsDisplay(info) {
+  if (readingTimeNode) {
+    readingTimeNode.textContent = info?.sidebarLabel ?? "";
+  }
+  if (heroReadingNode) {
+    heroReadingNode.textContent = info?.shortLabel ?? "";
+  }
+}
+
+function updateHeroMeta(post, textStats) {
+  if (topicNode) {
+    topicNode.textContent = post.topic || "Notebook";
+  }
+  if (strapNode) {
+    if (post.subtitle) {
+      strapNode.textContent = post.subtitle;
+      strapNode.style.display = "block";
+    } else {
+      strapNode.textContent = "";
+      strapNode.style.display = "none";
+    }
+  }
+  if (authorNode) {
+    authorNode.textContent = post.author || "Harmony Tan";
+  }
+  if (heroReadingNode && textStats?.shortLabel) {
+    heroReadingNode.textContent = textStats.shortLabel;
+  }
+}
+
+function slugifyHeading(text) {
+  return text
+    .normalize("NFKD")
+    .toLowerCase()
+    .replace(/[^\w\s\u4e00-\u9fff-]/gu, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80);
+}
+
+function ensureUniqueSlug(slug, counts) {
+  if (!counts[slug]) {
+    counts[slug] = 1;
+    return slug;
+  }
+  const uniqueSlug = `${slug}-${counts[slug]}`;
+  counts[slug] += 1;
+  return uniqueSlug;
 }
 
 loadArticle();

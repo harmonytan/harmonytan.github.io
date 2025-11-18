@@ -1,12 +1,13 @@
 ---
-title: Hello
-date: 2025-10-25
+title: Synchronicity In Intelligence Future
+date: 2025-11-18
 summary: Why this minimalist log exists and how I plan to fill it with steady notes.
 ---
 
-# Hello
+# 一个引子
 
 This site is intentionally spare: centered type, a few quiet rules, and a simple index of the ideas I am tracing.
+
 
 ## Why keep a log
 

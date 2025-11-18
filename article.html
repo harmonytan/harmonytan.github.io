@@ -1,39 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Articles · Harmony Tan</title>
-    <link rel="stylesheet" href="styles/main.css" />
-    <script type="module" src="scripts/article.js" defer></script>
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="site-shell">
-        <a class="brand" href="index.html">Harmony Tan</a>
-        <nav class="site-nav">
-          <a href="index.html">Home</a>
-          <a class="active" href="articles.html">Articles</a>
-          <a href="contact.html">Contact</a>
-        </nav>
-      </div>
-    </header>
 
-    <main class="site-main">
-      <article class="article">
-        <header class="article-header">
-          <div class="article-meta">
-            <time data-article-date></time>
-          </div>
-          <h1 data-article-title>Loading...</h1>
-        </header>
-        <div class="article-body" data-article-content>
-          <p class="muted">Retrieving markdown content…</p>
-        </div>
-      </article>
-      <aside class="article-actions">
-        <a class="button ghost" href="articles.html">Back to articles</a>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Articles · Harmony Tan</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <script type="module" src="scripts/header.js" defer></script>
+  <script type="module" src="scripts/article.js" defer></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="site-shell">
+      <a class="brand" href="index.html">Harmony Tan</a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a class="active" href="articles.html">Articles</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main article-layout">
+    <div class="article-grid">
+      <aside class="article-sidebar">
+        <p class="toc-label">On this page</p>
+        <p class="toc-reading-time" data-article-reading-time>—</p>
+        <nav class="toc" data-article-toc>
+          <p class="muted">Outline will appear after the article loads.</p>
+        </nav>
       </aside>
-    </main>
-  </body>
+      <div class="article-column">
+        <article class="article">
+          <header class="article-hero">
+            <div class="article-kicker">
+              <span class="article-kicker-label" data-article-topic>Notebook</span>
+              <span class="article-kicker-arrow">›</span>
+              <span class="article-kicker-detail">Original essays</span>
+            </div>
+            <h1 data-article-title>Loading...</h1>
+            <p class="article-strap" data-article-strap style="display: none;"></p>
+            <div class="article-meta">
+              <span class="article-author">
+                by <span data-article-author>Harmony Tan</span>
+              </span>
+              <span class="article-meta-dot">•</span>
+              <time data-article-date></time>
+              <span class="article-meta-dot">•</span>
+              <span class="article-meta-reading" data-article-meta-reading></span>
+            </div>
+          </header>
+          <div class="article-body" data-article-content>
+            <p class="muted">Retrieving markdown content…</p>
+          </div>
+        </article>
+        <aside class="article-actions">
+          <a class="button ghost" href="articles.html">Back to Articles</a>
+        </aside>
+      </div>
+    </div>
+  </main>
+</body>
+
 </html>

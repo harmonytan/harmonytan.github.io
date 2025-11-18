@@ -8,12 +8,24 @@ export function formatDate(isoString) {
     if (Number.isNaN(date.valueOf())) {
       return isoString;
     }
-    const formatter = new Intl.DateTimeFormat("zh-CN", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    return formatter.format(date);
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const month = monthNames[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
   } catch (error) {
     console.warn("Failed to format date:", error);
     return isoString;
