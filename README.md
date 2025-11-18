@@ -1,49 +1,46 @@
 # Harmony Tan Blog
 
-Minimal three-page blog with a centered home intro, an article index, and Markdown-driven posts sourced from Markdown front matter.
+Minimal static blog with an airy hero, a frosted article outline, and Markdown posts rendered into a stylized parchment reading view.
 
-## 快速开始
+## Quick start
 
-1. 在 `posts/` 目录中新建 `.md` 文件撰写文章内容，文件名即文章的 slug。
-2. 在每篇 Markdown 顶部添加 front matter：
+1. Create a new Markdown file in `posts/`. The filename becomes the article slug (e.g., `hello-world.md` → `?post=hello-world`).
+2. Add front matter to every file:
 
    ```markdown
    ---
    title: Title Here
-   date: 2024-05-01
+   date: 2025-10-25
    summary: One-line description
+   category: Notebook
+   subtitle: Optional hero strapline
+   author: Harmony Tan
    ---
    ```
 
-3. 同步文章索引（任选其一）：
-   - `node tools/update-posts-index.js`
-   - `python tools/update_posts_index.py`
-该脚本会扫描 `posts/` 并更新 `data/posts.json` 为如下格式：
-
-   ```json
-   [
-     {
-       "slug": "hello-world",
-       "title": "Hello, Again",
-       "summary": "Why this minimalist log exists and how I plan to fill it with steady notes.",
-       "date": "2024-05-01"
-     }
-   ]
+3. Regenerate the article index so the list and hero metadata stay in sync:
+   ```bash
+   python tools/update_posts_index.py
+   # or
+   node tools/update-posts-index.js
    ```
+   Both scripts scan `posts/`, parse each front matter block, and rewrite `data/posts.json` with sorted metadata.
 
-4. 文章列表会在 `articles.html` 自动呈现；访问 `article.html?post=your-slug` 查看渲染结果。
+4. Serve the site (for example, `python3 -m http.server`) and visit:
+   - `articles.html` for the index
+   - `article.html?post=your-slug` for the reading view
 
-> 部署在 GitHub 项目页时无需额外配置，脚本会根据 `scripts/site.js` 的加载路径自动识别根路径。如需手动覆盖，可在页面中设置 `window.__BLOG_BASE_PATH__`。
+> When deploying to GitHub Pages, nothing special is required. `scripts/site.js` infers the correct base path, but you can override it by defining `window.__BLOG_BASE_PATH__` before loading the scripts.
 
-## 结构一览
+## Project map
 
-- `index.html`：首页，集中展示自我介绍与文章入口
-- `articles.html`：文章目录页，根据 Markdown front matter 渲染列表
-- `article.html`：文章详情页，通过查询参数加载 Markdown
-- `contact.html`：联系方式与外部链接
-- `styles/main.css`：全局样式与排版
-- `scripts/`：页面逻辑与 Markdown 渲染
-- `posts/`：Markdown 原文
-- `data/posts.json`：文章元数据索引
+- `index.html` — home hero and intro
+- `articles.html` — article index populated from `data/posts.json`
+- `article.html` — Markdown-rendered post with reading stats, hero, and TOC
+- `contact.html` — contact links
+- `styles/main.css` — shared typography, parchment styling, and layout
+- `scripts/` — helper modules (`article.js`, `articles.js`, `markdown.js`, `header.js`, etc.)
+- `posts/` — raw Markdown sources
+- `data/posts.json` — generated metadata index (do not edit by hand)
 
-欢迎基于此模板继续拓展。
+Feel free to fork and adapt the layout, fonts, or scripts to suit your own publishing style.
