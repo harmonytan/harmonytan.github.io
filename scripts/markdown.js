@@ -28,12 +28,19 @@ export function renderMarkdown(markdown) {
     return "";
   }
 
+  const DISPLAY_MATH_DELIMITERS = {
+    $$: { open: "$$", close: "$$" },
+    "\\[": { open: "\\[", close: "\\]" },
+  };
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   const html = [];
   let inList = false;
   let inCodeBlock = false;
+  let inMathBlock = false;
   let codeBuffer = [];
   let codeLanguage = "";
+  let mathBuffer = [];
+  let mathDelimiter = null;
 
   const flushList = () => {
     if (inList) {
@@ -53,16 +60,31 @@ export function renderMarkdown(markdown) {
     }
   };
 
+  const flushMath = () => {
+    if (inMathBlock) {
+      const delimiter = mathDelimiter ?? DISPLAY_MATH_DELIMITERS["$$"];
+      const content = mathBuffer.join("\n");
+      html.push(
+        `<div class="math-block">${delimiter.open}\n${content}\n${delimiter.close}</div>`
+      );
+      inMathBlock = false;
+      mathBuffer = [];
+      mathDelimiter = null;
+    }
+  };
+
   for (const rawLine of lines) {
     const line = rawLine;
+    const trimmed = line.trim();
 
-    if (line.trim().startsWith("```")) {
+    if (trimmed.startsWith("```")) {
+      flushMath();
       if (inCodeBlock) {
         flushCode();
       } else {
         flushList();
         inCodeBlock = true;
-        codeLanguage = line.trim().slice(3).trim();
+        codeLanguage = trimmed.slice(3).trim();
         codeBuffer = [];
       }
       continue;
@@ -73,13 +95,51 @@ export function renderMarkdown(markdown) {
       continue;
     }
 
-    if (line.trim() === "") {
+    if (!inCodeBlock) {
+      if (inMathBlock) {
+        const expectedClose = mathDelimiter?.close ?? "$$";
+        if (trimmed === expectedClose) {
+          flushMath();
+          continue;
+        }
+      } else if (trimmed === "$$" || trimmed === "\\[") {
+        flushList();
+        inMathBlock = true;
+        mathDelimiter = DISPLAY_MATH_DELIMITERS[trimmed];
+        mathBuffer = [];
+        continue;
+      }
+    }
+
+    if (
+      !inCodeBlock &&
+      !inMathBlock &&
+      ((trimmed.startsWith("$$") && trimmed.endsWith("$$") && trimmed.length > 4) ||
+        (trimmed.startsWith("\\[") && trimmed.endsWith("\\]") && trimmed.length > 4))
+    ) {
+      flushList();
+      const delimiter = trimmed.startsWith("\\[")
+        ? DISPLAY_MATH_DELIMITERS["\\["]
+        : DISPLAY_MATH_DELIMITERS["$$"];
+      const content = trimmed.slice(delimiter.open.length, -delimiter.close.length).trim();
+      html.push(`<div class="math-block">${delimiter.open} ${content} ${delimiter.close}</div>`);
+      continue;
+    }
+
+    if (inMathBlock) {
+      mathBuffer.push(line);
+      continue;
+    }
+
+    if (trimmed === "") {
+      flushMath();
       flushList();
       html.push("");
       continue;
     }
 
     if (/^#{1,6}\s/.test(line)) {
+      flushMath();
       flushList();
       const level = line.match(/^#{1,6}/)[0].length;
       const content = line.replace(/^#{1,6}\s*/, "");
@@ -88,6 +148,7 @@ export function renderMarkdown(markdown) {
     }
 
     if (/^[-*+]\s+/.test(line)) {
+      flushMath();
       if (!inList) {
         inList = true;
         html.push("<ul>");
@@ -98,24 +159,28 @@ export function renderMarkdown(markdown) {
     }
 
     if (/^>\s?/.test(line)) {
+      flushMath();
       flushList();
       const content = line.replace(/^>\s?/, "");
       html.push(`<blockquote>${renderInline(content)}</blockquote>`);
       continue;
     }
 
-    if (/^---+$/.test(line.trim())) {
+    if (/^---+$/.test(trimmed)) {
+      flushMath();
       flushList();
       html.push("<hr />");
       continue;
     }
 
+    flushMath();
     flushList();
-    html.push(`<p>${renderInline(line.trim())}</p>`);
+    html.push(`<p>${renderInline(trimmed)}</p>`);
   }
 
   flushList();
   flushCode();
+  flushMath();
 
   return html.join("\n");
 }

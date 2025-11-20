@@ -11,6 +11,7 @@ const dateNode = document.querySelector("[data-article-date]");
 const contentNode = document.querySelector("[data-article-content]");
 const tocNode = document.querySelector("[data-article-toc]");
 const readingTimeNode = document.querySelector("[data-article-reading-time]");
+const tocLabelNode = document.querySelector(".toc-label");
 const topicNode = document.querySelector("[data-article-topic]");
 const strapNode = document.querySelector("[data-article-strap]");
 const authorNode = document.querySelector("[data-article-author]");
@@ -101,12 +102,14 @@ function renderArticle(post, markdownBody) {
   if (contentNode) {
     contentNode.innerHTML = renderMarkdown(markdownBody);
     headings = prepareHeadingAnchors(contentNode);
+    typesetMath(contentNode);
   }
   buildTableOfContents(headings);
   const textStats = computeTextStats(markdownBody);
   setArticleStatsDisplay(textStats);
   updateHeroMeta(post, textStats);
   setDocumentTitle(post.title);
+  bindTocLabelScroll();
 }
 
 function renderEmptyState(message) {
@@ -136,6 +139,18 @@ function renderEmptyState(message) {
     heroReadingNode.textContent = "";
   }
   setArticleStatsDisplay();
+}
+
+function typesetMath(target) {
+  if (!target) {
+    return;
+  }
+  const mathJax = window.MathJax;
+  if (mathJax?.typesetPromise) {
+    mathJax
+      .typesetPromise([target])
+      .catch((error) => console.error("MathJax typeset failed:", error));
+  }
 }
 
 function prepareHeadingAnchors(root) {
@@ -260,6 +275,20 @@ function ensureUniqueSlug(slug, counts) {
   const uniqueSlug = `${slug}-${counts[slug]}`;
   counts[slug] += 1;
   return uniqueSlug;
+}
+
+function bindTocLabelScroll() {
+  if (!tocLabelNode) {
+    return;
+  }
+  tocLabelNode.addEventListener("click", (event) => {
+    const anchor = document.querySelector("#article-top");
+    if (!anchor) {
+      return;
+    }
+    event.preventDefault();
+    anchor.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 }
 
 loadArticle();

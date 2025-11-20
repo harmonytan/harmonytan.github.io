@@ -6,6 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Articles · Harmony Tan</title>
   <link rel="stylesheet" href="styles/main.css" />
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["\\(", "\\)"], ["$", "$"]],
+        displayMath: [["\\[", "\\]"], ["$$", "$$"]],
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+      },
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script type="module" src="scripts/header.js" defer></script>
   <script type="module" src="scripts/article.js" defer></script>
 </head>
@@ -25,7 +37,7 @@
   <main class="site-main article-layout">
     <div class="article-grid">
       <aside class="article-sidebar">
-        <p class="toc-label">On this page</p>
+        <a class="toc-label" href="#article-top">On this page</a>
         <p class="toc-reading-time" data-article-reading-time>—</p>
         <nav class="toc" data-article-toc>
           <p class="muted">Outline will appear after the article loads.</p>
@@ -33,6 +45,7 @@
       </aside>
       <div class="article-column">
         <article class="article">
+          <div id="article-top" class="article-top-anchor"></div>
           <header class="article-hero">
             <div class="article-kicker">
               <span class="article-kicker-label" data-article-topic>Notebook</span>
