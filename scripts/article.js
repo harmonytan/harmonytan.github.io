@@ -16,6 +16,11 @@ const topicNode = document.querySelector("[data-article-topic]");
 const strapNode = document.querySelector("[data-article-strap]");
 const authorNode = document.querySelector("[data-article-author]");
 const heroReadingNode = document.querySelector("[data-article-meta-reading]");
+const pendingMathTargets = [];
+let mathRetryTimer = null;
+const pendingHighlightTargets = [];
+let highlightRetryTimer = null;
+let highlightFallbackTimer = null;
 
 async function loadArticle() {
   try {
@@ -103,6 +108,7 @@ function renderArticle(post, markdownBody) {
     contentNode.innerHTML = renderMarkdown(markdownBody);
     headings = prepareHeadingAnchors(contentNode);
     typesetMath(contentNode);
+    highlightCodeBlocks(contentNode);
   }
   buildTableOfContents(headings);
   const textStats = computeTextStats(markdownBody);
@@ -150,7 +156,28 @@ function typesetMath(target) {
     mathJax
       .typesetPromise([target])
       .catch((error) => console.error("MathJax typeset failed:", error));
+    return;
   }
+
+  pendingMathTargets.push(target);
+  if (mathRetryTimer) {
+    return;
+  }
+  mathRetryTimer = window.setInterval(() => {
+    const mj = window.MathJax;
+    if (!mj?.typesetPromise) {
+      return;
+    }
+    window.clearInterval(mathRetryTimer);
+    mathRetryTimer = null;
+    const nodes = pendingMathTargets.splice(0, pendingMathTargets.length);
+    if (nodes.length === 0) {
+      return;
+    }
+    mj.typesetPromise(nodes).catch((error) => {
+      console.error("MathJax typeset failed after load:", error);
+    });
+  }, 150);
 }
 
 function prepareHeadingAnchors(root) {
@@ -289,6 +316,149 @@ function bindTocLabelScroll() {
     event.preventDefault();
     anchor.scrollIntoView({ behavior: "smooth", block: "start" });
   });
+}
+
+function highlightCodeBlocks(root) {
+  if (!root) {
+    return;
+  }
+  const blocks = Array.from(root.querySelectorAll("pre code"));
+  if (blocks.length === 0) {
+    return;
+  }
+  const hljs = window.hljs;
+  if (hljs?.highlightElement) {
+    blocks.forEach((block) => {
+      if (block.dataset.highlighted === "true") {
+        return;
+      }
+      hljs.highlightElement(block);
+      block.dataset.highlighted = "true";
+    });
+    return;
+  }
+
+  pendingHighlightTargets.push(...blocks);
+  if (highlightRetryTimer) {
+    return;
+  }
+  highlightRetryTimer = window.setInterval(() => {
+    const highlighter = window.hljs;
+    if (!highlighter?.highlightElement) {
+      return;
+    }
+    window.clearInterval(highlightRetryTimer);
+    highlightRetryTimer = null;
+    const pending = pendingHighlightTargets.splice(0, pendingHighlightTargets.length);
+    pending.forEach((block) => {
+      if (block.dataset.highlighted === "true") {
+        return;
+      }
+      highlighter.highlightElement(block);
+      block.dataset.highlighted = "true";
+    });
+  }, 150);
+
+  if (!highlightFallbackTimer) {
+    highlightFallbackTimer = window.setTimeout(() => {
+      if (window.hljs?.highlightElement) {
+        return;
+      }
+      const pending = pendingHighlightTargets.splice(0, pendingHighlightTargets.length);
+      pending.forEach((block) => {
+        if (block.dataset.highlighted === "true") {
+          return;
+        }
+        simpleFallbackHighlight(block);
+        block.dataset.highlighted = "true";
+      });
+    }, 1200);
+  }
+}
+
+function simpleFallbackHighlight(block) {
+  const langClass = Array.from(block.classList).find((c) =>
+    c.startsWith("language-")
+  );
+  const lang = langClass ? langClass.replace("language-", "").toLowerCase() : "";
+  const code = block.textContent || "";
+  const escapeHtml = (str) =>
+    str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  const specs =
+    lang === "python" || lang === "py"
+      ? getPythonSpecs()
+      : getJSSpecs();
+
+  const matches = [];
+  specs.forEach(({ regex, cls }) => {
+    regex.lastIndex = 0;
+    let m;
+    while ((m = regex.exec(code)) !== null) {
+      matches.push({ start: m.index, end: m.index + m[0].length, cls });
+    }
+  });
+  matches.sort((a, b) => (a.start - b.start) || (a.end - b.end));
+
+  const merged = [];
+  let cursor = 0;
+  matches.forEach((token) => {
+    if (token.start < cursor) {
+      return;
+    }
+    const plain = code.slice(cursor, token.start);
+    if (plain) {
+      merged.push({ text: plain });
+    }
+    merged.push({
+      text: code.slice(token.start, token.end),
+      cls: token.cls,
+    });
+    cursor = token.end;
+  });
+  if (cursor < code.length) {
+    merged.push({ text: code.slice(cursor) });
+  }
+
+  const html = merged
+    .map((part) => {
+      const safe = escapeHtml(part.text);
+      if (!part.cls) {
+        return safe;
+      }
+      return `<span class="hljs-${part.cls}">${safe}</span>`;
+    })
+    .join("");
+  block.innerHTML = html;
+  block.classList.add("hljs");
+}
+
+function getJSSpecs() {
+  return [
+    { regex: /\/\/.*$/gm, cls: "comment" },
+    { regex: /\/\*[\s\S]*?\*\//g, cls: "comment" },
+    { regex: /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`/g, cls: "string" },
+    { regex: /\b(?:const|let|var|function|return|if|else|for|while|switch|case|break|continue|import|from|export|class|new|try|catch|finally|throw|await|async|yield|of|in)\b/g, cls: "keyword" },
+    { regex: /\b(?:true|false|null|undefined|NaN|Infinity)\b/g, cls: "literal" },
+    { regex: /\b0x[\da-fA-F]+\b|\b\d+(?:\.\d+)?\b/g, cls: "number" },
+    { regex: /\bconsole\b/g, cls: "built_in" },
+  ];
+}
+
+function getPythonSpecs() {
+  return [
+    { regex: /#.*$/gm, cls: "comment" },
+    { regex: /("""[\s\S]*?""")|('''[\s\S]*?''')/g, cls: "string" },
+    { regex: /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/g, cls: "string" },
+    { regex: /\b(?:def|class|return|if|elif|else|for|while|break|continue|import|from|as|try|except|finally|with|lambda|yield|in|is|not|and|or|pass|global|nonlocal|raise|assert|True|False|None)\b/g, cls: "keyword" },
+    { regex: /\b(?:self|cls)\b/g, cls: "built_in" },
+    { regex: /\b0x[\da-fA-F]+\b|\b\d+(?:\.\d+)?\b/g, cls: "number" },
+  ];
 }
 
 loadArticle();

@@ -1,6 +1,6 @@
 ---
 title: Math Typesetting Demo
-date: 2025-11-22
+date: 2025-11-20
 summary: Quick reference showing how inline and block formulas render on the site.
 category: Notebook
 subtitle: Inline + block equations powered by MathJax

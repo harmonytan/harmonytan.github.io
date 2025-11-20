@@ -41,6 +41,8 @@ export function renderMarkdown(markdown) {
   let codeLanguage = "";
   let mathBuffer = [];
   let mathDelimiter = null;
+  let inQuote = false;
+  let quoteBuffer = [];
 
   const flushList = () => {
     if (inList) {
@@ -73,8 +75,27 @@ export function renderMarkdown(markdown) {
     }
   };
 
-  for (const rawLine of lines) {
-    const line = rawLine;
+  const flushQuote = () => {
+    if (inQuote) {
+      const content = quoteBuffer
+        .map((line) => renderInline(line))
+        .join("<br>");
+      html.push(`<blockquote>${content}</blockquote>`);
+      inQuote = false;
+      quoteBuffer = [];
+    }
+  };
+  const isTableRow = (text) => /^\|.+\|$/.test(text);
+  const isTableDivider = (text) =>
+    /^\|\s*:?-{3,}\s*(\|\s*:?-{3,}\s*)+\|$/.test(text);
+  const parseCells = (row) =>
+    row
+      .slice(1, -1)
+      .split("|")
+      .map((cell) => cell.trim());
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     const trimmed = line.trim();
 
     if (trimmed.startsWith("```")) {
@@ -131,8 +152,56 @@ export function renderMarkdown(markdown) {
       continue;
     }
 
+    if (!inCodeBlock && !inMathBlock && /^>\s?/.test(line)) {
+      flushList();
+      if (!inQuote) {
+        inQuote = true;
+        quoteBuffer = [];
+      }
+      const content = line.replace(/^>\s?/, "");
+      quoteBuffer.push(content);
+      continue;
+    }
+
+    if (inQuote && trimmed === "") {
+      flushQuote();
+      html.push("");
+      continue;
+    }
+
+    if (
+      !inCodeBlock &&
+      !inMathBlock &&
+      isTableRow(trimmed) &&
+      i + 1 < lines.length &&
+      isTableDivider(lines[i + 1].trim())
+    ) {
+      flushList();
+      const headerCells = parseCells(trimmed);
+      const bodyRows = [];
+      let j = i + 2;
+      while (j < lines.length && isTableRow(lines[j].trim())) {
+        bodyRows.push(parseCells(lines[j].trim()));
+        j += 1;
+      }
+      const headerHtml = headerCells
+        .map((cell) => `<th>${renderInline(cell)}</th>`)
+        .join("");
+      const bodyHtml = bodyRows
+        .map(
+          (row) => `<tr>${row.map((cell) => `<td>${renderInline(cell)}</td>`).join("")}</tr>`
+        )
+        .join("");
+      html.push(
+        `<table class="md-table"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table>`
+      );
+      i = j - 1;
+      continue;
+    }
+
     if (trimmed === "") {
       flushMath();
+      flushQuote();
       flushList();
       html.push("");
       continue;
@@ -158,22 +227,16 @@ export function renderMarkdown(markdown) {
       continue;
     }
 
-    if (/^>\s?/.test(line)) {
-      flushMath();
-      flushList();
-      const content = line.replace(/^>\s?/, "");
-      html.push(`<blockquote>${renderInline(content)}</blockquote>`);
-      continue;
-    }
-
     if (/^---+$/.test(trimmed)) {
       flushMath();
+      flushQuote();
       flushList();
       html.push("<hr />");
       continue;
     }
 
     flushMath();
+    flushQuote();
     flushList();
     html.push(`<p>${renderInline(trimmed)}</p>`);
   }
@@ -181,6 +244,7 @@ export function renderMarkdown(markdown) {
   flushList();
   flushCode();
   flushMath();
+  flushQuote();
 
   return html.join("\n");
 }

@@ -1,9 +1,15 @@
 [
   {
+    "slug": "render-playground",
+    "title": "Rendering Playground",
+    "summary": "A quick-hit page to sanity check math, code fences, lists, and headings.",
+    "date": "2025-11-21"
+  },
+  {
     "slug": "math-demo",
     "title": "Math Typesetting Demo",
     "summary": "Quick reference showing how inline and block formulas render on the site.",
-    "date": "2025-11-22"
+    "date": "2025-11-20"
   },
   {
     "slug": "hello-world",
