@@ -3,18 +3,14 @@
     "slug": "render-playground",
     "title": "Rendering Playground",
     "summary": "A quick-hit page to sanity check math, code fences, lists, and headings.",
-    "date": "2025-11-21"
-  },
-  {
-    "slug": "math-demo",
-    "title": "Math Typesetting Demo",
-    "summary": "Quick reference showing how inline and block formulas render on the site.",
-    "date": "2025-11-20"
+    "date": "2025-11-21",
+    "category": "Test"
   },
   {
     "slug": "hello-world",
-    "title": "Hello",
+    "title": "Hello World \uff01",
     "summary": "Why this minimalist log exists and how I plan to fill it with steady notes.",
-    "date": "2025-10-25"
+    "date": "2025-10-25",
+    "category": "Test"
   }
 ]

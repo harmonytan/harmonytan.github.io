@@ -16,6 +16,11 @@ const topicNode = document.querySelector("[data-article-topic]");
 const strapNode = document.querySelector("[data-article-strap]");
 const authorNode = document.querySelector("[data-article-author]");
 const heroReadingNode = document.querySelector("[data-article-meta-reading]");
+const heroImageContainer = document.querySelector("[data-hero-image]");
+const heroImageNode = document.querySelector("[data-hero-image-img]");
+const articleGrid = document.querySelector(".article-grid");
+const sidebarHoverZone = document.querySelector(".sidebar-hover-zone");
+const articleSidebar = document.querySelector(".article-sidebar");
 const pendingMathTargets = [];
 let mathRetryTimer = null;
 const pendingHighlightTargets = [];
@@ -45,6 +50,7 @@ async function loadArticle() {
       topic: postMeta?.topic ?? attributes.category ?? "",
       subtitle: postMeta?.summary ?? attributes.subtitle ?? "",
       author: postMeta?.author ?? attributes.author ?? "Harmony Tan",
+      image: postMeta?.image ?? attributes.image ?? attributes.cover ?? "",
     };
 
     renderArticle(mergedMeta, body);
@@ -114,6 +120,7 @@ function renderArticle(post, markdownBody) {
   const textStats = computeTextStats(markdownBody);
   setArticleStatsDisplay(textStats);
   updateHeroMeta(post, textStats);
+  updateHeroImage(post);
   setDocumentTitle(post.title);
   bindTocLabelScroll();
 }
@@ -280,6 +287,21 @@ function updateHeroMeta(post, textStats) {
   }
   if (heroReadingNode && textStats?.shortLabel) {
     heroReadingNode.textContent = textStats.shortLabel;
+  }
+}
+
+function updateHeroImage(post) {
+  if (!heroImageContainer || !heroImageNode) {
+    return;
+  }
+  const src = post.image;
+  if (src) {
+    heroImageNode.src = src;
+    heroImageNode.alt = post.title ? `${post.title} cover image` : "Article cover image";
+    heroImageContainer.style.display = "block";
+  } else {
+    heroImageContainer.style.display = "none";
+    heroImageNode.removeAttribute("src");
   }
 }
 

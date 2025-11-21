@@ -15,6 +15,7 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
    category: Notebook
    subtitle: Optional hero strapline
    author: Harmony Tan
+   image: /assets/your-cover.jpg   # Optional 16:9-ish hero cover
    ---
    ```
 
@@ -32,6 +33,11 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
 
 > When deploying to GitHub Pages, nothing special is required. `scripts/site.js` infers the correct base path, but you can override it by defining `window.__BLOG_BASE_PATH__` before loading the scripts.
 
+### Assets & covers
+
+- Put shared images (e.g., hero covers) in `assets/` and reference them with an absolute path in front matter, e.g. `image: /assets/cover-name.jpg`.
+- The favicon lives at `favicon.svg` and is linked from the HTML pages.
+
 ## Project map
 
 - `index.html` — home hero and intro
@@ -39,8 +45,10 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
 - `article.html` — Markdown-rendered post with reading stats, hero, and TOC
 - `contact.html` — contact links
 - `styles/main.css` — shared typography, parchment styling, and layout
-- `scripts/` — helper modules (`article.js`, `articles.js`, `markdown.js`, `header.js`, etc.)
+- `scripts/` — helper modules (`article.js`, `articles.js`, `markdown.js`, `header.js`, etc.), includes search + TOC logic
 - `posts/` — raw Markdown sources
 - `data/posts.json` — generated metadata index (do not edit by hand)
+- `assets/` — optional cover images and static assets
+- `favicon.svg` — site icon
 
 Feel free to fork and adapt the layout, fonts, or scripts to suit your own publishing style.

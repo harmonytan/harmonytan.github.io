@@ -5,9 +5,8 @@ summary: A quick-hit page to sanity check math, code fences, lists, and headings
 category: Notebook
 subtitle: Markdown parsing + MathJax + styles in one place
 author: Harmony Tan
+image: assets/rendering-playground.png
 ---
-
-# Rendering Playground
 
 Use this post to quickly verify whether the renderer, MathJax, and styling look right after changes.
 
@@ -73,11 +72,11 @@ This helps verify the right sidebar TOC picks up h2/h3 entries in order.
 
 ### Wide content table (wrap test)
 
-| Column | Detail |
-| --- | --- |
+| Column    | Detail                                                                                                                                                                                                            |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Long text | This cell contains a deliberately long sentence to check how the table handles wrapping inside narrow columns without breaking the layout. It should wrap naturally instead of overflowing outside the container. |
-| URL | https://example.com/this/is/a/very/long/path/that/should/wrap/rather/than/stretching-the-table-layout |
-| Mixed | Short line<br>Another short line |
+| URL       | https://example.com/this/is/a/very/long/path/that/should/wrap/rather/than/stretching-the-table-layout                                                                                                             |
+| Mixed     | Short line<br>Another short line                                                                                                                                                                                  |
 
 ## Quote styling
 

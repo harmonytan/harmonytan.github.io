@@ -1,18 +1,22 @@
 import { formatDate, escapeHtml, BASE_URL } from "./site.js";
 
-const listElement = document.querySelector("[data-article-list]");
+const tableElement = document.querySelector("[data-article-table]");
+const searchInput = document.querySelector("[data-article-search]");
+let cachedPosts = [];
 
 async function loadIndex() {
-  if (!listElement) {
+  if (!tableElement) {
     return;
   }
 
   try {
     const posts = await loadPosts();
-    renderList(posts);
+    cachedPosts = posts;
+    bindSearch();
+    renderTable(posts);
   } catch (error) {
     console.error(error);
-    listElement.innerHTML = `<p class="muted">Unable to load articles right now.</p>`;
+    tableElement.innerHTML = `<p class="muted">Unable to load articles right now.</p>`;
   }
 }
 
@@ -31,13 +35,14 @@ async function loadPosts() {
       title: post.title ?? post.slug,
       summary: post.summary ?? "",
       date: post.date ?? "",
+      category: post.category ?? "",
     }))
     .filter((post) => post.slug && post.title);
 }
 
-function renderList(posts) {
+function renderTable(posts) {
   if (!Array.isArray(posts) || posts.length === 0) {
-    listElement.innerHTML = `<p class="muted">No articles yet. Drafts are in progress.</p>`;
+    tableElement.innerHTML = `<p class="muted">No articles yet. Drafts are in progress.</p>`;
     return;
   }
 
@@ -50,26 +55,70 @@ function renderList(posts) {
     (a, b) => toTimestamp(b.date) - toTimestamp(a.date)
   );
 
-  const html = sorted
+  const rows = sorted
     .map((post) => {
       const safeTitle = escapeHtml(post.title);
-      const safeSummary = escapeHtml(post.summary ?? "");
+      const safeCategory = escapeHtml(post.category || "—");
       const date = formatDate(post.date);
       const href = `${BASE_URL}/article.html?post=${encodeURIComponent(
         post.slug
       )}`;
-
       return `
-        <a class="post-card" href="${href}">
-          <time datetime="${post.date}">${date}</time>
-          <h3>${safeTitle}</h3>
-          <p>${safeSummary}</p>
-        </a>
+        <div class="article-row" role="link" tabindex="0" data-href="${href}">
+          <div class="article-cell date">
+            <time datetime="${post.date}">${date}</time>
+          </div>
+          <div class="article-cell category">${safeCategory}</div>
+          <div class="article-cell title">${safeTitle}</div>
+        </div>
       `;
     })
     .join("");
 
-  listElement.innerHTML = html;
+  tableElement.innerHTML = `
+    <div class="article-table-head">
+      <div class="article-cell date">Date</div>
+      <div class="article-cell category">Category</div>
+      <div class="article-cell title">Title</div>
+    </div>
+    <div class="article-table-body">
+      ${rows}
+    </div>
+  `;
+
+  tableElement.querySelectorAll(".article-row").forEach((row) => {
+    const href = row.getAttribute("data-href");
+    if (!href) return;
+    row.addEventListener("click", () => {
+      window.location.href = href;
+    });
+    row.addEventListener("keypress", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        window.location.href = href;
+      }
+    });
+  });
+}
+
+function bindSearch() {
+  if (!searchInput) {
+    return;
+  }
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim().toLowerCase();
+    if (!q) {
+      renderTable(cachedPosts);
+      return;
+    }
+    const filtered = cachedPosts.filter((post) => {
+      const haystack = `${post.title} ${post.summary ?? ""} ${
+        post.category ?? ""
+      }`.toLowerCase();
+      return haystack.includes(q);
+    });
+    renderTable(filtered);
+  });
 }
 
 loadIndex();
