@@ -1,10 +1,17 @@
 const INLINE_PATTERNS = [
-  { regex: /\[(.+?)\]\((.+?)\)/g, replace: '<a href="$2" target="_blank" rel="noopener">$1</a>' },
+  {
+    regex: /\[(.+?)\]\((.+?)\)/g,
+    replace: '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>',
+  },
   { regex: /\*\*(.+?)\*\*/g, replace: "<strong>$1</strong>" },
   { regex: /\*(.+?)\*/g, replace: "<em>$1</em>" },
   { regex: /`([^`]+)`/g, replace: "<code>$1</code>" },
   { regex: /~~(.+?)~~/g, replace: "<del>$1</del>" },
 ];
+
+const AUTO_LINK_REGEX = /(?:https?:\/\/|mailto:)[^\s<]+/gi;
+const SKIP_INLINE_REGEX = /(<a\b[^>]*>.*?<\/a>|<code\b[^>]*>.*?<\/code>)/gi;
+const CITATION_REGEX = /\[(\d+)\]/g;
 
 function escapeHtml(text) {
   return text
@@ -15,12 +22,60 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-function renderInline(text) {
+function renderInline(text, references = null, citationCounts = null) {
   let result = escapeHtml(text);
   INLINE_PATTERNS.forEach(({ regex, replace }) => {
     result = result.replace(regex, replace);
   });
+  result = linkifyPlainUrls(result);
+  result = renderCitations(result, references, citationCounts);
   return result;
+}
+
+function linkifyPlainUrls(text) {
+  return text
+    .split(SKIP_INLINE_REGEX)
+    .map((segment) => {
+      if (!segment) {
+        return "";
+      }
+      if (segment.startsWith("<a") || segment.startsWith("<code")) {
+        return segment;
+      }
+      return segment.replace(AUTO_LINK_REGEX, (url) => {
+        const safeUrl = url.replace(/"/g, "&quot;");
+        return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${safeUrl}</a>`;
+      });
+    })
+    .join("");
+}
+
+function renderCitations(text, references, citationCounts) {
+  if (!references || Object.keys(references).length === 0) {
+    return text;
+  }
+  return text
+    .split(SKIP_INLINE_REGEX)
+    .map((segment) => {
+      if (!segment) {
+        return "";
+      }
+      if (segment.startsWith("<a") || segment.startsWith("<code")) {
+        return segment;
+      }
+      return segment.replace(CITATION_REGEX, (full, num) => {
+        if (!references[num]) {
+          return full;
+        }
+        const count = (citationCounts?.[num] ?? 0) + 1;
+        if (citationCounts) {
+          citationCounts[num] = count;
+        }
+        const citeId = `cite-${num}-${count}`;
+        return `<sup id="${citeId}" class="citation"><a href="#ref-${num}">[${num}]</a></sup>`;
+      });
+    })
+    .join("");
 }
 
 export function renderMarkdown(markdown) {
@@ -28,11 +83,36 @@ export function renderMarkdown(markdown) {
     return "";
   }
 
+  const referenceMap = {};
+  const citationCounts = {};
+
   const DISPLAY_MATH_DELIMITERS = {
     $$: { open: "$$", close: "$$" },
     "\\[": { open: "\\[", close: "\\]" },
   };
-  const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+  const rawLines = markdown.replace(/\r\n/g, "\n").split("\n");
+  const lines = [];
+  for (let i = 0; i < rawLines.length; i++) {
+    const refMatch = rawLines[i].match(/^\[(\d+)\]:\s*(.+)$/);
+    if (refMatch) {
+      const [, num, rest] = refMatch;
+      let content = rest.trim();
+      let j = i + 1;
+      while (j < rawLines.length) {
+        const contMatch = rawLines[j].match(/^\s{2,}(.+)$/);
+        if (!contMatch) {
+          break;
+        }
+        content += " " + contMatch[1].trim();
+        j += 1;
+      }
+      referenceMap[num] = content;
+      i = j - 1;
+      continue;
+    }
+    lines.push(rawLines[i]);
+  }
+
   const html = [];
   let inList = false;
   let inCodeBlock = false;
@@ -43,6 +123,9 @@ export function renderMarkdown(markdown) {
   let mathDelimiter = null;
   let inQuote = false;
   let quoteBuffer = [];
+
+  const hasReferences = Object.keys(referenceMap).length > 0;
+  const inlineRenderer = (text) => renderInline(text, referenceMap, citationCounts);
 
   const flushList = () => {
     if (inList) {
@@ -78,7 +161,7 @@ export function renderMarkdown(markdown) {
   const flushQuote = () => {
     if (inQuote) {
       const content = quoteBuffer
-        .map((line) => renderInline(line))
+        .map((line) => inlineRenderer(line))
         .join("<br>");
       html.push(`<blockquote>${content}</blockquote>`);
       inQuote = false;
@@ -185,12 +268,10 @@ export function renderMarkdown(markdown) {
         j += 1;
       }
       const headerHtml = headerCells
-        .map((cell) => `<th>${renderInline(cell)}</th>`)
+        .map((cell) => `<th>${inlineRenderer(cell)}</th>`)
         .join("");
       const bodyHtml = bodyRows
-        .map(
-          (row) => `<tr>${row.map((cell) => `<td>${renderInline(cell)}</td>`).join("")}</tr>`
-        )
+        .map((row) => `<tr>${row.map((cell) => `<td>${inlineRenderer(cell)}</td>`).join("")}</tr>`)
         .join("");
       html.push(
         `<table class="md-table"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table>`
@@ -212,7 +293,7 @@ export function renderMarkdown(markdown) {
       flushList();
       const level = line.match(/^#{1,6}/)[0].length;
       const content = line.replace(/^#{1,6}\s*/, "");
-      html.push(`<h${level}>${renderInline(content)}</h${level}>`);
+      html.push(`<h${level}>${inlineRenderer(content)}</h${level}>`);
       continue;
     }
 
@@ -223,7 +304,7 @@ export function renderMarkdown(markdown) {
         html.push("<ul>");
       }
       const content = line.replace(/^[-*+]\s+/, "");
-      html.push(`<li>${renderInline(content)}</li>`);
+      html.push(`<li>${inlineRenderer(content)}</li>`);
       continue;
     }
 
@@ -238,7 +319,7 @@ export function renderMarkdown(markdown) {
     flushMath();
     flushQuote();
     flushList();
-    html.push(`<p>${renderInline(trimmed)}</p>`);
+    html.push(`<p>${inlineRenderer(trimmed)}</p>`);
   }
 
   flushList();
@@ -246,5 +327,26 @@ export function renderMarkdown(markdown) {
   flushMath();
   flushQuote();
 
+  if (hasReferences) {
+    html.push(renderReferences(referenceMap));
+  }
+
   return html.join("\n");
+}
+
+function renderReferences(referenceMap) {
+  const entries = Object.entries(referenceMap)
+    .map(([num, text]) => ({ num: Number(num), text }))
+    .sort((a, b) => a.num - b.num);
+
+  const listItems = entries
+    .map(
+      ({ num, text }) => {
+        const rendered = renderInline(text);
+        return `<li id="ref-${num}">${rendered} <a class="reference-backlink" href="#cite-${num}-1" aria-label="Back to first cite for reference ${num}">&larr;</a></li>`;
+      }
+    )
+    .join("");
+
+  return `<h2 id="references">References</h2><ol class="references-list">${listItems}</ol>`;
 }

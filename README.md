@@ -1,4 +1,4 @@
-# Harmony Tan Blog
+# Hongming Tan Blog
 
 Minimal static blog with an airy hero, a frosted article outline, and Markdown posts rendered into a stylized parchment reading view.
 
@@ -14,7 +14,7 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
    summary: One-line description
    category: Notebook
    subtitle: Optional hero strapline
-   author: Harmony Tan
+   author: Hongming Tan
    image: /assets/your-cover.jpg   # Optional 16:9-ish hero cover
    ---
    ```
@@ -32,6 +32,13 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
    - `article.html?post=your-slug` for the reading view
 
 > When deploying to GitHub Pages, nothing special is required. `scripts/site.js` infers the correct base path, but you can override it by defining `window.__BLOG_BASE_PATH__` before loading the scripts.
+
+### References & citation
+
+- Inline citations: write `[1]` in the text, and add definitions anywhere in the file as `[1]: Author, Title. Journal/Year. URL`.
+- The renderer will auto-link citations to a References list at the bottom and link back to the first cite.
+- A “Citation” block is auto-generated before References with a copyable human-readable string and BibTeX.
+- All code blocks and citation blocks have a hover “Copy” button.
 
 ### Assets & covers
 

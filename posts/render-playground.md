@@ -4,7 +4,7 @@ date: 2025-11-21
 summary: A quick-hit page to sanity check math, code fences, lists, and headings.
 category: Notebook
 subtitle: Markdown parsing + MathJax + styles in one place
-author: Harmony Tan
+author: Hongming Tan
 image: assets/rendering-playground.png
 ---
 
@@ -56,11 +56,17 @@ def fib(n):
 
 > A short blockquote to check spacing.
 
+## External links
+
+- Markdown link → [Visit MDN](https://developer.mozilla.org/)
+- Plain URL should autolink: https://example.com/tooling?ref=render-playground
+- Reference-style cite inline: This sentence cites a paper [1].
+
 ## Nested headings
 
 ### Level 3 heading
 
-This helps verify the right sidebar TOC picks up h2/h3 entries in order.
+This helps verify the right sidebar TOC picks up h2/h3 entries in order [2].
 
 ## Tables
 
@@ -87,3 +93,7 @@ This helps verify the right sidebar TOC picks up h2/h3 entries in order.
 > Meaning happens in the middle, *between us*. The machinery supports and hinders: scale and speed help, homogenization and fixity hurt. The goal isn't to spam or abdicate judgement just because generation is cheap.
 >
 > This is about how you and I relate via mostly-ignorable infrastructure. Like the internet: it fades into the background when it works. Interfaces should flex to context instead of forcing one-size-fits-all structures.
+
+
+[1]: Tan, H. “Rendering Playground sanity checks.” 2025. https://example.com/paper
+[2]: Tan, H. “Rendering Playground sanity checks.” 2025. https://example.com/paper

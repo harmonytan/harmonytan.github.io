@@ -3,6 +3,7 @@ import {
   setDocumentTitle,
   parseFrontMatter,
   BASE_URL,
+  escapeHtml,
 } from "./site.js";
 import { renderMarkdown } from "./markdown.js";
 
@@ -49,7 +50,7 @@ async function loadArticle() {
       date: postMeta?.date ?? attributes.date ?? "",
       topic: postMeta?.topic ?? attributes.category ?? "",
       subtitle: postMeta?.summary ?? attributes.subtitle ?? "",
-      author: postMeta?.author ?? attributes.author ?? "Harmony Tan",
+      author: postMeta?.author ?? attributes.author ?? "Hongming Tan",
       image: postMeta?.image ?? attributes.image ?? attributes.cover ?? "",
     };
 
@@ -123,6 +124,10 @@ function renderArticle(post, markdownBody) {
   updateHeroImage(post);
   setDocumentTitle(post.title);
   bindTocLabelScroll();
+  renderCitationBlock(post);
+  if (contentNode) {
+    addCopyButtons(contentNode);
+  }
 }
 
 function renderEmptyState(message) {
@@ -146,7 +151,7 @@ function renderEmptyState(message) {
     strapNode.style.display = "none";
   }
   if (authorNode) {
-    authorNode.textContent = "Harmony Tan";
+    authorNode.textContent = "Hongming Tan";
   }
   if (heroReadingNode) {
     heroReadingNode.textContent = "";
@@ -283,7 +288,7 @@ function updateHeroMeta(post, textStats) {
     }
   }
   if (authorNode) {
-    authorNode.textContent = post.author || "Harmony Tan";
+    authorNode.textContent = post.author || "Hongming Tan";
   }
   if (heroReadingNode && textStats?.shortLabel) {
     heroReadingNode.textContent = textStats.shortLabel;
@@ -481,6 +486,169 @@ function getPythonSpecs() {
     { regex: /\b(?:self|cls)\b/g, cls: "built_in" },
     { regex: /\b0x[\da-fA-F]+\b|\b\d+(?:\.\d+)?\b/g, cls: "number" },
   ];
+}
+
+function renderCitationBlock(post) {
+  if (!contentNode || !post?.title || !post?.author || !post?.slug) {
+    return;
+  }
+
+  const existing = contentNode.querySelector(".citation-block");
+  if (existing) {
+    existing.remove();
+  }
+
+  const dateParts = parseDateParts(post.date);
+  const pageUrl = buildArticleUrl(post.slug);
+  const blogName = "Hongming's Blog";
+
+  const humanCitation = `${post.author}. "${post.title}." ${blogName}${
+    dateParts?.human ? ` (${dateParts.human})` : ""
+  }. ${pageUrl}`;
+
+  const bibtexKey = buildBibtexKey(post.slug, dateParts?.year);
+  const bibtex = [
+    `@article{${bibtexKey},`,
+    `  title = {${post.title}},`,
+    `  author = {${post.author}},`,
+    `  journal = {${blogName}},`,
+    dateParts?.year ? `  year = {${dateParts.year}},` : null,
+    dateParts?.month ? `  month = {${dateParts.month}},` : null,
+    `  url = {${pageUrl}}`,
+    `}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const section = document.createElement("section");
+  section.className = "citation-block";
+  section.innerHTML = `
+    <h2 id="citation">Citation</h2>
+    <p class="citation-lede">Please cite this work as:</p>
+    <pre class="citation-code">${escapeHtml(humanCitation)}</pre>
+    <p class="citation-lede">Or use the BibTeX citation:</p>
+    <pre class="citation-code"><code>${escapeHtml(bibtex)}</code></pre>
+  `;
+
+  const referencesHeading = contentNode.querySelector("#references");
+  if (referencesHeading?.parentNode) {
+    referencesHeading.parentNode.insertBefore(section, referencesHeading);
+  } else {
+    contentNode.appendChild(section);
+  }
+}
+
+function parseDateParts(iso) {
+  if (!iso) {
+    return null;
+  }
+  const date = new Date(iso);
+  if (Number.isNaN(date.valueOf())) {
+    return { human: iso };
+  }
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const month = monthNames[date.getMonth()];
+  const year = date.getFullYear();
+  return { human: `${month} ${year}`, month, year };
+}
+
+function buildArticleUrl(slug) {
+  const path = `${BASE_URL}/article.html?post=${encodeURIComponent(slug)}`;
+  try {
+    const url = new URL(path, window.location.origin);
+    return url.toString();
+  } catch (error) {
+    console.warn("Failed to build absolute article URL, using relative path.", error);
+    return path;
+  }
+}
+
+function buildBibtexKey(slug, year) {
+  const safeSlug = slug.replace(/[^a-zA-Z0-9]+/g, "").toLowerCase() || "article";
+  return year ? `${safeSlug}${year}` : safeSlug;
+}
+
+function addCopyButtons(root) {
+  if (!root) {
+    return;
+  }
+  const blocks = Array.from(root.querySelectorAll("pre"));
+  blocks.forEach((pre) => {
+    if (pre.querySelector(".copy-button")) {
+      return;
+    }
+    const copyText = pre.textContent;
+    pre.dataset.copyText = copyText;
+    pre.classList.add("has-copy-button");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "copy-button";
+    btn.setAttribute("aria-label", "Copy to clipboard");
+    btn.textContent = "Copy";
+    btn.addEventListener("click", () => handleCopy(pre, btn));
+    pre.appendChild(btn);
+  });
+}
+
+async function handleCopy(pre, btn) {
+  const text = pre.dataset.copyText ?? pre.textContent ?? "";
+  const original = btn.textContent;
+  try {
+    await writeToClipboard(text);
+    btn.textContent = "Copied!";
+  } catch (error) {
+    console.warn("Copy failed:", error);
+    btn.textContent = "Copy failed";
+  } finally {
+    window.setTimeout(() => {
+      btn.textContent = original;
+    }, 1400);
+  }
+}
+
+async function writeToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+  return fallbackCopy(text);
+}
+
+function fallbackCopy(text) {
+  return new Promise((resolve, reject) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      const success = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      if (success) {
+        resolve();
+      } else {
+        reject(new Error("execCommand copy failed"));
+      }
+    } catch (error) {
+      document.body.removeChild(textarea);
+      reject(error);
+    }
+  });
 }
 
 loadArticle();

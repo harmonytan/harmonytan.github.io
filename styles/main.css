@@ -718,6 +718,8 @@ a:focus-visible {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   line-height: 1.5;
+  position: relative;
+  padding-right: 64px;
 }
 
 .article-body code {
@@ -790,6 +792,107 @@ a:focus-visible {
   margin-top: 36px;
   display: flex;
   justify-content: center;
+}
+
+.references-list {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 0.6em;
+}
+
+.references-list li {
+  line-height: 1.6;
+}
+
+.citation a,
+.reference-backlink {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.reference-backlink {
+  margin-left: 6px;
+  font-size: 0.9em;
+}
+
+.citation a:hover,
+.citation a:focus-visible,
+.reference-backlink:hover,
+.reference-backlink:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.citation-block {
+  margin-top: 32px;
+  display: grid;
+  gap: 10px;
+}
+
+.citation-lede {
+  margin: 0;
+  color: #3a342b;
+  font-size: 1rem;
+  font-family: var(--font-serif);
+}
+
+.citation-code {
+  margin: 0;
+  padding: 14px 16px;
+  background: rgba(125, 92, 52, 0.08);
+  color: #2f2921;
+  border-radius: 12px;
+  border: 1px solid rgba(125, 92, 52, 0.18);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-x: auto;
+  position: relative;
+  padding-right: 64px;
+}
+
+.citation-code code {
+  color: inherit;
+  background: transparent;
+}
+
+.citation-code a {
+  color: var(--color-accent);
+}
+
+.copy-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: 1px solid rgba(125, 92, 52, 0.35);
+  background: rgba(255, 255, 255, 0.9);
+  color: #3a342b;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.copy-button:hover,
+.copy-button:focus-visible {
+  background: rgba(125, 92, 52, 0.12);
+  outline: none;
+}
+
+.copy-button:active {
+  transform: translateY(1px);
+}
+
+.has-copy-button:hover .copy-button,
+.has-copy-button:focus-within .copy-button {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 @media (max-width: 960px) {
