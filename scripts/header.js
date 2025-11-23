@@ -1,11 +1,45 @@
 const header = document.querySelector(".site-header");
 const themeToggle = document.querySelector("[data-theme-toggle]");
 const themeIcon = document.querySelector("[data-theme-icon]");
-const themeLabel = document.querySelector("[data-theme-label]");
 const prefersDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 const THEME_STORAGE_KEY = "hm-blog-theme";
 
 let activeTheme = null;
+
+const SUN_ICON = `
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+     xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8" />
+
+  <line x1="12" y1="2.5" x2="12" y2="5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="12" y1="19" x2="12" y2="21.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="2.5" y1="12" x2="5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="19" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+
+  <line x1="5.4" y1="5.4" x2="7.1" y2="7.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="16.9" y1="16.9" x2="18.6" y2="18.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="16.9" y1="7.1" x2="18.6" y2="5.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="5.4" y1="18.6" x2="7.1" y2="16.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+</svg>
+
+`;
+
+const MOON_ICON = `
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+     xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M12 3
+       A9 9 0 1 0 21 12
+       A6.5 6.5 0 1 1 12 3Z"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
+
+`;
 
 const normalizeTheme = (value) => (value === "dark" || value === "light" ? value : null);
 
@@ -24,11 +58,9 @@ const updateToggleUi = (theme) => {
     return;
   }
   themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+  themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
   if (themeIcon) {
-    themeIcon.textContent = theme === "dark" ? "🌙" : "☀️";
-  }
-  if (themeLabel) {
-    themeLabel.textContent = theme === "dark" ? "Dark" : "Light";
+    themeIcon.innerHTML = theme === "dark" ? MOON_ICON : SUN_ICON;
   }
 };
 

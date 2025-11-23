@@ -6,6 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hongming's Blog · Notes in Plain Sight</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script>
+    (function () {
+      const storageKey = "hm-blog-theme";
+      try {
+        const stored = localStorage.getItem(storageKey);
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+      } catch (_error) {
+        /* ignore theme init errors */
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="styles/main.css" />
   <script type="module" src="scripts/header.js" defer></script>
 </head>
@@ -13,19 +26,24 @@
 <body>
   <header class="site-header">
     <div class="site-shell">
-        <a class="brand" href="index.html">Hongming Tan</a>
+      <a class="brand" href="index.html">Hongming Tan</a>
       <nav class="site-nav">
         <a class="active" href="index.html">Home</a>
         <a href="articles.html">Articles</a>
         <a href="contact.html">Contact</a>
       </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+          <span class="theme-toggle-icon" aria-hidden="true" data-theme-icon>☀️</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main class="site-main">
     <section class="section about-section">
       <div class="section-heading">
-        <h2>🤗 Welcome to Hongming's Space</h2>
+        <h2>🤗 Welcome to Hongming's Blog</h2>
         <p class="about-text">
           I am Hongming, financial master student in Peking University.<br>
           Now, I am an intern at Meituan LLM Evalution group.<br>

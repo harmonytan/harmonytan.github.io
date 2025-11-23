@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Contact · Hongming's Blog</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <script>
+      (function () {
+        const storageKey = "hm-blog-theme";
+        try {
+          const stored = localStorage.getItem(storageKey);
+          const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+          document.documentElement.dataset.theme = theme;
+        } catch (_error) {
+          /* ignore theme init errors */
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="styles/main.css" />
     <script type="module" src="scripts/header.js" defer></script>
   </head>
@@ -17,6 +30,11 @@
           <a href="articles.html">Articles</a>
           <a class="active" href="contact.html">Contact</a>
         </nav>
+        <div class="header-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+            <span class="theme-toggle-icon" aria-hidden="true" data-theme-icon>☀️</span>
+          </button>
+        </div>
       </div>
     </header>
 
