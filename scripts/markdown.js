@@ -148,7 +148,7 @@ export function renderMarkdown(markdown) {
   const flushMath = () => {
     if (inMathBlock) {
       const delimiter = mathDelimiter ?? DISPLAY_MATH_DELIMITERS["$$"];
-      const content = mathBuffer.join("\n");
+      const content = escapeHtml(mathBuffer.join("\n"));
       html.push(
         `<div class="math-block">${delimiter.open}\n${content}\n${delimiter.close}</div>`
       );
@@ -225,7 +225,9 @@ export function renderMarkdown(markdown) {
       const delimiter = trimmed.startsWith("\\[")
         ? DISPLAY_MATH_DELIMITERS["\\["]
         : DISPLAY_MATH_DELIMITERS["$$"];
-      const content = trimmed.slice(delimiter.open.length, -delimiter.close.length).trim();
+      const content = escapeHtml(
+        trimmed.slice(delimiter.open.length, -delimiter.close.length).trim()
+      );
       html.push(`<div class="math-block">${delimiter.open} ${content} ${delimiter.close}</div>`);
       continue;
     }

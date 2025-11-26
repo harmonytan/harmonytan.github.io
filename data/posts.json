@@ -1,5 +1,12 @@
 [
   {
+    "slug": "reward-hacking-in-life",
+    "title": "Reward Hacking in Life",
+    "summary": "",
+    "date": "2025-11-26",
+    "category": "Thought"
+  },
+  {
     "slug": "render-playground",
     "title": "Rendering Playground",
     "summary": "A quick-hit page to sanity check math, code fences, lists, and headings.",
