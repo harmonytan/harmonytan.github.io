@@ -51,6 +51,8 @@
   --hljs-function: #6f42c1;
   --hljs-attr: #e36209;
   --content-width: min(720px, 92vw);
+  --article-shell-width: 1200px;
+  --article-body-width: 680px;
   --toc-line: rgba(31, 35, 41, 0.2);
 }
 
@@ -332,12 +334,14 @@ a:focus-visible {
 }
 
 .site-main.article-layout {
-  width: min(1260px, 98vw);
+  width: min(var(--article-shell-width, 1200px), 98vw);
   align-items: stretch;
 }
 
 .article-grid {
   width: 100%;
+  max-width: var(--article-shell-width, 1200px);
+  margin: 0 auto;
   display: block;
 }
 
@@ -704,7 +708,7 @@ a:focus-visible {
 }
 
 .article-body-wrap {
-  width: min(780px, 92vw);
+  width: min(var(--article-body-width, 780px), 92vw);
   margin: 0 auto;
 }
 
@@ -812,7 +816,7 @@ a:focus-visible {
   font-family: var(--font-serif);
   font-size: 1rem;
   color: var(--color-body);
-  width: min(780px, 92vw);
+  width: min(var(--article-body-width, 780px), 92vw);
   margin: 0 auto;
 }
 
