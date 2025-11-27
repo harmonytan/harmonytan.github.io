@@ -727,12 +727,12 @@ a:focus-visible {
 
 .article-hero-image {
   margin: 10px auto 0;
-  width: min(960px, 92vw);
-  max-height: 420px;
+  width: min(960px, 94vw);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-hero);
-  aspect-ratio: 16 / 9;
+  background: var(--color-article-bg);
+  aspect-ratio: 18 / 10;
 }
 
 .article-hero-image img {
