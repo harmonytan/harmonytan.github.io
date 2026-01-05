@@ -1,11 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@400;500&family=Playfair+Display:wght@500;600&family=Source+Serif+4:wght@400;600&display=swap");
-
 :root {
   color-scheme: light;
-  --font-sans: "Inter", "Noto Sans SC", "Helvetica Neue", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-serif: "Source Serif 4", "Noto Serif SC", "Songti SC", "Times New Roman", serif;
-  --font-display: "Playfair Display", "Source Serif 4", "Noto Serif SC", "Songti SC", serif;
-  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Helvetica Neue",
+    Arial, sans-serif;
+  --font-serif: var(--font-sans);
+  --font-display: var(--font-sans);
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   --color-bg: #faf9f6;
   --color-surface: #fefcf7;
   --color-text: #0f0f0f;
