@@ -1,10 +1,7 @@
 ---
 title: Rendering Playground
 date: 2025-11-21
-summary: A quick-hit page to sanity check math, code fences, lists, and headings.
-category: Notebook
-subtitle: Markdown parsing + MathJax + styles in one place
-author: Hongming Tan
+category: Thought
 image: assets/rendering-playground.png
 ---
 

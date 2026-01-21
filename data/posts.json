@@ -1,5 +1,12 @@
 [
   {
+    "slug": "model-in-speculative-market",
+    "title": "Model in Speculative Market",
+    "summary": "",
+    "date": "2026-1-21",
+    "category": "Thought"
+  },
+  {
     "slug": "reward-hacking-in-life",
     "title": "Reward Hacking in Life",
     "summary": "",
@@ -9,8 +16,8 @@
   {
     "slug": "render-playground",
     "title": "Rendering Playground",
-    "summary": "A quick-hit page to sanity check math, code fences, lists, and headings.",
+    "summary": "",
     "date": "2025-11-21",
-    "category": "Notebook"
+    "category": "Thought"
   }
 ]
