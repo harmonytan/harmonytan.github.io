@@ -33,6 +33,7 @@ def main() -> None:
                 "summary": attributes.get("summary", ""),
                 "date": attributes.get("date", ""),
                 "category": attributes.get("category", ""),
+                "image": attributes.get("image", attributes.get("cover", "")),
                 "_sort_key": parse_date(attributes.get("date")),
             }
         )

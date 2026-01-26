@@ -4,27 +4,31 @@
     "title": "Recent Myths in the Silver Market",
     "summary": "",
     "date": "2026-1-26",
-    "category": "Finance"
+    "category": "Finance",
+    "image": "assets/images/recent-myths-in-the-silver-market/main.png"
   },
   {
     "slug": "model-in-speculative-market",
     "title": "Model in Speculative Market",
     "summary": "",
     "date": "2026-1-21",
-    "category": "Finance"
+    "category": "Finance",
+    "image": "assets/model-in-speculative-market.png"
   },
   {
     "slug": "reward-hacking-in-life",
     "title": "Reward Hacking in Life",
     "summary": "",
     "date": "2025-11-26",
-    "category": "Thought"
+    "category": "Thought",
+    "image": "assets/images/reward-hacking-in-life/main.png"
   },
   {
     "slug": "render-playground",
     "title": "Rendering Playground",
     "summary": "",
     "date": "2025-11-21",
-    "category": "Test"
+    "category": "Test",
+    "image": "assets/rendering-playground.png"
   }
 ]

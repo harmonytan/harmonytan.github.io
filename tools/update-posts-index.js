@@ -31,6 +31,8 @@ async function main() {
       title: attributes.title ?? slug,
       summary: attributes.summary ?? "",
       date: attributes.date ?? "",
+      category: attributes.category ?? "",
+      image: attributes.image ?? attributes.cover ?? "",
       sortKey: parsedDate,
     });
   }
