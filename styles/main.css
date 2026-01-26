@@ -44,6 +44,8 @@
   --color-sidebar-bg: rgba(255, 255, 255, 0.6);
   --color-button-hover: rgba(15, 20, 25, 0.04);
   --color-meta-dot: rgba(125, 92, 52, 0.4);
+  --color-card: #f1efe7;
+  --color-card-border: rgba(20, 20, 20, 0.06);
   --hljs-text: #1f2933;
   --hljs-keyword: #d73a49;
   --hljs-string: #005cc5;
@@ -96,6 +98,8 @@
   --color-sidebar-bg: rgba(18, 22, 28, 0.9);
   --color-button-hover: rgba(255, 255, 255, 0.05);
   --color-meta-dot: rgba(220, 180, 122, 0.45);
+  --color-card: #1b222c;
+  --color-card-border: rgba(255, 255, 255, 0.08);
   --toc-line: rgba(255, 255, 255, 0.16);
   --hljs-text: #e6e1d9;
   --hljs-keyword: #f4c38d;
@@ -146,6 +150,8 @@
     --color-sidebar-bg: rgba(18, 22, 28, 0.9);
     --color-button-hover: rgba(255, 255, 255, 0.05);
     --color-meta-dot: rgba(220, 180, 122, 0.45);
+    --color-card: #1b222c;
+    --color-card-border: rgba(255, 255, 255, 0.08);
     --toc-line: rgba(255, 255, 255, 0.16);
     --hljs-text: #e6e1d9;
     --hljs-keyword: #f4c38d;
@@ -895,7 +901,7 @@ a:focus-visible {
   border-radius: 18px;
   padding: 18px;
   box-shadow: 0 18px 30px -22px rgba(18, 18, 18, 0.35);
-  border: 1px solid rgba(20, 20, 20, 0.06);
+  border: 1px solid var(--color-card-border, rgba(20, 20, 20, 0.06));
 }
 
 .article-body .md-figure img {

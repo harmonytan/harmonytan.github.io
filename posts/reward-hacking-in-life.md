@@ -1,8 +1,8 @@
 ---
 title: Reward Hacking in Life
 date: 2025-11-26
-category: Test
-image: /assets/reward-hacking-in-life.png
+category: Thought
+image: assets/images/reward-hacking-in-life/main.png
 ---
 
 小红书似乎有一种魔力，每当我拿起手机，就会不自觉的右滑到屏幕的最后一页APP资源库，然后下意识般地点击进入小红书。

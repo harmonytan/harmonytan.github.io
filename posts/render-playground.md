@@ -1,7 +1,7 @@
 ---
 title: Rendering Playground
 date: 2025-11-21
-category: Thought
+category: Test
 image: assets/rendering-playground.png
 ---
 
