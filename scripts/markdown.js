@@ -32,6 +32,69 @@ function renderInline(text, references = null, citationCounts = null) {
   return result;
 }
 
+function parseImageLine(text) {
+  const match = text.match(
+    /^!\[(.*?)\]\((<[^>]+>|[^)\s]+)(?:\s+"([^"]+)")?\)\s*(\{[^}]+\})?$/
+  );
+  if (!match) {
+    return null;
+  }
+  let [, altText, rawUrl, titleText, sizeBlock] = match;
+  if (rawUrl.startsWith("<") && rawUrl.endsWith(">")) {
+    rawUrl = rawUrl.slice(1, -1);
+  }
+  const parts = altText.split(/\s*[|｜]\s*/).filter(Boolean);
+  let title = "";
+  let caption = "";
+  if (parts.length > 1) {
+    title = parts[0];
+    caption = parts.slice(1).join(" | ").trim();
+  } else {
+    title = altText.trim();
+  }
+  if (!caption && titleText) {
+    caption = titleText.trim();
+  }
+  const size = parseFigureSize(sizeBlock);
+  return {
+    url: rawUrl.trim(),
+    title: title.trim(),
+    caption: caption.trim(),
+    size,
+  };
+}
+
+function parseFigureSize(sizeBlock) {
+  if (!sizeBlock) {
+    return "";
+  }
+  const raw = sizeBlock.slice(1, -1).trim();
+  if (!raw) {
+    return "";
+  }
+  const lower = raw.toLowerCase();
+  if (["full", "wide", "100"].includes(lower)) {
+    return "100%";
+  }
+  if (["half", "50"].includes(lower)) {
+    return "50%";
+  }
+  if (lower === "70") {
+    return "70%";
+  }
+  const widthMatch = lower.match(/(?:width|w)\s*=\s*([0-9]{1,3})(%?)/);
+  if (widthMatch) {
+    const value = Math.min(Math.max(Number(widthMatch[1]), 20), 100);
+    return `${value}%`;
+  }
+  const percentMatch = lower.match(/^([0-9]{1,3})%$/);
+  if (percentMatch) {
+    const value = Math.min(Math.max(Number(percentMatch[1]), 20), 100);
+    return `${value}%`;
+  }
+  return "";
+}
+
 function linkifyPlainUrls(text) {
   return text
     .split(SKIP_INLINE_REGEX)
@@ -126,6 +189,36 @@ export function renderMarkdown(markdown) {
 
   const hasReferences = Object.keys(referenceMap).length > 0;
   const inlineRenderer = (text) => renderInline(text, referenceMap, citationCounts);
+
+  const renderFigure = ({ url, title, caption, size }) => {
+    if (!caption && title && /[|｜]/.test(title)) {
+      const parts = title.split(/\s*[|｜]\s*/).filter(Boolean);
+      if (parts.length > 1) {
+        title = parts[0].trim();
+        caption = parts.slice(1).join(" | ").trim();
+      }
+    }
+    const safeUrl = escapeHtml(url);
+    const safeAlt = escapeHtml(title || caption || "Image");
+    const titleHtml = title
+      ? `<div class="md-figure-title">${inlineRenderer(title)}</div>`
+      : "";
+    const captionHtml = caption
+      ? `<figcaption><div class="md-figure-caption">${inlineRenderer(caption)}</div></figcaption>`
+      : "";
+    const sizeStyle = size ? ` style="--figure-width: ${escapeHtml(size)};"` : "";
+
+    return `
+<figure class="md-figure"${sizeStyle}>
+  <div class="md-figure-frame">
+    ${titleHtml}
+    <a class="md-figure-link" href="${safeUrl}" target="_blank" rel="noopener noreferrer">
+      <img src="${safeUrl}" alt="${safeAlt}" loading="lazy" />
+    </a>
+  </div>
+  ${captionHtml}
+</figure>`.trim();
+  };
 
   const flushList = () => {
     if (inList) {
@@ -290,6 +383,17 @@ export function renderMarkdown(markdown) {
       continue;
     }
 
+    if (trimmed.startsWith("![") && trimmed.includes("](")) {
+      const image = parseImageLine(trimmed);
+      if (image) {
+        flushMath();
+        flushQuote();
+        flushList();
+        html.push(renderFigure(image));
+        continue;
+      }
+    }
+
     if (/^#{1,6}\s/.test(line)) {
       flushMath();
       flushList();
@@ -344,11 +448,35 @@ function renderReferences(referenceMap) {
   const listItems = entries
     .map(
       ({ num, text }) => {
-        const rendered = renderInline(text);
+        const rendered = collapseReferenceLinks(renderInline(text));
         return `<li id="ref-${num}">${rendered} <a class="reference-backlink" href="#cite-${num}-1" aria-label="Back to first cite for reference ${num}">&larr;</a></li>`;
       }
     )
     .join("");
 
   return `<h2 id="references">References</h2><ol class="references-list">${listItems}</ol>`;
+}
+
+function collapseReferenceLinks(html) {
+  return html.replace(/<a\s+href="([^"]+)"([^>]*)>([^<]+)<\/a>/g, (full, href, attrs, text) => {
+    const trimmedText = text.trim();
+    const trimmedHref = href.trim();
+    if (!/^https?:\/\//i.test(trimmedHref) || trimmedText !== trimmedHref) {
+      return full;
+    }
+    const short = shortenUrl(trimmedHref);
+    const safeShort = escapeHtml(short);
+    const safeFull = escapeHtml(trimmedHref);
+    return `<span class="reference-link"><a href="${safeFull}"${attrs} class="reference-link-short">${safeShort}</a><button class="reference-link-toggle" type="button" data-ref-toggle>Expand</button><a href="${safeFull}"${attrs} class="reference-link-full">${safeFull}</a></span>`;
+  });
+}
+
+function shortenUrl(url) {
+  try {
+    const parsed = new URL(url);
+    const base = parsed.host + parsed.pathname.replace(/\/$/, "");
+    return base.length > 60 ? `${base.slice(0, 57)}...` : base;
+  } catch (_error) {
+    return url.length > 60 ? `${url.slice(0, 57)}...` : url;
+  }
 }

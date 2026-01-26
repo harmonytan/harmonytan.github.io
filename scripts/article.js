@@ -127,6 +127,8 @@ function renderArticle(post, markdownBody) {
   renderCitationBlock(post);
   if (contentNode) {
     addCopyButtons(contentNode);
+    initImageLightbox(contentNode);
+    initReferenceLinkToggle(contentNode);
   }
 }
 
@@ -157,6 +159,113 @@ function renderEmptyState(message) {
     heroReadingNode.textContent = "";
   }
   setArticleStatsDisplay();
+}
+
+let lightboxState = null;
+
+function initImageLightbox(container) {
+  const links = container.querySelectorAll(".md-figure-link");
+  if (!links.length) {
+    return;
+  }
+  const lightbox = getOrCreateLightbox();
+  links.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const img = link.querySelector("img");
+      if (!img) {
+        return;
+      }
+      const src = link.getAttribute("href") || img.getAttribute("src");
+      const alt = img.getAttribute("alt") || "";
+      const figure = link.closest("figure");
+      const captionText = figure
+        ? figure.querySelector(".md-figure-caption")?.textContent?.trim()
+        : "";
+      openLightbox(lightbox, { src, alt, caption: captionText || "" });
+    });
+  });
+}
+
+function getOrCreateLightbox() {
+  if (lightboxState?.root) {
+    return lightboxState;
+  }
+  const root = document.createElement("div");
+  root.className = "image-lightbox";
+  root.setAttribute("role", "dialog");
+  root.setAttribute("aria-modal", "true");
+  root.setAttribute("aria-hidden", "true");
+  root.innerHTML = `
+    <button class="image-lightbox-close" type="button" aria-label="Close image">×</button>
+    <div class="image-lightbox-backdrop" data-lightbox-backdrop></div>
+    <figure class="image-lightbox-content">
+      <img alt="" />
+      <figcaption class="image-lightbox-caption"></figcaption>
+    </figure>
+  `;
+  document.body.appendChild(root);
+
+  const backdrop = root.querySelector("[data-lightbox-backdrop]");
+  const closeButton = root.querySelector(".image-lightbox-close");
+  const close = () => closeLightbox(lightboxState);
+  backdrop.addEventListener("click", close);
+  closeButton.addEventListener("click", close);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      close();
+    }
+  });
+
+  lightboxState = {
+    root,
+    img: root.querySelector("img"),
+    caption: root.querySelector(".image-lightbox-caption"),
+  };
+  return lightboxState;
+}
+
+function openLightbox(lightbox, { src, alt, caption }) {
+  if (!lightbox || !src) {
+    return;
+  }
+  lightbox.img.src = src;
+  lightbox.img.alt = alt || "";
+  if (caption) {
+    lightbox.caption.textContent = caption;
+    lightbox.caption.style.display = "block";
+  } else {
+    lightbox.caption.textContent = "";
+    lightbox.caption.style.display = "none";
+  }
+  lightbox.root.classList.add("is-open");
+  lightbox.root.setAttribute("aria-hidden", "false");
+  document.body.classList.add("lightbox-open");
+}
+
+function closeLightbox(lightbox) {
+  if (!lightbox?.root) {
+    return;
+  }
+  lightbox.root.classList.remove("is-open");
+  lightbox.root.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("lightbox-open");
+  lightbox.img.src = "";
+}
+
+function initReferenceLinkToggle(container) {
+  container.addEventListener("click", (event) => {
+    const toggle = event.target.closest("[data-ref-toggle]");
+    if (!toggle) {
+      return;
+    }
+    const wrapper = toggle.closest(".reference-link");
+    if (!wrapper) {
+      return;
+    }
+    const isOpen = wrapper.classList.toggle("is-open");
+    toggle.textContent = isOpen ? "Collapse" : "Expand";
+  });
 }
 
 function typesetMath(target) {

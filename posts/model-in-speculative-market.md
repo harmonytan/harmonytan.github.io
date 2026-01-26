@@ -1,7 +1,7 @@
 ---
 title: Model in Speculative Market
 date: 2026-1-21
-category: Thought
+category: Finance
 image: assets/model-in-speculative-market.png
 ---
 
