@@ -116,6 +116,7 @@ function renderArticle(post, markdownBody) {
     headings = prepareHeadingAnchors(contentNode);
     typesetMath(contentNode);
     highlightCodeBlocks(contentNode);
+    applyImageFallbacks(contentNode);
   }
   buildTableOfContents(headings);
   const textStats = computeTextStats(markdownBody);
@@ -411,12 +412,50 @@ function updateHeroImage(post) {
   const src = post.image;
   if (src) {
     heroImageNode.src = src;
+    applyImageFallback(heroImageNode);
     heroImageNode.alt = post.title ? `${post.title} cover image` : "Article cover image";
     heroImageContainer.style.display = "block";
   } else {
     heroImageContainer.style.display = "none";
     heroImageNode.removeAttribute("src");
   }
+}
+
+function applyImageFallback(imageNode) {
+  if (!imageNode || imageNode.dataset.fallbackBound === "true") {
+    return;
+  }
+  imageNode.dataset.fallbackBound = "true";
+  imageNode.addEventListener("error", () => {
+    const current = imageNode.getAttribute("src") ?? "";
+    if (!current) {
+      return;
+    }
+    const url = new URL(current, window.location.href);
+    const pathname = url.pathname;
+    const extMatch = pathname.match(/\.([a-z0-9]+)$/i);
+    const ext = extMatch ? extMatch[1].toLowerCase() : "";
+    const candidates = ["jpg", "jpeg", "png", "webp"];
+    const remaining = candidates.filter((item) => item !== ext);
+    let attempt = Number(imageNode.dataset.fallbackAttempt ?? "0");
+    if (attempt >= remaining.length) {
+      return;
+    }
+    const nextExt = remaining[attempt];
+    const nextPath = extMatch ? pathname.replace(/\.[a-z0-9]+$/i, `.${nextExt}`) : `${pathname}.${nextExt}`;
+    url.pathname = nextPath;
+    imageNode.dataset.fallbackAttempt = String(attempt + 1);
+    imageNode.src = url.toString();
+  });
+}
+
+function applyImageFallbacks(container) {
+  if (!container) {
+    return;
+  }
+  container.querySelectorAll("img").forEach((img) => {
+    applyImageFallback(img);
+  });
 }
 
 function slugifyHeading(text) {
