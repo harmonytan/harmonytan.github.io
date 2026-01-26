@@ -1,7 +1,7 @@
 ---
 title: Reward Hacking in Life
 date: 2025-11-26
-category: Thought
+category: Test
 image: /assets/reward-hacking-in-life.png
 ---
 
