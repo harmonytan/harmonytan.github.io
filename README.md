@@ -15,7 +15,7 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
    category: Notebook
    subtitle: Optional hero strapline
    author: Hongming Tan
-   image: /assets/your-cover.jpg   # Optional 16:9-ish hero cover
+   image: assets/your-cover.jpg   # Optional 16:9-ish hero cover (relative path)
    ---
    ```
 
@@ -25,7 +25,15 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
    # or
    node tools/update-posts-index.js
    ```
-   Both scripts scan `posts/`, parse each front matter block, and rewrite `data/posts.json` with sorted metadata.
+   Both scripts scan `posts/`, parse each front matter block (including `image`), and rewrite `data/posts.json` with sorted metadata.
+
+4. Optimize images (convert to JPG + resize + update front matter + refresh index):
+   ```bash
+   python tools/optimize_images.py assets/images/reward-hacking-in-life
+   # or a single file
+   python tools/optimize_images.py assets/images/reward-hacking-in-life/main.png
+   ```
+   Defaults: longest edge 1200px, JPEG quality 82. Use `--max-size` and `--quality` to adjust.
 
 4. Serve the site (for example, `python3 -m http.server`) and visit:
    - `articles.html` for the index
@@ -42,7 +50,8 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
 
 ### Assets & covers
 
-- Put shared images (e.g., hero covers) in `assets/` and reference them with an absolute path in front matter, e.g. `image: /assets/cover-name.jpg`.
+- Put shared images (e.g., hero covers) in `assets/` and reference them with a relative path in front matter, e.g. `image: assets/cover-name.jpg`.
+- If you move an image, re-run the index script so `data/posts.json` stays in sync with the new path.
 - The favicon lives at `favicon.svg` and is linked from the HTML pages.
 
 ## Project map

@@ -2,30 +2,30 @@
 title: Recent Myths in the Silver Market
 date: 2026-1-26
 category: Finance
-image: assets/images/recent-myths-in-the-silver-market/main.png
+image: assets/images/recent-myths-in-the-silver-market/main.jpg
 ---
 
 # 市场异象
 1. [金银比持续走跌](https://sc.macromicro.me/collections/3351/commodity-silver/26722/gold-silver-copper-ratio)
 
-![最近一年金银比与银价走势 | 2025 年 4 月开始，金银比一路从 80 多跌到 30 左右。特别是 12 月以来，金银币下跌速率增加](assets/images/recent-myths-in-the-silver-market/1.png)
+![最近一年金银比与银价走势 | 2025 年 4 月开始，金银比一路从 80 多跌到 30 左右。特别是 12 月以来，金银币下跌速率增加](assets/images/recent-myths-in-the-silver-market/1.jpg)
 
 2. [EFP(Exchange for Physicals) spread](http://www.cffex.com.cn/u/cms/www/201901/04182029whlw.pdf) 持续高于平均值
 $$EFP= Paper（期货/纸货） − Physical（现货/实物）$$
 EFP 表示期现差，一般包含着交割、仓储、运输、流动性溢价、资金成本。
 
-![2024-2026年COMEX纸黄金溢价 | 2025年间，EFP spread 由平均0.25\$/oc增长至1.1\$/oc，COMEX 期货白银价格相对于伦敦现货实物白银，出现了异常高的溢价，说明“可交割的实物白银非常紧张”。](assets/images/recent-myths-in-the-silver-market/2.png)
+![2024-2026年COMEX纸黄金溢价 | 2025年间，EFP spread 由平均0.25\$/oc增长至1.1\$/oc，COMEX 期货白银价格相对于伦敦现货实物白银，出现了异常高的溢价，说明“可交割的实物白银非常紧张”。](assets/images/recent-myths-in-the-silver-market/2.jpg)
 
 3. [白银连续多年结构性赤字](https://bulliontradingllc.com/blog/paper-silver-vs-physical-silver-price-disconnect-2026/)
 银资产负债表已经连续 7 年处于赤字状态
 
-![2016-2025F白银供给需求 | 白银已经连续 7 年赤字，结构性赤字达到796.4百万盎司](assets/images/recent-myths-in-the-silver-market/3.png)
+![2016-2025F白银供给需求 | 白银已经连续 7 年赤字，结构性赤字达到796.4百万盎司](assets/images/recent-myths-in-the-silver-market/3.jpg)
 
 # 白银基本情况
 
 白银具有[商品属性和金融属性](https://silverinstitute.org/silver-supply-demand/)[1]
 
-![2016-2025F白银供给与需求基本情况](assets/images/recent-myths-in-the-silver-market/4.png)
+![2016-2025F白银供给与需求基本情况](assets/images/recent-myths-in-the-silver-market/4.jpg)
 
 供给侧
 - 矿产银（80%） 
@@ -38,7 +38,7 @@ EFP 表示期现差，一般包含着交割、仓储、运输、流动性溢价�
 - 净对冲需求（0%）
 
 南美与中国是主要供给国
-![TOP20 矿产银供给国｜在矿产银中墨西哥、秘鲁等南美国家以及中国是构成了主供给方](assets/images/recent-myths-in-the-silver-market/5.png)
+![TOP20 矿产银供给国｜在矿产银中墨西哥、秘鲁等南美国家以及中国是构成了主供给方](assets/images/recent-myths-in-the-silver-market/5.jpg)
 
 **过去一年白银价格呈现出强劲的上涨趋势，国际白银价格迭创新高**。自2025年初至2026年1月，纽约商品交易所（COMEX）白银期货价格累计涨幅超过220%，从约每盎司\$30一路飙升，在2026年1月一度逼近\$100大关，创下历史纪录。其中2025年10月白银价格突破了1980年以来\$50的前高，10月17日前后曾触及\$54/盎司的新高点；此后银价一度在获利回吐和利好出尽下急挫逾10%，回落到\$47附近。然而调整持续时间很短，11月起白银多头卷土重来，价格重新站上\$50并加速上行。2025年12月初COMEX白银期货首次突破\$60关口。进入2026年1月，地缘局势紧张加剧引发的新一轮避险买盘令白银进一步暴涨，2026年1月中下旬3月交割合约一度攀升至\$95/盎司上方；1月23-24日国际现货白银价格更是历史性地站上了每盎司\$100大关。可以说，全年银价走出了一波近乎“抛物线”式的上涨行情，年末收官价较年初翻了两倍多，**表现远超同期黄金约78%的涨幅**。
 **白银的这一轮上涨在主要市场上同步上演**。纽约COMEX期银、伦敦现货白银价格在2025年12月双双创出历史新高：例如12月3日COMEX期银盘中最高触及\$59.655/盎司，伦敦现货银也达到\$58.945/盎司。中国市场方面，上海期货交易所白银期货主力合约价格亦屡创新高，2025年12月初收于13.58元/克，较年初涨幅逾90%；上海黄金交易所白银T+D现货合约同步创出13.54元/克的历史高价。国内外银价联动空前紧密，沪银期货与COMEX白银期货价格相关系数高达0.96。伴随价格飙升，交易量和持仓也大增：**以上期所2025年12月3日为例，单日成交量达266万手，持仓量45.8万手，库存降至476吨低位，显示市场交投极为活跃且现货偏紧**。
@@ -92,4 +92,3 @@ EFP 表示期现差，一般包含着交割、仓储、运输、流动性溢价�
 [5]: Russian precious metal sales to China up 80% to $1 billion in H1 2025 https://kerdangold.com/russian-precious-metal-sales-to-china-up-80-to-1-billion-in-h1-2025/#:~:text=more%20heavily%20on%20precious%20metals%2C,buying%20by%20Russia%E2%80%99s%20central%20bank
 [6]: Saudi Central Bank buys $40 million in SLV and silver miners, but it's not what you think https://www.silver-phoenix500.com/saudi-central-bank-buys-40-million-slv-and-silver-miners-its-not-what-you-think#:~:text=Meanwhile%2C%20Mexico%E2%80%99s%20central%20bank%20holds,the%20world%E2%80%99s%20top%20silver%20producer
 [7]: Saudi Central Bank buys $40 million in SLV and silver miners, but it's not what you think https://www.silver-phoenix500.com/saudi-central-bank-buys-40-million-slv-and-silver-miners-its-not-what-you-think#:~:text=Meanwhile%2C%20Mexico%E2%80%99s%20central%20bank%20holds,the%20world%E2%80%99s%20top%20silver%20producer
-

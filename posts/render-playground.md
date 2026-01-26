@@ -2,7 +2,7 @@
 title: Rendering Playground
 date: 2025-11-21
 category: Test
-image: assets/rendering-playground.png
+image: assets/rendering-playground.jpg
 ---
 
 Use this post to quickly verify whether the renderer, MathJax, and styling look right after changes.

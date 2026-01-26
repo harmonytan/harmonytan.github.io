@@ -2,7 +2,7 @@
 title: Model in Speculative Market
 date: 2026-1-21
 category: Finance
-image: assets/model-in-speculative-market.png
+image: assets/model-in-speculative-market.jpg
 ---
 
 **电商领域**有一条核心公式

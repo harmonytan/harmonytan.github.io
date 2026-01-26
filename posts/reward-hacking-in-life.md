@@ -2,7 +2,7 @@
 title: Reward Hacking in Life
 date: 2025-11-26
 category: Thought
-image: assets/images/reward-hacking-in-life/main.png
+image: assets/images/reward-hacking-in-life/main.jpg
 ---
 
 小红书似乎有一种魔力，每当我拿起手机，就会不自觉的右滑到屏幕的最后一页APP资源库，然后下意识般地点击进入小红书。
@@ -106,5 +106,4 @@ $$
 
 [1]: Wikipedia contributors. (2025, November 24). Reinforcement learning. In Wikipedia, The Free Encyclopedia. Retrieved 12:10, November 27, 2025, from https://en.wikipedia.org/w/index.php?title=Reinforcement_learning&oldid=1323963809
 [2]: Wikipedia contributors. (2025, November 17). Entropy (information theory). In Wikipedia, The Free Encyclopedia. Retrieved 12:13, November 27, 2025, from https://en.wikipedia.org/w/index.php?title=Entropy_(information_theory)&oldid=1322644264
-
 
