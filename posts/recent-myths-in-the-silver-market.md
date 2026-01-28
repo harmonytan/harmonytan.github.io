@@ -1,6 +1,6 @@
 ---
 title: Recent Myths in the Silver Market
-date: 2026-1-26
+date: 2026-01-26
 category: Finance
 image: assets/images/recent-myths-in-the-silver-market/main.jpg
 ---

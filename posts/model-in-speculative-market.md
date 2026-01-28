@@ -1,6 +1,6 @@
 ---
 title: Model in Speculative Market
-date: 2026-1-21
+date: 2026-01-21
 category: Finance
 image: assets/model-in-speculative-market.jpg
 ---
@@ -31,6 +31,5 @@ $$ GMV = 流量 \times 转化率 \times 客单价$$
 $$ GMV = \frac{流量\times 流量持续性 \times 转化率 \times 客单价}{市值乘子}\times 分流系数$$
 
 在该模型下，我们可以估算出买盘系数，**这决定了股价拉升的上限**。
-
 
 

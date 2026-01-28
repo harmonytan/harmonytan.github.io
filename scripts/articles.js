@@ -1,4 +1,4 @@
-import { formatDate, escapeHtml, BASE_URL } from "./site.js";
+import { formatDate, escapeHtml, BASE_URL, parseDateInput } from "./site.js";
 
 const tableElement = document.querySelector("[data-article-table]");
 const searchInput = document.querySelector("[data-article-search]");
@@ -86,8 +86,8 @@ function renderTable(posts) {
   }
 
   const toTimestamp = (value) => {
-    const time = Date.parse(value);
-    return Number.isFinite(time) ? time : 0;
+    const date = parseDateInput(value);
+    return date ? date.valueOf() : 0;
   };
 
   const sorted = [...posts].sort(

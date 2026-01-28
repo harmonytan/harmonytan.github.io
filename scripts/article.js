@@ -1,11 +1,12 @@
+import { renderMarkdown } from "./markdown.js";
 import {
   formatDate,
   setDocumentTitle,
   parseFrontMatter,
+  parseDateInput,
   BASE_URL,
   escapeHtml,
 } from "./site.js";
-import { renderMarkdown } from "./markdown.js";
 
 const titleNode = document.querySelector("[data-article-title]");
 const dateNode = document.querySelector("[data-article-date]");
@@ -690,8 +691,8 @@ function parseDateParts(iso) {
   if (!iso) {
     return null;
   }
-  const date = new Date(iso);
-  if (Number.isNaN(date.valueOf())) {
+  const date = parseDateInput(iso);
+  if (!date) {
     return { human: iso };
   }
   const monthNames = [
