@@ -181,6 +181,48 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+body.home-page {
+  --color-text: #f4f8ff;
+  --color-text-strong: #ffffff;
+  --color-body: #e5ecff;
+  --color-muted: #ccd8f3;
+  --color-line: rgba(255, 255, 255, 0.28);
+  --color-header-bg: rgba(8, 18, 38, 0.42);
+  --color-header-floating-bg: rgba(8, 18, 38, 0.62);
+  --color-focus-outline: rgba(156, 196, 255, 0.75);
+  background-image: radial-gradient(circle at 50% 58%, rgba(2, 10, 28, 0.06), rgba(2, 8, 20, 0.34)),
+    url("../assets/index.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+body.home-page .site-main {
+  min-height: calc(100vh - 150px);
+  justify-content: center;
+  padding: 40px 0 60px;
+}
+
+body.home-page .home-hero {
+  align-items: center;
+  justify-content: center;
+}
+
+body.home-page .home-title {
+  margin: 0;
+  max-width: min(940px, 86vw);
+  text-align: center;
+  font-family: "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: clamp(2.1rem, 8vw, 5.6rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.04;
+  color: rgba(255, 255, 255, 0.94);
+  text-shadow: 0 6px 20px rgba(2, 8, 20, 0.56), 0 0 34px rgba(95, 146, 232, 0.24);
+  mix-blend-mode: screen;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -1292,45 +1334,98 @@ body .hljs-attribute {
   }
 }
 
-.contact-card {
-  width: 100%;
-  background-color: transparent;
-  border: none;
-  padding: 0;
+.contact-layout {
+  width: min(980px, 100%);
+  margin: 0 auto;
   display: grid;
-  gap: 24px;
-  text-align: center;
+  grid-template-columns: minmax(360px, 1.2fr) minmax(280px, 0.9fr);
+  align-items: stretch;
+  gap: 28px;
+  text-align: left;
 }
 
-.contact-card p {
+.contact-panel {
+  border: 1px solid var(--color-card-border);
+  border-radius: 22px;
+  background: var(--color-card);
+  padding: clamp(24px, 3vw, 34px);
+  box-shadow: 0 16px 36px rgba(20, 20, 20, 0.06);
+}
+
+.contact-kicker {
   margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.contact-title {
+  margin: 12px 0 0;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  color: var(--color-text-strong);
+}
+
+.contact-bio {
+  margin: 16px 0 0;
   color: var(--color-body);
-  line-height: 1.6;
+  line-height: 1.8;
   font-family: var(--font-serif);
   font-size: 1.05rem;
 }
 
-.contact-list {
+.reach-panel .contact-list {
   list-style: none;
-  margin: 0;
+  margin: 16px 0 0;
   padding: 0;
   display: grid;
-  gap: 16px;
+  gap: 0;
 }
 
-.contact-list li {
+.contact-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-family: var(--font-serif);
-  color: var(--color-text);
+  gap: 8px;
+  padding: 18px 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.contact-item:first-child {
+  border-top: none;
+  padding-top: 0;
 }
 
 .contact-label {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-muted);
+}
+
+.contact-item a {
+  font-size: 1.2rem;
+  line-height: 1.35;
+  font-family: var(--font-sans);
+  color: var(--color-text-strong);
+}
+
+.contact-item a:hover,
+.contact-item a:focus-visible {
+  color: var(--color-accent);
+}
+
+.contact-hint {
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 .site-footer p {
@@ -1354,8 +1449,12 @@ body .hljs-attribute {
     border-radius: 24px;
   }
 
-  .contact-card {
-    padding: 24px;
+  .contact-panel {
+    padding: 22px;
+  }
+
+  .contact-item a {
+    font-size: 1.06rem;
   }
 
   .site-nav {

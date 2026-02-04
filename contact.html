@@ -18,7 +18,7 @@
         }
       })();
     </script>
-  <link rel="stylesheet" href="styles/main.css?v=20260128" />
+    <link rel="stylesheet" href="styles/main.css?v=20260204f" />
     <script type="module" src="scripts/header.js?v=20260128" defer></script>
   </head>
   <body>
@@ -39,19 +39,33 @@
     </header>
 
     <main class="site-main">
-      <section class="section">
-        <div class="contact-card">
+      <section class="section contact-layout">
+        <article class="contact-panel about-panel">
+          <p class="contact-kicker">About</p>
+          <h1 class="contact-title">Hi, I'm Hongming.</h1>
+          <p class="contact-bio">
+            Previously, I worked as an AI engineer and financial analyst.
+          </p>
+          <p class="contact-bio">
+            I write and think about AI, finance, and decision-making under uncertainty.
+          </p>
+        </article>
+
+        <aside class="contact-panel reach-panel" aria-label="Contact methods">
+          <p class="contact-kicker">Contact</p>
           <ul class="contact-list">
-            <li>
+            <li class="contact-item">
               <span class="contact-label">Email</span>
-              <a href="mailto:hello@harmonytan.dev">hongming@stu.pku.edu.cn</a>
+              <a href="mailto:hongming@stu.pku.edu.cn">hongming@stu.pku.edu.cn</a>
+              <span class="contact-hint">Best for collaboration and opportunities.</span>
             </li>
-            <li>
+            <li class="contact-item">
               <span class="contact-label">GitHub</span>
               <a href="https://github.com/harmonytan" target="_blank" rel="noopener">github.com/harmonytan</a>
+              <span class="contact-hint">Projects, experiments, and code notes.</span>
             </li>
           </ul>
-        </div>
+        </aside>
       </section>
     </main>
   </body>
