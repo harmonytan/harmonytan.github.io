@@ -223,6 +223,25 @@ body.home-page .home-title {
   mix-blend-mode: screen;
 }
 
+@media (max-width: 900px) {
+  body.home-page {
+    background-size: cover;
+    background-position: center 34%;
+    background-attachment: scroll;
+  }
+
+  body.home-page .site-main {
+    min-height: calc(100svh - 132px);
+    padding: 28px 0 44px;
+  }
+
+  body.home-page .home-title {
+    max-width: 92vw;
+    font-size: clamp(2rem, 12vw, 3.8rem);
+    line-height: 1.08;
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
