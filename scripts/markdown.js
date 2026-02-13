@@ -263,7 +263,7 @@ export function renderMarkdown(markdown) {
   };
   const isTableRow = (text) => /^\|.+\|$/.test(text);
   const isTableDivider = (text) =>
-    /^\|\s*:?-{3,}\s*(\|\s*:?-{3,}\s*)+\|$/.test(text);
+    /^\|\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|$/.test(text);
   const parseCells = (row) =>
     row
       .slice(1, -1)
@@ -369,7 +369,7 @@ export function renderMarkdown(markdown) {
         .map((row) => `<tr>${row.map((cell) => `<td>${inlineRenderer(cell)}</td>`).join("")}</tr>`)
         .join("");
       html.push(
-        `<table class="md-table"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table>`
+        `<div class="md-table-wrap"><table class="md-table"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>`
       );
       i = j - 1;
       continue;

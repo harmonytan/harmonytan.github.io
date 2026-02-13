@@ -27,6 +27,15 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
    ```
    Both scripts scan `posts/`, parse each front matter block (including `image`), and rewrite `data/posts.json` with sorted metadata.
 
+Optional local drafts workflow:
+
+- Keep in-progress files in `drafts/` (ignored by git by default in this repo).
+- Generate a local drafts index for `editor.html`:
+  ```bash
+  node tools/update-drafts-index.js
+  ```
+- In `editor.html`, switch `Source` to `drafts/` and use `Load`.
+
 4. Optimize images (convert to JPG + resize + update front matter + refresh index):
    ```bash
    python tools/optimize_images.py assets/images/reward-hacking-in-life
@@ -35,11 +44,52 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
    ```
    Defaults: longest edge 1200px, JPEG quality 82. Use `--max-size` and `--quality` to adjust.
 
-4. Serve the site (for example, `python3 -m http.server`) and visit:
+5. Inject content-hash versions into local CSS/JS references before deploy:
+   ```bash
+   node tools/build-site.js
+   ```
+   Optional check mode (fails with non-zero exit code if files need updates):
+   ```bash
+   node tools/build-site.js --check
+   ```
+
+6. Serve the site (for example, `python3 -m http.server`) and visit:
    - `articles.html` for the index
    - `article.html?post=your-slug` for the reading view
+   - `editor.html` for a local Markdown editor with live preview and local file open/save
+
+### Deploy checklist
+
+- Required when post metadata/content changed:
+  ```bash
+  node tools/update-posts-index.js
+  ```
+- Required before every deploy (refresh CSS/JS cache-busting hashes in HTML):
+  ```bash
+  node tools/build-site.js
+  ```
+- Optional (only when you process images):
+  ```bash
+  python tools/optimize_images.py <file-or-dir>
+  ```
+
+CI automation:
+
+- `.github/workflows/site-consistency.yml` runs on push/PR and checks generated files are committed.
+- It verifies the outputs of:
+  - `node tools/update-posts-index.js`
+  - `node tools/build-site.js`
 
 > When deploying to GitHub Pages, nothing special is required. `scripts/site.js` infers the correct base path, but you can override it by defining `window.__BLOG_BASE_PATH__` before loading the scripts.
+
+### Local editor workflow
+
+- Open `editor.html` while running the local server.
+- Write Markdown on the left; preview updates on the right using the same renderer as `article.html`.
+- `Source` + `Load` can import entries from either `posts/` (`data/posts.json`) or `drafts/` (`data/drafts.json`).
+- `Open` / `Save` / `Save As` use the browser File System Access API when available (Chrome/Edge recommended).
+- On browsers without write access, the editor falls back to opening via file input and saving via file download.
+- The latest draft is cached in `localStorage` so accidental refreshes are recoverable.
 
 ### References & citation
 
@@ -59,9 +109,11 @@ Minimal static blog with an airy hero, a frosted article outline, and Markdown p
 - `index.html` — home hero and intro
 - `articles.html` — article index populated from `data/posts.json`
 - `article.html` — Markdown-rendered post with reading stats, hero, and TOC
+- `editor.html` — local-only Markdown editor with live preview and file open/save
 - `contact.html` — contact links
 - `styles/main.css` — shared typography, parchment styling, and layout
 - `scripts/` — helper modules (`article.js`, `articles.js`, `markdown.js`, `header.js`, etc.), includes search + TOC logic
+- `scripts/editor.js` — editor actions, local draft persistence, and live Markdown rendering
 - `posts/` — raw Markdown sources
 - `data/posts.json` — generated metadata index (do not edit by hand)
 - `assets/` — optional cover images and static assets

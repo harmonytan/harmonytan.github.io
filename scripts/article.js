@@ -12,6 +12,7 @@ const titleNode = document.querySelector("[data-article-title]");
 const dateNode = document.querySelector("[data-article-date]");
 const contentNode = document.querySelector("[data-article-content]");
 const tocNode = document.querySelector("[data-article-toc]");
+const inlineTocContainer = document.querySelector("[data-article-inline-toc]");
 const readingTimeNode = document.querySelector("[data-article-reading-time]");
 const tocLabelNode = document.querySelector(".toc-label");
 const topicNode = document.querySelector("[data-article-topic]");
@@ -53,6 +54,7 @@ async function loadArticle() {
       subtitle: postMeta?.summary ?? attributes.subtitle ?? "",
       author: postMeta?.author ?? attributes.author ?? "Hongming Tan",
       image: postMeta?.image ?? attributes.image ?? attributes.cover ?? "",
+      tocEnabled: parseFrontMatterBoolean(attributes.toc, false),
     };
 
     renderArticle(mergedMeta, body);
@@ -119,7 +121,7 @@ function renderArticle(post, markdownBody) {
     highlightCodeBlocks(contentNode);
     applyImageFallbacks(contentNode);
   }
-  buildTableOfContents(headings);
+  buildTableOfContents(headings, post.tocEnabled);
   const textStats = computeTextStats(markdownBody);
   setArticleStatsDisplay(textStats);
   updateHeroMeta(post, textStats);
@@ -146,6 +148,9 @@ function renderEmptyState(message) {
   }
   if (tocNode) {
     tocNode.innerHTML = `<p class="muted">Add headings (##, ###) to show a table of contents.</p>`;
+  }
+  if (inlineTocContainer) {
+    inlineTocContainer.hidden = true;
   }
   if (topicNode) {
     topicNode.textContent = "Notebook";
@@ -322,36 +327,114 @@ function prepareHeadingAnchors(root) {
   });
 }
 
-function buildTableOfContents(headings) {
-  if (!tocNode) {
+function buildTableOfContents(headings, isEnabled) {
+  if (!tocNode || !inlineTocContainer) {
+    return;
+  }
+  if (!isEnabled) {
+    inlineTocContainer.hidden = true;
+    tocNode.innerHTML = "";
     return;
   }
   if (!headings || headings.length === 0) {
+    inlineTocContainer.hidden = false;
     tocNode.innerHTML =
       '<p class="muted">Use h2/h3 headings to auto-generate the outline.</p>';
     return;
   }
   const list = document.createElement("ol");
   list.className = "toc-list";
+  const latestItemByLevel = {};
+
   headings.forEach((heading) => {
-    if (heading.level < 2 || heading.level > 3) {
+    if (heading.level < 2 || heading.level > 4) {
       return;
     }
+
     const item = document.createElement("li");
     item.className = `toc-item level-${heading.level}`;
+
+    const row = document.createElement("div");
+    row.className = "toc-row";
+
     const link = document.createElement("a");
     link.href = `#${heading.id}`;
     link.textContent = heading.text;
-    item.appendChild(link);
-    list.appendChild(item);
+    row.appendChild(link);
+    item.appendChild(row);
+
+    let targetList = list;
+    if (heading.level > 2) {
+      let parent = null;
+      for (let level = heading.level - 1; level >= 2; level -= 1) {
+        if (latestItemByLevel[level]) {
+          parent = latestItemByLevel[level];
+          break;
+        }
+      }
+      if (parent) {
+        let childList = parent.querySelector(`:scope > ol.toc-sublist.level-${heading.level}`);
+        if (!childList) {
+          childList = document.createElement("ol");
+          childList.className = `toc-sublist level-${heading.level}`;
+          if (heading.level > 3) {
+            childList.hidden = true;
+            const parentRow = parent.querySelector(":scope > .toc-row");
+            if (parentRow && !parentRow.querySelector(".toc-toggle")) {
+              const toggle = document.createElement("button");
+              toggle.type = "button";
+              toggle.className = "toc-toggle";
+              toggle.setAttribute("aria-expanded", "false");
+              toggle.setAttribute("aria-label", "Expand subsections");
+              toggle.textContent = "▸";
+              toggle.addEventListener("click", () => {
+                const expanded = toggle.getAttribute("aria-expanded") === "true";
+                toggle.setAttribute("aria-expanded", expanded ? "false" : "true");
+                toggle.setAttribute(
+                  "aria-label",
+                  expanded ? "Expand subsections" : "Collapse subsections"
+                );
+                toggle.textContent = expanded ? "▸" : "▾";
+                childList.hidden = expanded;
+              });
+              parentRow.appendChild(toggle);
+            }
+          }
+          parent.appendChild(childList);
+        }
+        targetList = childList;
+      }
+    }
+
+    targetList.appendChild(item);
+    latestItemByLevel[heading.level] = item;
+    for (let level = heading.level + 1; level <= 6; level += 1) {
+      delete latestItemByLevel[level];
+    }
   });
   if (!list.hasChildNodes()) {
+    inlineTocContainer.hidden = false;
     tocNode.innerHTML =
       '<p class="muted">Use h2/h3 headings to auto-generate the outline.</p>';
     return;
   }
+  inlineTocContainer.hidden = false;
   tocNode.innerHTML = "";
   tocNode.appendChild(list);
+}
+
+function parseFrontMatterBoolean(value, fallback = false) {
+  if (typeof value !== "string") {
+    return fallback;
+  }
+  const normalized = value.trim().toLowerCase();
+  if (["true", "1", "yes", "on"].includes(normalized)) {
+    return true;
+  }
+  if (["false", "0", "no", "off"].includes(normalized)) {
+    return false;
+  }
+  return fallback;
 }
 
 function computeTextStats(markdown) {

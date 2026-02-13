@@ -1,0 +1,38 @@
+name: Site Consistency
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify-generated-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Regenerate posts index
+        run: node tools/update-posts-index.js
+
+      - name: Rebuild asset hash versions
+        run: node tools/build-site.js
+
+      - name: Ensure generated files are committed
+        shell: bash
+        run: |
+          if ! git diff --quiet -- data/posts.json '*.html'; then
+            echo "Generated files are out of date."
+            echo "Run the following commands and commit the result:"
+            echo "  node tools/update-posts-index.js"
+            echo "  node tools/build-site.js"
+            echo
+            git --no-pager diff -- data/posts.json '*.html'
+            exit 1
+          fi

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editor · Hongming's Blog</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script>
+    (function () {
+      const storageKey = "hm-blog-theme";
+      try {
+        const stored = localStorage.getItem(storageKey);
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+      } catch (_error) {
+        /* ignore theme init errors */
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="styles/main.css?v=59b56d99f2" />
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [["\\(", "\\)"], ["$", "$"]],
+        displayMath: [["\\[", "\\]"], ["$$", "$$"]],
+      },
+      options: {
+        skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"],
+      },
+    };
+  </script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css"
+  />
+  <script
+    defer
+    src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"
+  ></script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script type="module" src="scripts/editor.js?v=7c4c608b1c" defer></script>
+</head>
+
+<body class="editor-page">
+  <main class="site-main editor-main">
+    <section class="editor-toolbar" aria-label="Editor actions">
+      <div class="editor-toolbar-group editor-toolbar-group-actions">
+        <button class="editor-tool-btn" type="button" data-action="new">New</button>
+        <button class="editor-tool-btn" type="button" data-action="open">Open</button>
+        <button class="editor-tool-btn" type="button" data-action="save">Save</button>
+        <button class="editor-tool-btn" type="button" data-action="save-as">Save As</button>
+        <button
+          class="editor-tool-btn ghost icon-only"
+          type="button"
+          data-action="toggle-theme"
+          aria-pressed="false"
+          aria-label="Switch to dark mode"
+        >
+          <span class="theme-toggle-icon" aria-hidden="true" data-theme-icon></span>
+        </button>
+      </div>
+      <div class="editor-toolbar-group editor-toolbar-group-posts">
+        <label class="editor-toolbar-label" for="editor-source-select">Source</label>
+        <select
+          id="editor-source-select"
+          class="editor-post-select editor-source-select"
+          data-source-select
+        >
+          <option value="posts">posts/</option>
+          <option value="drafts">drafts/</option>
+        </select>
+        <label class="editor-toolbar-label" for="editor-post-select">Load markdown</label>
+        <select id="editor-post-select" class="editor-post-select editor-entry-select" data-post-select>
+          <option value="">Loading...</option>
+        </select>
+        <button class="editor-tool-btn ghost" type="button" data-action="load-post">Load</button>
+      </div>
+      <p class="editor-status" data-editor-status>Ready</p>
+      <input type="file" accept=".md,.markdown,text/markdown,text/plain" data-file-input hidden />
+    </section>
+
+    <section class="editor-panels">
+      <section class="editor-panel editor-panel-source">
+        <header class="editor-panel-head">
+          <h2>Markdown</h2>
+          <p class="editor-doc-name" data-doc-name>untitled.md</p>
+        </header>
+        <textarea
+          class="editor-source-input"
+          data-editor-input
+          spellcheck="false"
+          aria-label="Markdown source editor"
+        ></textarea>
+        <section class="editor-slash-menu" data-slash-menu hidden>
+          <p class="editor-slash-hint" data-slash-hint>Insert syntax</p>
+          <ul class="editor-slash-list" data-slash-list role="listbox" aria-label="Slash commands"></ul>
+        </section>
+      </section>
+
+      <section class="editor-panel">
+        <header class="editor-panel-head">
+          <h2>Preview</h2>
+          <p class="editor-preview-meta" data-preview-meta></p>
+        </header>
+        <div class="editor-preview-scroll">
+          <header class="editor-preview-hero">
+            <p class="article-topic-chip" data-preview-category>Notebook</p>
+            <h1 data-preview-title>Untitled Draft</h1>
+            <time class="article-date" data-preview-date></time>
+          </header>
+          <div class="article-body editor-preview-body" data-preview-body>
+            <p class="muted">Write Markdown on the left to preview here.</p>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+
+</html>

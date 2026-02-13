@@ -27,3 +27,7 @@ venv/
 # Editor
 .vscode/
 .idea/
+
+# Local writing drafts (not published)
+drafts/
+data/drafts.json
