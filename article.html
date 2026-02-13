@@ -19,7 +19,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles/main.css?v=59b56d99f2" />
+  <link rel="stylesheet" href="styles/main.css?v=5d47426fa0" />
   <script>
     window.MathJax = {
       tex: {
@@ -40,22 +40,39 @@
     src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"
   ></script>
   <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script type="module" src="scripts/header.js?v=67455feb94" defer></script>
-  <script type="module" src="scripts/article.js?v=b65610a2a4" defer></script>
+  <script type="module" src="scripts/header.js?v=149c7b5931" defer></script>
+  <script type="module" src="scripts/article.js?v=1ab297e363" defer></script>
 </head>
 
 <body>
   <header class="site-header">
     <div class="site-shell">
-      <a class="brand" href="index.html">Hongming Tan</a>
-      <nav class="site-nav">
+      <a class="brand" href="index.html">
+        <img class="brand-mark" src="assets/brand-h.svg?v=2" alt="" aria-hidden="true" />
+        <span class="brand-text">Hongming Tan</span>
+      </a>
+      <nav class="site-nav" id="site-navigation">
         <a href="index.html">Home</a>
         <a class="active" href="articles.html">Articles</a>
         <a href="contact.html">Contact</a>
+        <div class="mobile-theme-switch" role="group" aria-label="Theme switch">
+          <button type="button" class="mobile-theme-option" data-theme-option="light" aria-pressed="false" aria-label="Light theme"></button>
+          <button type="button" class="mobile-theme-option" data-theme-option="dark" aria-pressed="false" aria-label="Dark theme"></button>
+        </div>
       </nav>
       <div class="header-actions">
         <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
           <span class="theme-toggle-icon" aria-hidden="true" data-theme-icon>☀️</span>
+        </button>
+        <button
+          class="menu-toggle"
+          type="button"
+          data-menu-toggle
+          aria-expanded="false"
+          aria-controls="site-navigation"
+          aria-label="Open navigation menu"
+        >
+          <span class="menu-toggle-icon" aria-hidden="true"></span>
         </button>
       </div>
     </div>
@@ -63,6 +80,9 @@
 
   <main class="site-main article-layout">
     <div class="article-grid">
+      <aside class="article-desktop-toc" data-desktop-toc hidden>
+        <nav class="article-desktop-toc-nav" data-article-desktop-toc aria-label="Section navigation"></nav>
+      </aside>
       <div class="article-column">
         <article class="article">
           <div id="article-top" class="article-top-anchor"></div>
