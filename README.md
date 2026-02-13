@@ -73,6 +73,18 @@ Optional local drafts workflow:
   python tools/optimize_images.py <file-or-dir>
   ```
 
+### Pre-deploy self-check (same as CI)
+
+Run this before `git push`:
+
+```bash
+node tools/update-posts-index.js
+node tools/build-site.js
+git diff --quiet -- data/posts.json '*.html' && echo "OK: ready to deploy" || echo "FAIL: commit generated files first"
+```
+
+If output is `FAIL`, commit the changed generated files (typically `data/posts.json` and/or `*.html`) and run the same check again.
+
 CI automation:
 
 - `.github/workflows/site-consistency.yml` runs on push/PR and checks generated files are committed.

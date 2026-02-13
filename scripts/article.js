@@ -500,6 +500,7 @@ function bindDesktopTocScroll(headings) {
     contentNode?.closest(".article-body-wrap") ??
     document.querySelector(".article-body-wrap") ??
     contentNode;
+  const articleHeroWrapNode = document.querySelector(".article-hero-wrap");
 
   if (links.length === 0 || headingNodes.length === 0 || !articleBodyWrapNode) {
     desktopTocContainer.hidden = true;
@@ -513,11 +514,31 @@ function bindDesktopTocScroll(headings) {
     });
   };
 
+  const isHeroImagePending = () => {
+    if (!heroImageContainer || !heroImageNode) {
+      return false;
+    }
+    if (heroImageContainer.style.display === "none") {
+      return false;
+    }
+    const src = heroImageNode.getAttribute("src");
+    if (!src) {
+      return false;
+    }
+    return !heroImageNode.complete;
+  };
+
   let ticking = false;
   const updateState = () => {
     ticking = false;
     const isDesktop = window.innerWidth >= DESKTOP_TOC_MIN_WIDTH;
     if (!isDesktop) {
+      desktopTocContainer.classList.remove("is-visible");
+      updateActive(null);
+      return;
+    }
+
+    if (isHeroImagePending()) {
       desktopTocContainer.classList.remove("is-visible");
       updateActive(null);
       return;
@@ -553,11 +574,32 @@ function bindDesktopTocScroll(headings) {
 
   window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", requestUpdate);
+  window.addEventListener("load", requestUpdate);
+  const onHeroImageSettled = () => requestUpdate();
+  heroImageNode?.addEventListener("load", onHeroImageSettled);
+  heroImageNode?.addEventListener("error", onHeroImageSettled);
+  const resizeObserver =
+    typeof window.ResizeObserver === "function"
+      ? new window.ResizeObserver(() => requestUpdate())
+      : null;
+  if (resizeObserver) {
+    resizeObserver.observe(articleBodyWrapNode);
+    if (articleHeroWrapNode) {
+      resizeObserver.observe(articleHeroWrapNode);
+    }
+    if (heroImageContainer) {
+      resizeObserver.observe(heroImageContainer);
+    }
+  }
   requestUpdate();
 
   return () => {
     window.removeEventListener("scroll", requestUpdate);
     window.removeEventListener("resize", requestUpdate);
+    window.removeEventListener("load", requestUpdate);
+    heroImageNode?.removeEventListener("load", onHeroImageSettled);
+    heroImageNode?.removeEventListener("error", onHeroImageSettled);
+    resizeObserver?.disconnect();
     desktopTocContainer.classList.remove("is-visible");
     updateActive(null);
   };
