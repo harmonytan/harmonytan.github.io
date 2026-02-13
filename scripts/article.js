@@ -554,7 +554,9 @@ function bindDesktopTocScroll(headings) {
     const headerHeight = document.querySelector(".site-header")?.getBoundingClientRect().height ?? 0;
     const revealLine = headerHeight + 24;
     const bodyRect = articleBodyWrapNode.getBoundingClientRect();
-    const shouldShow = bodyRect.top < window.innerHeight && bodyRect.bottom > revealLine + 120;
+    const contentLeadTop = contentLeadNode?.getBoundingClientRect().top ?? bodyRect.top;
+    const canShowByBottom = bodyRect.bottom > revealLine + 120;
+    const shouldShow = canShowByBottom;
     desktopTocContainer.classList.toggle("is-visible", shouldShow);
     if (!shouldShow) {
       desktopTocContainer.classList.remove("is-stuck");
@@ -563,7 +565,6 @@ function bindDesktopTocScroll(headings) {
       return;
     }
 
-    const contentLeadTop = contentLeadNode?.getBoundingClientRect().top ?? bodyRect.top;
     const currentTop = Math.max(revealLine, contentLeadTop);
     desktopTocContainer.style.top = `${currentTop}px`;
     desktopTocContainer.classList.toggle("is-stuck", contentLeadTop <= revealLine);
