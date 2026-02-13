@@ -501,6 +501,9 @@ function bindDesktopTocScroll(headings) {
     document.querySelector(".article-body-wrap") ??
     contentNode;
   const articleHeroWrapNode = document.querySelector(".article-hero-wrap");
+  const contentLeadNode = contentNode?.querySelector(
+    "h1, h2, h3, h4, h5, h6, p, ul, ol, blockquote, figure, pre, table, hr"
+  );
 
   if (links.length === 0 || headingNodes.length === 0 || !articleBodyWrapNode) {
     desktopTocContainer.hidden = true;
@@ -534,12 +537,16 @@ function bindDesktopTocScroll(headings) {
     const isDesktop = window.innerWidth >= DESKTOP_TOC_MIN_WIDTH;
     if (!isDesktop) {
       desktopTocContainer.classList.remove("is-visible");
+      desktopTocContainer.classList.remove("is-stuck");
+      desktopTocContainer.style.removeProperty("top");
       updateActive(null);
       return;
     }
 
     if (isHeroImagePending()) {
       desktopTocContainer.classList.remove("is-visible");
+      desktopTocContainer.classList.remove("is-stuck");
+      desktopTocContainer.style.removeProperty("top");
       updateActive(null);
       return;
     }
@@ -547,13 +554,19 @@ function bindDesktopTocScroll(headings) {
     const headerHeight = document.querySelector(".site-header")?.getBoundingClientRect().height ?? 0;
     const revealLine = headerHeight + 24;
     const bodyRect = articleBodyWrapNode.getBoundingClientRect();
-    const revealThreshold = Math.max(revealLine + 24, window.innerHeight * 0.42);
-    const shouldShow = bodyRect.top <= revealThreshold && bodyRect.bottom > revealLine + 140;
+    const shouldShow = bodyRect.top < window.innerHeight && bodyRect.bottom > revealLine + 120;
     desktopTocContainer.classList.toggle("is-visible", shouldShow);
     if (!shouldShow) {
+      desktopTocContainer.classList.remove("is-stuck");
+      desktopTocContainer.style.removeProperty("top");
       updateActive(null);
       return;
     }
+
+    const contentLeadTop = contentLeadNode?.getBoundingClientRect().top ?? bodyRect.top;
+    const currentTop = Math.max(revealLine, contentLeadTop);
+    desktopTocContainer.style.top = `${currentTop}px`;
+    desktopTocContainer.classList.toggle("is-stuck", contentLeadTop <= revealLine);
 
     let activeId = headingNodes[0].id;
     headingNodes.forEach((headingNode) => {
@@ -601,6 +614,8 @@ function bindDesktopTocScroll(headings) {
     heroImageNode?.removeEventListener("error", onHeroImageSettled);
     resizeObserver?.disconnect();
     desktopTocContainer.classList.remove("is-visible");
+    desktopTocContainer.classList.remove("is-stuck");
+    desktopTocContainer.style.removeProperty("top");
     updateActive(null);
   };
 }
