@@ -191,7 +191,7 @@ body.home-page {
   --color-header-floating-bg: rgba(8, 18, 38, 0.62);
   --color-focus-outline: rgba(156, 196, 255, 0.75);
   background-image: radial-gradient(circle at 50% 58%, rgba(2, 10, 28, 0.06), rgba(2, 8, 20, 0.34)),
-    url("../assets/index.png");
+    url("../assets/index.jpg");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
