@@ -26,6 +26,7 @@ const heroImageNode = document.querySelector("[data-hero-image-img]");
 const articleGrid = document.querySelector(".article-grid");
 const sidebarHoverZone = document.querySelector(".sidebar-hover-zone");
 const articleSidebar = document.querySelector(".article-sidebar");
+const backLinkNode = document.querySelector("[data-article-back-link]");
 const pendingMathTargets = [];
 let mathRetryTimer = null;
 const pendingHighlightTargets = [];
@@ -33,25 +34,43 @@ let highlightRetryTimer = null;
 let highlightFallbackTimer = null;
 const DESKTOP_TOC_MIN_WIDTH = 1250;
 let desktopTocCleanup = null;
+const CONTENT_SOURCES = {
+  posts: {
+    indexPath: "data/posts.json",
+    contentDir: "posts",
+    backHref: "articles.html",
+    backLabel: "Back to Articles",
+  },
+  drafts: {
+    indexPath: "data/drafts.json",
+    contentDir: "drafts",
+    backHref: "editor.html",
+    backLabel: "Back to Drafts",
+  },
+};
 
 async function loadArticle() {
   try {
-    const posts = await loadPosts();
-    if (!posts || posts.length === 0) {
+    const sourceKey = resolveSourceKey();
+    const source = CONTENT_SOURCES[sourceKey];
+    configureBackLink(source);
+    const entries = await loadEntries(source);
+    if (!entries || entries.length === 0) {
       renderEmptyState("No posts yet. Check back soon.");
       return;
     }
 
-    const targetSlug = resolveSlug(posts);
+    const targetSlug = resolveSlug(entries);
     if (!targetSlug) {
       renderEmptyState("We couldn't find that article.");
       return;
     }
 
-    const postMeta = posts.find((post) => post.slug === targetSlug);
-    const { attributes, body } = await fetchMarkdown(targetSlug);
+    const postMeta = entries.find((post) => post.slug === targetSlug);
+    const { attributes, body } = await fetchMarkdown(targetSlug, source);
     const mergedMeta = {
       slug: targetSlug,
+      sourceKey,
       title: postMeta?.title ?? attributes.title ?? targetSlug,
       date: postMeta?.date ?? attributes.date ?? "",
       topic: postMeta?.topic ?? attributes.category ?? "",
@@ -68,22 +87,37 @@ async function loadArticle() {
   }
 }
 
-let cachedPosts = null;
+const cachedEntries = new Map();
 
-async function loadPosts() {
-  if (cachedPosts) {
-    return cachedPosts;
+async function loadEntries(source) {
+  if (cachedEntries.has(source.indexPath)) {
+    return cachedEntries.get(source.indexPath);
   }
-  const response = await fetch(`${BASE_URL}/data/posts.json`);
+  const response = await fetch(`${BASE_URL}/${source.indexPath}`);
   if (!response.ok) {
-    throw new Error(`Failed to load post list: ${response.status}`);
+    throw new Error(`Failed to load content list: ${response.status}`);
   }
-  const posts = await response.json();
-  if (!Array.isArray(posts)) {
+  const entries = await response.json();
+  if (!Array.isArray(entries)) {
     return [];
   }
-  cachedPosts = posts.filter((post) => post && post.slug);
-  return cachedPosts;
+  const filteredEntries = entries.filter((post) => post && post.slug);
+  cachedEntries.set(source.indexPath, filteredEntries);
+  return filteredEntries;
+}
+
+function resolveSourceKey() {
+  const params = new URLSearchParams(window.location.search);
+  const rawSource = params.get("source");
+  return rawSource === "drafts" ? "drafts" : "posts";
+}
+
+function configureBackLink(source) {
+  if (!backLinkNode) {
+    return;
+  }
+  backLinkNode.href = source.backHref;
+  backLinkNode.textContent = source.backLabel;
 }
 
 function resolveSlug(posts) {
@@ -98,9 +132,9 @@ function resolveSlug(posts) {
   return posts[0]?.slug;
 }
 
-async function fetchMarkdown(slug) {
+async function fetchMarkdown(slug, source) {
   const response = await fetch(
-    `${BASE_URL}/posts/${encodeURIComponent(slug)}.md`
+    `${BASE_URL}/${source.contentDir}/${encodeURIComponent(slug)}.md`
   );
   if (!response.ok) {
     throw new Error(`Failed to load markdown for: ${slug}`);
@@ -929,7 +963,7 @@ function renderCitationBlock(post) {
   }
 
   const dateParts = parseDateParts(post.date);
-  const pageUrl = buildArticleUrl(post.slug);
+  const pageUrl = buildArticleUrl(post.slug, post.sourceKey);
   const blogName = "Hongming's Blog";
 
   const humanCitation = `${post.author}. "${post.title}." ${blogName}${
@@ -995,8 +1029,14 @@ function parseDateParts(iso) {
   return { human: `${month} ${year}`, month, year };
 }
 
-function buildArticleUrl(slug) {
-  const path = `${BASE_URL}/article.html?post=${encodeURIComponent(slug)}`;
+function buildArticleUrl(slug, sourceKey = "posts") {
+  const params = new URLSearchParams({
+    post: slug,
+  });
+  if (sourceKey === "drafts") {
+    params.set("source", "drafts");
+  }
+  const path = `${BASE_URL}/article.html?${params.toString()}`;
   try {
     const url = new URL(path, window.location.origin);
     return url.toString();

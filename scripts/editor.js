@@ -34,6 +34,7 @@ const actionNodes = {
   save: document.querySelector('[data-action="save"]'),
   saveAs: document.querySelector('[data-action="save-as"]'),
   loadPost: document.querySelector('[data-action="load-post"]'),
+  openArticleView: document.querySelector('[data-action="open-article-view"]'),
   toggleTheme: document.querySelector('[data-action="toggle-theme"]'),
 };
 const themeIconNode = document.querySelector("[data-theme-icon]");
@@ -268,6 +269,7 @@ function bindActions() {
   actionNodes.save?.addEventListener("click", saveDocument);
   actionNodes.saveAs?.addEventListener("click", saveAsDocument);
   actionNodes.loadPost?.addEventListener("click", loadSelectedPost);
+  actionNodes.openArticleView?.addEventListener("click", openSelectedInArticleView);
   sourceSelect?.addEventListener("change", () => {
     loadPostOptions();
   });
@@ -841,9 +843,45 @@ async function loadSelectedPost() {
   }
 }
 
+function openSelectedInArticleView() {
+  const selectedSource = getSelectedContentSource();
+  const slug = postSelect?.value;
+  if (!slug) {
+    setStatus(`Choose a markdown file from ${selectedSource.label} first.`);
+    return;
+  }
+
+  const articleUrl = buildArticleViewUrl(slug, selectedSource);
+  const openedWindow = window.open(articleUrl, "_blank");
+  if (!openedWindow) {
+    setStatus(`Browser blocked the article view tab for ${slug}. Allow pop-ups for this site and try again.`);
+    return;
+  }
+  openedWindow.opener = null;
+
+  if (state.dirty) {
+    setStatus(
+      `Opened article view for ${slug}. Unsaved editor changes are not included until they are saved to ${selectedSource.label}.`
+    );
+    return;
+  }
+
+  setStatus(`Opened article view for ${slug}.`);
+}
+
 function getSelectedContentSource() {
   const key = sourceSelect?.value === "drafts" ? "drafts" : "posts";
   return CONTENT_SOURCES[key];
+}
+
+function buildArticleViewUrl(slug, source) {
+  const params = new URLSearchParams({
+    post: slug,
+  });
+  if (source.contentDir === "drafts") {
+    params.set("source", "drafts");
+  }
+  return `${BASE_URL}/article.html?${params.toString()}`;
 }
 
 function applyLoadedSource(source, fileName, handle) {
