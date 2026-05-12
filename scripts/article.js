@@ -21,8 +21,6 @@ const topicNode = document.querySelector("[data-article-topic]");
 const strapNode = document.querySelector("[data-article-strap]");
 const authorNode = document.querySelector("[data-article-author]");
 const heroReadingNode = document.querySelector("[data-article-meta-reading]");
-const heroImageContainer = document.querySelector("[data-hero-image]");
-const heroImageNode = document.querySelector("[data-hero-image-img]");
 const articleGrid = document.querySelector(".article-grid");
 const sidebarHoverZone = document.querySelector(".sidebar-hover-zone");
 const articleSidebar = document.querySelector(".article-sidebar");
@@ -39,7 +37,7 @@ const CONTENT_SOURCES = {
     indexPath: "data/posts.json",
     contentDir: "posts",
     backHref: "articles.html",
-    backLabel: "Back to Articles",
+    backLabel: "Back to Writing",
   },
   drafts: {
     indexPath: "data/drafts.json",
@@ -134,7 +132,7 @@ function resolveSlug(posts) {
 
 async function fetchMarkdown(slug, source) {
   const response = await fetch(
-    `${BASE_URL}/${source.contentDir}/${encodeURIComponent(slug)}.md`
+    `${BASE_URL}/${source.contentDir}/${encodeURIComponent(slug)}.md?v=currency-fix-20260512`
   );
   if (!response.ok) {
     throw new Error(`Failed to load markdown for: ${slug}`);
@@ -164,7 +162,6 @@ function renderArticle(post, markdownBody) {
   const textStats = computeTextStats(markdownBody);
   setArticleStatsDisplay(textStats);
   updateHeroMeta(post, textStats);
-  updateHeroImage(post);
   setDocumentTitle(post.title);
   bindTocLabelScroll();
   renderCitationBlock(post);
@@ -487,6 +484,7 @@ function buildDesktopToc(headings) {
     desktopTocNode.innerHTML = "";
     desktopTocContainer.hidden = true;
     desktopTocContainer.classList.remove("is-visible");
+    articleGrid?.classList.add("has-no-desktop-toc");
     return;
   }
 
@@ -506,6 +504,7 @@ function buildDesktopToc(headings) {
   desktopTocNode.innerHTML = "";
   desktopTocNode.appendChild(list);
   desktopTocContainer.hidden = false;
+  articleGrid?.classList.remove("has-no-desktop-toc");
   desktopTocCleanup = bindDesktopTocScroll(topLevelHeadings);
 }
 
@@ -551,33 +550,11 @@ function bindDesktopTocScroll(headings) {
     });
   };
 
-  const isHeroImagePending = () => {
-    if (!heroImageContainer || !heroImageNode) {
-      return false;
-    }
-    if (heroImageContainer.style.display === "none") {
-      return false;
-    }
-    const src = heroImageNode.getAttribute("src");
-    if (!src) {
-      return false;
-    }
-    return !heroImageNode.complete;
-  };
-
   let ticking = false;
   const updateState = () => {
     ticking = false;
     const isDesktop = window.innerWidth >= DESKTOP_TOC_MIN_WIDTH;
     if (!isDesktop) {
-      desktopTocContainer.classList.remove("is-visible");
-      desktopTocContainer.classList.remove("is-stuck");
-      desktopTocContainer.style.removeProperty("top");
-      updateActive(null);
-      return;
-    }
-
-    if (isHeroImagePending()) {
       desktopTocContainer.classList.remove("is-visible");
       desktopTocContainer.classList.remove("is-stuck");
       desktopTocContainer.style.removeProperty("top");
@@ -623,9 +600,6 @@ function bindDesktopTocScroll(headings) {
   window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", requestUpdate);
   window.addEventListener("load", requestUpdate);
-  const onHeroImageSettled = () => requestUpdate();
-  heroImageNode?.addEventListener("load", onHeroImageSettled);
-  heroImageNode?.addEventListener("error", onHeroImageSettled);
   const resizeObserver =
     typeof window.ResizeObserver === "function"
       ? new window.ResizeObserver(() => requestUpdate())
@@ -635,9 +609,6 @@ function bindDesktopTocScroll(headings) {
     if (articleHeroWrapNode) {
       resizeObserver.observe(articleHeroWrapNode);
     }
-    if (heroImageContainer) {
-      resizeObserver.observe(heroImageContainer);
-    }
   }
   requestUpdate();
 
@@ -645,8 +616,6 @@ function bindDesktopTocScroll(headings) {
     window.removeEventListener("scroll", requestUpdate);
     window.removeEventListener("resize", requestUpdate);
     window.removeEventListener("load", requestUpdate);
-    heroImageNode?.removeEventListener("load", onHeroImageSettled);
-    heroImageNode?.removeEventListener("error", onHeroImageSettled);
     resizeObserver?.disconnect();
     desktopTocContainer.classList.remove("is-visible");
     desktopTocContainer.classList.remove("is-stuck");
@@ -718,22 +687,6 @@ function updateHeroMeta(post, textStats) {
   }
   if (heroReadingNode && textStats?.shortLabel) {
     heroReadingNode.textContent = textStats.shortLabel;
-  }
-}
-
-function updateHeroImage(post) {
-  if (!heroImageContainer || !heroImageNode) {
-    return;
-  }
-  const src = post.image;
-  if (src) {
-    heroImageNode.src = src;
-    applyImageFallback(heroImageNode);
-    heroImageNode.alt = post.title ? `${post.title} cover image` : "Article cover image";
-    heroImageContainer.style.display = "block";
-  } else {
-    heroImageContainer.style.display = "none";
-    heroImageNode.removeAttribute("src");
   }
 }
 
@@ -964,7 +917,7 @@ function renderCitationBlock(post) {
 
   const dateParts = parseDateParts(post.date);
   const pageUrl = buildArticleUrl(post.slug, post.sourceKey);
-  const blogName = "Hongming's Blog";
+  const blogName = "Hongming Tan";
 
   const humanCitation = `${post.author}. "${post.title}." ${blogName}${
     dateParts?.human ? ` (${dateParts.human})` : ""

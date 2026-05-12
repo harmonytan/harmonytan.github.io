@@ -2,108 +2,113 @@
 title: Reward Hacking in Life
 date: 2025-11-26
 category: Thought
-image: assets/images/reward-hacking-in-life/main.jpg
 ---
 
-小红书似乎有一种魔力，每当我拿起手机，就会不自觉的右滑到屏幕的最后一页APP资源库，然后下意识般地点击进入小红书。
-这甚至引发了一种心理层面的焦虑，当我实习回到宿舍，在宿舍想要完成需要进入心流状态的任务，例如深度阅读与写作，的时候；眼神总会不自觉的被放在视野角落的手机所吸引，之后会瞬间涌出一股强烈的 motivation 使我十分想去拿起手机并打开小红书。但当自己拿起了手机并真正的开始刷小红书，不久之后，我又会陷入另外一种虚无与焦虑，紧接着大脑会感受到模糊、发烫，小红书这样的系统尽然有如此的魔力能够调节人类的情绪与感知。
-我实在是难以忍受这种大脑引发的焦虑，伴随着房间里的热空调，它的症状更加严重，我决定回到公司，期待这能够缓解我的症状。到了公司之后，去往公司路上的低温与公司环境似乎使我短暂的变得宁静，但是当我打开公司电脑，发现又似乎无事可做，便又陷入了一种大脑发热昏厥的境地。
-突然间，[Ilya Talk](https://www.youtube.com/watch?v=aR20FWCCjAs&t=2769s) 中大量提到的 value function 从我脑中闪过，于是我便火速从公司回到了宿舍，打开了冷空调，开启我的写作，也许我的行为正是一种生活之中存在的 Reward Hacking。
+Xiaohongshu seems to have a kind of magic. Whenever I pick up my phone, I unconsciously swipe to the last page of the app library and open Xiaohongshu almost by reflex.
 
-## 强化学习
-强化学习 [1]的优化目标
+This even creates a kind of psychological anxiety. When I return to my dorm after an internship and want to enter a flow state for tasks such as deep reading or writing, my eyes are often pulled toward the phone at the edge of my field of vision. A strong motivation then suddenly appears: I want to pick up the phone and open Xiaohongshu. But after I actually start scrolling, I soon fall into another kind of emptiness and anxiety. My brain becomes blurry and hot. A system like Xiaohongshu can somehow regulate human emotion and perception with surprising force.
+
+I could not tolerate this brain-induced anxiety. The hot air conditioner in the room made it worse, so I decided to go back to the office, hoping that the environment would help. The cold air on the way and the office itself made me briefly calmer. But when I opened my work computer and found that there was apparently nothing to do, I again fell into a state of mental heat and dizziness.
+
+Suddenly, the value function frequently mentioned in [Ilya's talk](https://www.youtube.com/watch?v=aR20FWCCjAs&t=2769s) flashed through my mind. I immediately went back to the dorm, turned on the air conditioner, and started writing. Perhaps this behavior is a form of reward hacking in daily life.
+
+## Reinforcement Learning
+
+The optimization objective of reinforcement learning [1] is:
 $$
 \arg\max_{\theta}\mathbb{E}_{x \in \pi_{\theta}}[R(x)]
 $$
-- $\pi_{\theta}$代表策略，其中$\theta$代表智能
-- $x$则是根据策略采样出的动作轨迹，强化学习中更一般的写法是$\tau=<s_0,a_0,r_0,...,s_t,a_t,r_t>$,它是一种长程采样后获得的 action-state-reward 序列轨迹，包含每一个时间步$t$表示的状态$s_t$,采取的动作$a_t$，获得的奖励$r_t$
-- $R(.)$是长程奖励的估计函数，最一般形式的奖励函数可以写作$R(x)=r_0+\gamma \times r_1+...+\gamma^{t}r_t$，$\gamma$可以视为远期收益的折扣
+- $\pi_{\theta}$ represents the policy, where $\theta$ represents intelligence or model parameters.
+- $x$ is a trajectory sampled from the policy. In reinforcement learning, a more general notation is $\tau=<s_0,a_0,r_0,...,s_t,a_t,r_t>$: a long-horizon sequence of action, state, and reward, including the state $s_t$, action $a_t$, and reward $r_t$ at each timestep $t$.
+- $R(.)$ is an estimated long-horizon reward function. A general form can be written as $R(x)=r_0+\gamma \times r_1+...+\gamma^{t}r_t$, where $\gamma$ can be interpreted as a discount factor for future returns.
 
-此外，不妨介绍另外 2 个补充名词：
-1. $Q(s,a)$-动作价值函数，表示在状态$s$下选择动作$a$，按照策略$\pi$继续执行的长期回报
-2. $V(s)$-状态价值函数，表示在策略$\pi$下，从状态$s$出发的长程回报
+Two additional terms are useful:
+1. $Q(s,a)$: the action-value function, which represents the long-term return obtained by taking action $a$ in state $s$ and then continuing according to policy $\pi$.
+2. $V(s)$: the state-value function, which represents the long-term return starting from state $s$ under policy $\pi$.
 
-##  一些先验假设
-为了建模人脑的强化学习机制，有一些先验必须思考：
-- $R(.)$ 人脑的 Reward Function是什么
-- $\pi_{\theta}$ 人脑的策略选择与 Reward Function 是否是独立的
+## Some Prior Assumptions
 
-在这个模型之中，我初始假设为
-- $R(.)$ 人脑的 Reward Function是人类生理反应分泌出的多种化学物质，最终经由人脑产生的感觉，这是一个十分符合直觉的假设。
-- $\pi_{\theta}$ 人脑的策略选择与 Reward Function 是独立的，即可以解释为，刺激人脑产生的化学物质分泌与影响人脑决策的电信号，是互不干扰的。
+To model reinforcement learning in the human brain, several prior questions must be considered:
+- What is the brain's reward function $R(.)$?
+- Is the brain's policy $\pi_{\theta}$ independent of its reward function?
 
-## 反直觉的观测结果
-为什么我会选择拿起手机多刷一会儿小红书，而不是进行深度地阅读、写作、学习、跑实验呢？
+In this model, my initial assumptions are:
+- The brain's reward function $R(.)$ is ultimately grounded in feelings produced by chemical signals secreted through human physiological responses. This is an intuitive assumption.
+- The brain's policy $\pi_{\theta}$ is independent of the reward function. In other words, the chemical secretion stimulated by the brain and the electrical signals that influence decision-making do not directly interfere with each other.
 
-基于这两种行动轨迹，我将分别描述这一系列的轨迹为
-- $\tau_{红书}=<s_0,a_0,r_0,...>$
-- $\tau_{学习}=<s_0,a_0,r_0,...>$
+## A Counterintuitive Observation
 
-应用问题的分析框架，我还需要以下的符合直觉的先验假设
-- 人类存在一个理性的远期回报折现率 $\gamma$，并采用一般形式的远期期望回报奖励函数估计远期收益
-- 在一定的时间步$T$之前，刷小红书当前行动步的收益更大，之后则是阅读当前行动步的收益更大，即
+Why do I choose to pick up my phone and scroll Xiaohongshu for a while instead of reading deeply, writing, studying, or running experiments?
+
+Based on these two action trajectories, I describe them as:
+- $\tau_{Xiaohongshu}=<s_0,a_0,r_0,...>$
+- $\tau_{Study}=<s_0,a_0,r_0,...>$
+
+To analyze the problem, I need the following intuitive assumptions:
+- Humans have a rational discount factor $\gamma$ for future returns and estimate long-term returns with a standard expected reward function.
+- Before a certain timestep $T$, scrolling Xiaohongshu has a higher immediate reward; after $T$, reading has a higher immediate reward:
 $$
 \begin{cases}
-r_{t}^{红书}\ge r_{t}^{阅读}, & t\le T \\
-r_{t}^{红书}<r_{t}^{阅读}, & t> T
+r_{t}^{Xiaohongshu}\ge r_{t}^{Reading}, & t\le T \\
+r_{t}^{Xiaohongshu}<r_{t}^{Reading}, & t> T
 \end{cases}
 $$
 
-在这样的假设之下，只要选取一个合理的折旧率$\gamma$，就能够得出$R(\tau_{红书})<R(\tau_{学习})$，或者
-$R(\tau_{红书}) \ge R(\tau_{学习})$。
+Under these assumptions, choosing a reasonable discount factor $\gamma$ can lead to either $R(\tau_{Xiaohongshu})<R(\tau_{Study})$ or $R(\tau_{Xiaohongshu}) \ge R(\tau_{Study})$.
 
-似乎调研生活之中大部分的人类，多刷一会儿小红书和阅读，哪一个对于人生的预期收益更多，都会选择阅读。即$R(\tau_{红书})<R(\tau_{学习})$，但实际情况之中，这又是十分反常识的，如果一个人即刷过小红书、又体验过阅读，大部分都会选择实际选择刷小红书。
+If we ask most people which action has a higher expected return for life, scrolling Xiaohongshu or reading, they would likely choose reading. That is, they would say $R(\tau_{Xiaohongshu})<R(\tau_{Study})$. But in practice, the result is counterintuitive: among people who have experienced both Xiaohongshu and reading, many still choose to scroll Xiaohongshu.
 
-这样的建模一定存在什么偏差......
+There must be some bias in this model.
 
-## 更细粒度的建模
-更进一步的拆解 $r_t$来进一步探索模型的偏差，刷小红书和深度阅读，到身体产生化学信号并影响大脑，简化为如下模型：
+## A More Fine-Grained Model
+
+To explore the bias in the model, we can further decompose $r_t$. The process from scrolling Xiaohongshu or deep reading to chemical signals affecting the brain can be simplified as:
 $$
-Information \rightarrow 人脑理解压缩 \rightarrow 分泌化学信号 \rightarrow 人脑预期回报 r
+Information \rightarrow Brain Compression \rightarrow Chemical Signal \rightarrow Expected Brain Reward \ r
 $$
-根据这样的传递链路，可以从以下几个方面去拆解：
-- 刷小红书和深度阅读的信息分布、信息总量 $I_{红书},I_{阅读}$
-- 获得信息后人脑理解并压缩后的信息增益 $Compress(I)\rightarrow IG_{红书},IG_{阅读}$
-- 人们如何根据信息增益分泌化学信号 $Chemistry(IG) \rightarrow c_{红书},c_{阅读}$
-- 人脑化学信号转化为预期回报的函数 $r(c)$
+Following this chain, we can decompose the process into:
+- The information distribution and total information volume of Xiaohongshu and deep reading: $I_{Xiaohongshu},I_{Reading}$
+- The information gain after the brain understands and compresses the input: $Compress(I)\rightarrow IG_{Xiaohongshu},IG_{Reading}$
+- How humans secrete chemical signals based on information gain: $Chemistry(IG) \rightarrow c_{Xiaohongshu},c_{Reading}$
+- The function that maps brain chemistry into expected reward: $r(c)$
 
-## 信息增益回路
-这个分析链条存在明显的前后依赖关系，从处理链路的第一步开始研究，是一个更好的选择。
+## The Information-Gain Loop
 
-此外直接建模信息量$I$是十分困难的，我认为这是一个主观概念，而非一个客观概念，其依赖于人脑，所以我选择联合前 2 个链路进行分析。
+This analytical chain has obvious dependencies, so it is better to start from the first step of the processing pipeline.
 
-我再次先验的假设人脑对于信息增量分泌的化学物质为线性递增的关系。
+Directly modeling information volume $I$ is difficult. I regard it as a subjective concept rather than an objective one, because it depends on the brain. Therefore, I analyze the first two steps together.
 
-采用香农 [2]信息熵的定义，信息增益定义为：
+I again assume, as a prior, that the chemicals secreted by the brain increase linearly with information gain.
+
+Using Shannon entropy [2], information gain can be defined as:
 $$
-H(X)=−x∑​p(x)logp(x)
+H(X)=-\sum_x p(x)\log p(x)
 $$
 $$
-IG(X;Y=y)=H(X)−H(X∣Y=y)
+IG(X;Y=y)=H(X)-H(X \mid Y=y)
 $$
-在数学上表现为 2 个分布之间的 KL 散度，即采取这个行动之后分布不确定性减少了多少。
+Mathematically, it can be expressed as the KL divergence between two distributions: how much uncertainty decreases after taking an action.
 
+I then make the following assumption:
+- $|I_{Xiaohongshu}|=|I_{Reading}|$. The two have the same total information volume but different distributions. This is measured from the perspective of the world as the coordinate system. I assume raw information can be represented as visual input, so the total amount of information per unit time should remain the same. Of course, this ignores touch, taste, and other modalities.
 
-我又进行了如下假设：
-- $|I_{红书}|=|I_{阅读}|$，即信息总量 2 者相同，但是分布不同，这是一种从世界作为坐标系进行观测而得出的信息量，我认为原始信息都可以表示为视觉输入，理应在单位时间内，信息总量是保持相同的。当然，这忽略了触觉、味觉等信息输入的形式。
+After compression by the brain, however, we may get:
+- $IG_{Xiaohongshu}>IG_{Reading}$
 
-最后经过人脑的压缩，导致了
-- $IG_{红书}>IG_{阅读}$
+This produces more pleasure from scrolling Xiaohongshu and causes many people to choose it. This may be a useful analytical path: the brain compresses different types of information with different efficiency, producing different levels of information gain.
 
-使得刷红书的快感更多，并导致了大多数人类最终会选择刷小红书。这也许是一个有效的分析途径，即人脑对于不同信息的压缩处理能力不同导致了信息增益的不同；
+## Reward Hacking
 
-## Reward Hacking 
-此外，我还假设了分泌化学信号才转换为最终的奖励 $r(.)$，这在直觉上似乎是合理的；
+I also assume that chemical signals are converted into the final reward $r(.)$, which seems intuitively reasonable.
 
-但是从社会意义上的人类来说，人类的目标并不完全是寻求大脑多巴胺的分泌，还追寻着社会上的财富、地位、贡献等，至少在人们理性进行回答的时候，人们更多会从社会的角度来建模 $r(.)$函数。
+But from a social perspective, human goals are not merely the secretion of dopamine in the brain. Humans also pursue wealth, status, contribution, and other social objectives. At least when answering rationally, people often model the reward function $r(.)$ from a social perspective.
 
-这便是生活之中的 Reward Hacking，我们使用错误的代理目标 $R(.)$来进行强化学习，导致策略最终收敛为收获 Reward 的捷径。
+This is reward hacking in life. We use the wrong proxy objective $R(.)$ for reinforcement learning, causing the policy to converge toward shortcuts for obtaining reward.
 
-即刷小红书、刷短视频、赌博、抽卡等行为实际上能够给人带来更多的信息增益并刺激人脑分泌多巴胺，大脑从动物性的本能出发将多巴胺的分泌作为人脑强化学习的代理目标并优化，使得最终形成了选择刷小红书、刷短视频、赌博、抽卡等行为的策略。
+Scrolling Xiaohongshu, watching short videos, gambling, and gacha-style behaviors can generate more information gain and stimulate dopamine secretion. From an animal-instinct perspective, the brain treats dopamine secretion as a proxy objective for reinforcement learning and optimizes for it, eventually forming policies that choose Xiaohongshu, short videos, gambling, and gacha.
 
-当人们处于短暂的理性态时，大脑确又能够从社会性的角度出发，将一系列社会活动作为人们强化学习的代理目标，很可惜，这个理性态很短暂，并且大部分人类并不会为此付出行动。
+When people enter a brief rational state, the brain can indeed define a series of social activities as proxy objectives for reinforcement learning. Unfortunately, this rational state is short-lived, and most people do not take action based on it.
 
 
 [1]: Wikipedia contributors. (2025, November 24). Reinforcement learning. In Wikipedia, The Free Encyclopedia. Retrieved 12:10, November 27, 2025, from https://en.wikipedia.org/w/index.php?title=Reinforcement_learning&oldid=1323963809
 [2]: Wikipedia contributors. (2025, November 17). Entropy (information theory). In Wikipedia, The Free Encyclopedia. Retrieved 12:13, November 27, 2025, from https://en.wikipedia.org/w/index.php?title=Entropy_(information_theory)&oldid=1322644264
-

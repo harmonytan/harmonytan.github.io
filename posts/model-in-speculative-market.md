@@ -2,34 +2,41 @@
 title: Model in Speculative Market
 date: 2026-01-21
 category: Finance
-image: assets/model-in-speculative-market.jpg
 ---
 
-**电商领域**有一条核心公式
-$$ GMV = 流量 \times 转化率 \times 客单价$$
-**GMV(gross merchandise value)**即商品销售总额。流量是曝光量，有多少人看到了这个商品，转化率是看到该商品后付费的客户比例，客单价即客户购买该商品所付出的平均金额。
+In **e-commerce**, there is a core formula:
+$$
+\mathrm{GMV} = \text{Traffic} \times \text{Conversion Rate} \times \text{Average Order Value}
+$$
+**GMV (gross merchandise value)** is the total value of goods sold. Traffic measures exposure: how many people see the product. Conversion rate measures the share of exposed users who pay. Average order value measures the average amount paid by each customer.
 
-在股票市场，**GMV 就是一个标的买盘资金总量，流量来自于标的概念在社交媒体的曝光次数，转化率即吸引来的投资者买入完成比例，客单价即每一个投资者愿意买入的平均资金。**
+In the stock market, **GMV can be read as the total buying power attracted by a target stock**. Traffic comes from the exposure of the stock's concept on social media. Conversion rate is the share of attracted investors who actually buy. Average order value is the average amount each investor is willing to put in.
 
-[A股个人投资者持股市值占比约29.53%，交易量占比超60%-70%，大量短期游资由散户调动。](https://xueqiu.com/8117507040/325193239)
+[In China's A-share market, retail investors hold about 29.53% of market value and account for more than 60%-70% of trading volume; a large share of short-term speculative capital is mobilized by retail investors.](https://xueqiu.com/8117507040/325193239)
 
-在GMV模型之中，一只概念股就是一件商品，该商品因某概念获得了媒体曝光（流量），在一定时期内持续吸引新增资金，股票总需求大量增加，并推高股价。
+In this GMV model, a concept stock is treated like a product. The product gains media exposure because of a particular narrative or theme, attracts new capital over a period of time, increases total demand for the stock, and pushes up the price.
 
-流量看 2 个主要因素，**流量绝对值与流量扩散方式**。
+Traffic depends mainly on two factors: **absolute exposure and the diffusion pattern of that exposure**.
 
-转化率看**概念题材的吸引力**，一个粗暴的假设就是故事越简单越情绪化越能激发人们的购买欲望。
+Conversion rate depends on **the appeal of the concept**. A rough assumption is that the simpler and more emotionally charged a story is, the more it stimulates people's desire to buy.
 
-客单价使用**A股总资金量除以散户持股数量作为新进入投资者的客单价**，并假设即使有新入盘资金，该均价不会有太大的变动。
+Average order value can be approximated by **dividing total A-share market capital by the number of retail-held positions**, and assuming that this average does not change much even when new money enters.
 
-以上是在理想化的充分无摩擦市场假设下的GMV公式，在实际市场上还有一些重要变量，比如**同质化竞品和标的总市值**。
+The formula above assumes an idealized, frictionless market. In real markets, several additional variables matter, especially **homogeneous competing targets and the target's total market capitalization**.
 
-**同质化竞品显然会分化短期内的资金流向**，特别是 A 股的涨停机制，必然导致早期会出现多个龙头。
+**Homogeneous competitors clearly split short-term capital flows**, especially in the A-share market where daily limit-up rules often create multiple early leaders.
 
-**市值则决定流动性和可操控性**，小盘股必然比较好拉升，但在出货时极易造成流动性踩踏，大盘股必然不易操作估计，导致形成拉升合力困难。
+**Market capitalization determines liquidity and manipulability**. Small-cap stocks are easier to push upward, but they are also more prone to liquidity collapse during exits. Large-cap stocks are harder to move, making coordinated upward pressure more difficult to form.
 
-因此，最后的模型可以简化为：
-$$ GMV = \frac{流量\times 流量持续性 \times 转化率 \times 客单价}{市值乘子}\times 分流系数$$
+Therefore, the simplified model becomes:
+$$
+\mathrm{GMV} =
+\frac{
+  \text{Traffic} \times \text{Traffic Persistence} \times \text{Conversion Rate} \times \text{Average Order Value}
+}{
+  \text{Market Cap Multiplier}
+}
+\times \text{Capital Diversion Coefficient}
+$$
 
-在该模型下，我们可以估算出买盘系数，**这决定了股价拉升的上限**。
-
-
+Under this model, we can estimate a buying-pressure coefficient, **which determines the upper bound of a stock's price run-up**.

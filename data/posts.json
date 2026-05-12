@@ -5,7 +5,7 @@
     "summary": "",
     "date": "2026-01-26",
     "category": "Finance",
-    "image": "assets/images/recent-myths-in-the-silver-market/main.jpg"
+    "image": ""
   },
   {
     "slug": "model-in-speculative-market",
@@ -13,7 +13,7 @@
     "summary": "",
     "date": "2026-01-21",
     "category": "Finance",
-    "image": "assets/model-in-speculative-market.jpg"
+    "image": ""
   },
   {
     "slug": "reward-hacking-in-life",
@@ -21,7 +21,7 @@
     "summary": "",
     "date": "2025-11-26",
     "category": "Thought",
-    "image": "assets/images/reward-hacking-in-life/main.jpg"
+    "image": ""
   },
   {
     "slug": "render-playground",
@@ -29,6 +29,6 @@
     "summary": "",
     "date": "2025-11-21",
     "category": "Test",
-    "image": "assets/rendering-playground.jpg"
+    "image": ""
   }
 ]

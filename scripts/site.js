@@ -67,7 +67,7 @@ export function setDocumentTitle(title) {
   if (!title) {
     return;
   }
-  document.title = `${title} · Hongming's Blog`;
+  document.title = `${title} · Hongming Tan`;
 }
 
 export function escapeHtml(text) {

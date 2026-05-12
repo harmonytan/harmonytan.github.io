@@ -55,7 +55,7 @@ async function loadIndex() {
     renderTable(posts);
   } catch (error) {
     console.error(error);
-    tableElement.innerHTML = `<p class="muted">Unable to load articles right now.</p>`;
+    tableElement.innerHTML = `<p class="muted">Unable to load writing right now.</p>`;
   }
 }
 
@@ -81,7 +81,7 @@ async function loadPosts() {
 
 function renderTable(posts) {
   if (!Array.isArray(posts) || posts.length === 0) {
-    tableElement.innerHTML = `<p class="muted">No articles yet. Drafts are in progress.</p>`;
+    tableElement.innerHTML = `<p class="muted">No writing yet. Drafts are in progress.</p>`;
     return;
   }
 

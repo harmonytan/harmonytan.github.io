@@ -2,93 +2,102 @@
 title: Recent Myths in the Silver Market
 date: 2026-01-26
 category: Finance
-image: assets/images/recent-myths-in-the-silver-market/main.jpg
 ---
 
-## 市场异象
-1. [金银比持续走跌](https://sc.macromicro.me/collections/3351/commodity-silver/26722/gold-silver-copper-ratio)
+## Market Anomalies
 
-![最近一年金银比与银价走势 | 2025 年 4 月开始，金银比一路从 80 多跌到 30 左右。特别是 12 月以来，金银币下跌速率增加](assets/images/recent-myths-in-the-silver-market/1.jpg)
+1. [The gold-silver ratio has continued to fall](https://sc.macromicro.me/collections/3351/commodity-silver/26722/gold-silver-copper-ratio)
 
-2. [EFP(Exchange for Physicals) spread](http://www.cffex.com.cn/u/cms/www/201901/04182029whlw.pdf) 持续高于平均值
-$$EFP= Paper（期货/纸货） − Physical（现货/实物）$$
-EFP 表示期现差，一般包含着交割、仓储、运输、流动性溢价、资金成本。
+![Gold-silver ratio and silver price over the past year | Since April 2025, the gold-silver ratio has fallen from above 80 to around 30. The decline accelerated especially after December.](assets/images/recent-myths-in-the-silver-market/1.jpg)
 
-![2024-2026年COMEX纸黄金溢价 | 2025年间，EFP spread 由平均0.25\$/oc增长至1.1\$/oc，COMEX 期货白银价格相对于伦敦现货实物白银，出现了异常高的溢价，说明“可交割的实物白银非常紧张”。](assets/images/recent-myths-in-the-silver-market/2.jpg)
+2. [The EFP (Exchange for Physicals) spread](http://www.cffex.com.cn/u/cms/www/201901/04182029whlw.pdf) has remained above its historical average.
 
-3. [白银连续多年结构性赤字](https://bulliontradingllc.com/blog/paper-silver-vs-physical-silver-price-disconnect-2026/)
-银资产负债表已经连续 7 年处于赤字状态
+$$EFP= Paper \ (futures) - Physical \ (spot)$$
 
-![2016-2025F白银供给需求 | 白银已经连续 7 年赤字，结构性赤字达到796.4百万盎司](assets/images/recent-myths-in-the-silver-market/3.jpg)
+EFP measures the futures-spot spread. It usually includes delivery, storage, transportation, liquidity premium, and funding cost.
 
-## 白银基本情况
+![COMEX paper silver premium, 2024-2026 | In 2025, the EFP spread rose from an average of about USD 0.25/oz to USD 1.1/oz. COMEX silver futures showed an unusually high premium over London physical spot silver, suggesting that deliverable physical silver was tight.](assets/images/recent-myths-in-the-silver-market/2.jpg)
 
-白银具有[商品属性和金融属性](https://silverinstitute.org/silver-supply-demand/)[1]
+3. [Silver has been in structural deficit for years](https://bulliontradingllc.com/blog/paper-silver-vs-physical-silver-price-disconnect-2026/).
 
-![2016-2025F白银供给与需求基本情况](assets/images/recent-myths-in-the-silver-market/4.jpg)
+The silver balance sheet has been in deficit for seven consecutive years.
 
-供给侧
-- 矿产银（80%） 
-- 再生银（20%） 
-需求侧 
-- 工业用银（60%）
-- 净实物投资（19%）
-- 珠宝银器（20%）
-- 摄影（1%）
-- 净对冲需求（0%）
+![Silver supply and demand, 2016-2025F | Silver has been in deficit for seven consecutive years, with a structural deficit of 796.4 million ounces.](assets/images/recent-myths-in-the-silver-market/3.jpg)
 
-南美与中国是主要供给国
-![TOP20 矿产银供给国｜在矿产银中墨西哥、秘鲁等南美国家以及中国是构成了主供给方](assets/images/recent-myths-in-the-silver-market/5.jpg)
+## Basic Facts About Silver
 
-**过去一年白银价格呈现出强劲的上涨趋势，国际白银价格迭创新高**。自2025年初至2026年1月，纽约商品交易所（COMEX）白银期货价格累计涨幅超过220%，从约每盎司\$30一路飙升，在2026年1月一度逼近\$100大关，创下历史纪录。其中2025年10月白银价格突破了1980年以来\$50的前高，10月17日前后曾触及\$54/盎司的新高点；此后银价一度在获利回吐和利好出尽下急挫逾10%，回落到\$47附近。然而调整持续时间很短，11月起白银多头卷土重来，价格重新站上\$50并加速上行。2025年12月初COMEX白银期货首次突破\$60关口。进入2026年1月，地缘局势紧张加剧引发的新一轮避险买盘令白银进一步暴涨，2026年1月中下旬3月交割合约一度攀升至\$95/盎司上方；1月23-24日国际现货白银价格更是历史性地站上了每盎司\$100大关。可以说，全年银价走出了一波近乎“抛物线”式的上涨行情，年末收官价较年初翻了两倍多，**表现远超同期黄金约78%的涨幅**。
-**白银的这一轮上涨在主要市场上同步上演**。纽约COMEX期银、伦敦现货白银价格在2025年12月双双创出历史新高：例如12月3日COMEX期银盘中最高触及\$59.655/盎司，伦敦现货银也达到\$58.945/盎司。中国市场方面，上海期货交易所白银期货主力合约价格亦屡创新高，2025年12月初收于13.58元/克，较年初涨幅逾90%；上海黄金交易所白银T+D现货合约同步创出13.54元/克的历史高价。国内外银价联动空前紧密，沪银期货与COMEX白银期货价格相关系数高达0.96。伴随价格飙升，交易量和持仓也大增：**以上期所2025年12月3日为例，单日成交量达266万手，持仓量45.8万手，库存降至476吨低位，显示市场交投极为活跃且现货偏紧**。
-从技术走势上看，白银价格一路沿着中长期均线上方攀升，**多次出现加速拉升行情，波动幅度显著放大**。2025年下半年以来白银期货的年化波动率飙升至约60%，远高于历史均值。
+Silver has both [commodity attributes and financial attributes](https://silverinstitute.org/silver-supply-demand/)[1].
 
-## 工业用银需求大增、供给无弹性、现货紧缺
-**电气和电子产品部门一直是白银需求的最大驱动力**，根据[Sprott白银报告](https://sprott.com/insights/silver-investment-outlook-mid-year-2025/)，消费量自 2016 年以来增长 51%。白银是地球上导电性最强的金属，电力以及设备是其消耗的基本大盘。
+![Basic silver supply and demand, 2016-2025F](assets/images/recent-myths-in-the-silver-market/4.jpg)
 
-**新能源和人工智能算力、数据中心是白银需求激增的“新引擎”**，2025年**光伏产业对白银的消耗量达到约7560吨，相比2022年翻了一倍，占全球白银总需求的比例从20%激增至55%**。这意味着仅光伏一项就贡献了当年过半的白银需求，可谓颠覆了传统需求格局。此外，**全球电动汽车产业2025年耗银约2566吨，同比增加520吨（增速超12%）；5G基站、人工智能（AI）服务器和数据中心等高端电子行业也成为新兴需求点，其中AI服务器单机用银量比传统设备高出30%以上**。上述新应用领域在2025年构成了全球白银需求的“四大支柱”。即使传统需求如银饰和银器受到高价压制略有下降（2025年全球银饰需求预计为2.05亿盎司，同比降约5%），但工业部门的旺盛需求远超出了该部分的下滑，推动全年总需求跳升[2]。
+Supply side:
+- Mine production (80%)
+- Recycling (20%)
 
-**供给方面，白银产量增长乏力，难以满足需求扩张**。2025年全球矿产白银产量约为8.2亿盎司（约2550吨），较2020年峰值反而下降了12%。这已经是全球银矿产量连续第五年下降或持平，主要原因在于：白银作为伴生金属，产量受制于铜、铅、锌等主矿的开采情况，难以因为银价上涨而快速增产。近年主要产银国如秘鲁、墨西哥的矿山面临品质下降、项目投资不足、甚至罢工停产等问题，令银矿供给增长停滞。再加上2025年全球回收银供给也仅小幅增长1.2%至1.97亿盎司（614吨），远低于工业需求的增幅，供应端几乎无弹性增量[3]。
+Demand side:
+- Industrial demand (60%)
+- Net physical investment (19%)
+- Jewelry and silverware (20%)
+- Photography (1%)
+- Net hedging demand (0%)
 
-**供需缺口直接导致可流通白银库存被持续消耗，市场现货极度偏紧**。2025年下半年全球显性白银库存降至危险低位：年末全球可用库存量仅相当于约1.2个月的消费量，远低于3~6个月的安全水平。作为全球定价中心的伦敦白银库存跌破4000吨，可供交割的现货仅剩不到全球年需求的10%。中国上期所指定仓库银锭库存也降至715吨，创7年来新低。美国COMEX注册库存2025年10月初一度骤降至约1.2亿盎司（约3735吨）的多年低位，到年底虽因调运而恢复至近2亿盎司，但仍大幅低于疫情前水平。COMEX可交割库存与未平仓合约的比值降至23%，**意味着空头面临实物交割困难。供给的紧张还反映在现货升水上：2025年下半年现货银较期货价格长期维持正溢价，最高溢价超过5%，这是实物紧缺的直观信号**。
+South America and China are major suppliers.
 
-## 逼空
-社交媒体不断声称[摩根大通](https://finance.yahoo.com/quote/JPM/?guccounter=1)等大型银行因其白银空头头寸而即将倒闭。每一项回购操作或隔夜资金数字都被与某种关于银行在贵金属头寸上亏损的理论挂钩。
+![Top 20 silver mine supply countries | Mexico, Peru, other South American countries, and China form the main supply base for mined silver.](assets/images/recent-myths-in-the-silver-market/5.jpg)
 
-有观点提出当前白银期货市场**酝酿[逼空](https://www.douyin.com/jingxuan/search/Im%20Skye?aid=6e53d796-5c82-484a-870f-840cee8b12eb&modal_id=7598333078578173288&type=general)**。
+**Silver prices have shown a strong upward trend over the past year, with international silver repeatedly reaching new highs.** From early 2025 to January 2026, COMEX silver futures rose by more than 220%, climbing from about USD 30/oz and briefly approaching USD 100/oz in January 2026, setting a historical record. In October 2025, silver broke through the previous high of USD 50 set in 1980 and reached about USD 54/oz around October 17. It then fell by more than 10% on profit-taking and exhaustion of good news, retreating to around USD 47. The correction was brief. Starting in November, silver bulls returned, and the price moved back above USD 50 and accelerated upward. In early December 2025, COMEX silver futures broke through USD 60 for the first time. In January 2026, rising geopolitical tension triggered another wave of safe-haven buying, pushing silver sharply higher. The March delivery contract once climbed above USD 95/oz in late January, and spot silver historically crossed USD 100/oz on January 23-24. In short, silver produced an almost parabolic rally, ending the year at more than three times its starting price and **far outperforming gold's roughly 78% gain over the same period**.
 
+**This silver rally occurred across major markets.** COMEX silver futures and London spot silver both reached historical highs in December 2025. For example, on December 3, COMEX silver futures reached an intraday high of USD 59.655/oz, while London spot silver reached USD 58.945/oz. In China, the main silver futures contract on the Shanghai Futures Exchange also repeatedly reached new highs, closing at RMB 13.58/g in early December 2025, up more than 90% from the start of the year. The Shanghai Gold Exchange silver T+D spot contract also reached a historical high of RMB 13.54/g. Domestic and international silver prices moved with unusually tight linkage, with the correlation between SHFE silver futures and COMEX silver futures reaching 0.96. As prices surged, trading volume and open interest increased sharply. **On December 3, 2025, SHFE silver recorded daily volume of 2.66 million lots, open interest of 458,000 lots, and warehouse inventory fell to a low of 476 tons, indicating extremely active trading and tight spot supply.**
 
+Technically, silver prices kept moving above medium- and long-term moving averages and **experienced several episodes of accelerated upward movement, with volatility expanding significantly**. Since the second half of 2025, annualized volatility in silver futures has risen to about 60%, far above its historical average.
 
-## 白银储备
-### 俄罗斯将白银纳入官方储备资产
-**2024年底俄罗斯政府在联邦预算草案中首次明确计划增加对白银的储备持有**。根据俄媒Interfax和彭博的报道，俄罗斯2025–2027年的预算拟拨款515亿卢布（约5.35亿美元）用于增持包括黄金、白金、钯金以及白银在内的贵金属储备[4]。不过截至2025年中，俄罗斯央行并未公布进一步购买细节，显示这一计划仍在筹备阶段[5]。
+## Industrial Demand, Inelastic Supply, and Tight Spot Inventory
 
-除了俄罗斯，墨西哥央行目前据报道持有少量的白银储备资产。由于墨西哥是全球最大的白银生产国，其央行（Banxico）在储备中保有一定数量的白银，不过规模相对很小。墨西哥央行之所以保有白银，一定程度上是因为本国白银开采在经济中的重要地位。这种持有可以视为历史和产业因素造成的特例，并非近期新政策，但也说明白银在个别产银国的储备体系中仍有一席之地。[6]
+**Electrical and electronic products have long been the largest driver of silver demand.** According to the [Sprott silver report](https://sprott.com/insights/silver-investment-outlook-mid-year-2025/), consumption has increased by 51% since 2016. Silver is the most electrically conductive metal on Earth, making power systems and electronic devices its fundamental demand base.
 
-沙特阿拉伯方面，虽然未直接将白银列为官方储备，但其央行（暨主权财富基金管理者）在2025年显现出对白银资产的兴趣。据美国证监会文件，沙特央行在2025年第二季度购买了93.2万股白银ETF——iShares Silver Trust (SLV)，价值约3058万美元，并购入了价值约980万美元的白银矿业ETF股票。这一投资总计约4000万美元，引起市场对“央行购买白银”的关注。不过分析指出，沙特此举更可能是通过主权基金进行的金融投资，而非将白银作为货币储备来持有。其持有的SLV头寸在沙特基金投资组合中规模很小，不及其对能源和美股ETF的投入。一些分析师强调，若央行真想将白银货币化，应购买实物白银而非纸白银ETF。沙特的例子更多体现为投资多元化动作，而非官方储备政策的根本改变。[7]
+**New energy, AI compute, and data centers have become new engines of silver demand.** In 2025, the photovoltaic industry consumed about 7,560 tons of silver, roughly twice the 2022 level, and its share of total global silver demand surged from 20% to 55%. This means photovoltaics alone contributed more than half of total silver demand, overturning the traditional demand structure. In addition, the global electric vehicle industry consumed about 2,566 tons of silver in 2025, an increase of 520 tons year over year, or more than 12%. 5G base stations, AI servers, and data centers also became emerging sources of demand. A single AI server uses more than 30% more silver than traditional equipment. These new applications formed the four major pillars of global silver demand in 2025. Although traditional demand such as jewelry and silverware declined slightly because of high prices, with global silver jewelry demand expected to fall by about 5% year over year to 205 million ounces in 2025, strong industrial demand more than offset the decline and pushed total demand higher [2].
 
+**On the supply side, silver production growth has been weak and unable to keep up with demand expansion.** Global mined silver output in 2025 was about 820 million ounces, or roughly 25,500 tons, down 12% from its 2020 peak. This marked the fifth consecutive year in which global mine output declined or stayed flat. The main reason is that silver is often a by-product metal, so its production depends on the mining of copper, lead, zinc, and other primary metals. Silver supply therefore cannot quickly expand simply because silver prices rise. Major silver-producing countries such as Peru and Mexico have faced declining ore grades, insufficient project investment, and even labor disruptions, causing mine supply growth to stagnate. In addition, global recycled silver supply in 2025 rose only slightly by 1.2% to 197 million ounces, or 6,140 tons, far below the growth rate of industrial demand. The supply side therefore had almost no elastic increment [3].
 
-### 各国对白银储备的意愿或政策动向
-尽管正式行动有限，但某些国家表现出对未来储备白银的兴趣或探讨，引发政策动向上的蛛丝马迹。首先，俄罗斯明确计划囤积白银本身就表明了一种意愿：在西方制裁和去美元化背景下，俄罗斯希望通过囤积包括白银在内的贵金属来分散风险。这被一些分析人士解读为俄罗斯重塑本国外汇储备结构、减少对美元依赖的战略之一。
+**The supply-demand gap directly depleted tradable silver inventories and made the spot market extremely tight.** In the second half of 2025, visible global silver inventory fell to dangerous levels. By year-end, available global inventory was equivalent to only about 1.2 months of consumption, far below the 3-6 month safety range. London silver inventory, a key global pricing center, fell below 4,000 tons, and deliverable physical silver was less than 10% of annual global demand. Silver bar inventory in designated warehouses of the Shanghai Futures Exchange also fell to 715 tons, a seven-year low. COMEX registered inventory briefly dropped to a multi-year low of about 120 million ounces, or about 3,735 tons, in early October 2025. Although inventory recovered to nearly 200 million ounces by year-end due to transfers, it remained far below pre-pandemic levels. The ratio of COMEX deliverable inventory to open interest fell to 23%, **meaning shorts faced difficulty in physical delivery. The tight supply also appeared in spot premiums: in the second half of 2025, spot silver maintained a persistent premium over futures prices, with the highest premium exceeding 5%, a direct signal of physical scarcity.**
 
-**其他金砖国家也被推测可能跟进这一趋势**。澳大利亚财经记者Tim Treadgold指出，俄罗斯的金砖伙伴（如中国、印度、巴西等）可能认可增加贵金属（包括白银）储备以绕开美元的策略。不过需要强调，截至2025年底，尚无这些国家央行正式宣示将白银纳入储备的政策。中国央行近年持续购金，但未见公开涉及白银的储备声明；印度和巴西同样没有宣布储备白银，但市场观察者密切关注他们是否会受俄罗斯影响。
+## Short Squeeze
 
-**印度虽然未宣布央行储备白银，但在政策上释放了认可白银价值的信号**。印度储备银行（RBI）于2025年决定，自2026年4月起允许银行和NBFC将白银饰品和银币作为贷款抵押品。按照新规，借款人可用最多10公斤的银饰或1公斤的黄金作抵押，以获得小额贷款，**这相当于以10:1的重量比认可了白银相对于黄金的价值**。虽然这不是直接增加央行外汇储备，但政策动向上首次正式赋予白银类似于黄金的金融功能，被分析人士称为印度对白银“重新货币化”的里程碑举措。有印度经济学家指出，此举在基层金融层面强化了白银的货币属性，客观上相当于承认了白银作为价值储藏的地位。
+Social media has repeatedly claimed that [JPMorgan](https://finance.yahoo.com/quote/JPM/?guccounter=1) and other large banks are close to collapse because of their short silver positions. Each repo operation or overnight funding number has been linked to some theory about bank losses in precious-metal positions.
 
-另一方面，一些国家明确表达了谨慎甚至排除将白银纳入储备的立场。例如在2024年伦敦黄金市场协会（LBMA）年会上，蒙古央行和捷克央行代表就公开表示白银价格波动过大，不适合作为央行储备资产。这些央行官员强调，与黄金相比，白银波动性更高，因而无计划增加白银储备。可见，并非所有国家都认同白银进入储备体系的想法，部分央行仍持观望甚至否定态度。
+Some market narratives argue that the current silver futures market is preparing for a **[short squeeze](https://www.douyin.com/jingxuan/search/Im%20Skye?aid=6e53d796-5c82-484a-870f-840cee8b12eb&modal_id=7598333078578173288&type=general)**.
 
-## 接下来
-- 与俄罗斯贸易国的白银需求变化
-- 白银作为工业原材料成本价的生死线
-- 白银现货供给压力、资产多重担保泡沫、市场炒作
-- 白银与黄金、光伏、AI、电力等资产的关联波动
+## Silver Reserves
 
+### Russia Included Silver in Official Reserve Assets
 
-[1]: 国信证券-白银行业专题：冉冉升起的贵金属-241123.pdf https://pdf.dfcfw.com/pdf/H3_AP202411241641042449_1.pdf
-[2]: 全球需求爆发式增长，白银价格创出新高 https://www.beijingprice.cn/c/2025-12-04/555418.shtml#:~:text=2025%E5%B9%B4%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E9%9C%80%E6%B1%82%E7%88%86%E5%8F%91%E5%BC%8F%E5%A2%9E%E9%95%BF%E6%98%AF%E6%A0%B8%E5%BF%83%E4%B8%AD%E7%9A%84%E6%A0%B8%E5%BF%83%E3%80%82%E5%85%89%E4%BC%8F%E4%BA%A7%E4%B8%9A%E6%88%90%E4%B8%BA%E6%9C%80%E5%A4%A7%E2%80%9C%E7%94%A8%E9%93%B6%E5%A4%A7%E6%88%B7%E2%80%9D%EF%BC%8C2025%E5%B9%B4%E4%B8%96%E7%95%8C%E5%85%89%E4%BC%8F%E7%94%A8%E9%93%B6%E9%87%8F%E8%BE%BE7560%E5%90%A8%EF%BC%8C%E8%BE%832022%E5%B9%B4%E7%BF%BB%E5%80%8D%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%8D%A0%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E6%80%BB%E9%9C%80%E6%B1%82%E7%9A%84%E6%AF%94%E9%87%8D%20%E4%BB%8E2022%E5%B9%B4%E7%9A%8420
-[3]: 全球需求爆发式增长，白银价格创出新高 https://www.beijingprice.cn/c/2025-12-04/555418.shtml#:~:text=2025%E5%B9%B4%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E9%9C%80%E6%B1%82%E7%88%86%E5%8F%91%E5%BC%8F%E5%A2%9E%E9%95%BF%E6%98%AF%E6%A0%B8%E5%BF%83%E4%B8%AD%E7%9A%84%E6%A0%B8%E5%BF%83%E3%80%82%E5%85%89%E4%BC%8F%E4%BA%A7%E4%B8%9A%E6%88%90%E4%B8%BA%E6%9C%80%E5%A4%A7%E2%80%9C%E7%94%A8%E9%93%B6%E5%A4%A7%E6%88%B7%E2%80%9D%EF%BC%8C2025%E5%B9%B4%E4%B8%96%E7%95%8C%E5%85%89%E4%BC%8F%E7%94%A8%E9%93%B6%E9%87%8F%E8%BE%BE7560%E5%90%A8%EF%BC%8C%E8%BE%832022%E5%B9%B4%E7%BF%BB%E5%80%8D%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%8D%A0%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E6%80%BB%E9%9C%80%E6%B1%82%E7%9A%84%E6%AF%94%E9%87%8D%20%E4%BB%8E2022%E5%B9%B4%E7%9A%8420
-[4]: Russia Medial Report https://www.jpost.com/business-and-innovation/precious-metals/article-823167#:~:text=The%20inclusion%20of%20silver%20in,financial%20strategy%20may%20be%20evolving
-[5]: Russian precious metal sales to China up 80% to $1 billion in H1 2025 https://kerdangold.com/russian-precious-metal-sales-to-china-up-80-to-1-billion-in-h1-2025/#:~:text=more%20heavily%20on%20precious%20metals%2C,buying%20by%20Russia%E2%80%99s%20central%20bank
-[6]: Saudi Central Bank buys $40 million in SLV and silver miners, but it's not what you think https://www.silver-phoenix500.com/saudi-central-bank-buys-40-million-slv-and-silver-miners-its-not-what-you-think#:~:text=Meanwhile%2C%20Mexico%E2%80%99s%20central%20bank%20holds,the%20world%E2%80%99s%20top%20silver%20producer
-[7]: Saudi Central Bank buys $40 million in SLV and silver miners, but it's not what you think https://www.silver-phoenix500.com/saudi-central-bank-buys-40-million-slv-and-silver-miners-its-not-what-you-think#:~:text=Meanwhile%2C%20Mexico%E2%80%99s%20central%20bank%20holds,the%20world%E2%80%99s%20top%20silver%20producer
+**At the end of 2024, the Russian government explicitly planned for the first time to increase its reserve holdings of silver in the federal budget draft.** According to reports from Interfax and Bloomberg, Russia's 2025-2027 budget proposed allocating 51.5 billion rubles, or about USD 535 million, to increase reserves of precious metals including gold, platinum, palladium, and silver [4]. However, as of mid-2025, the Russian central bank had not disclosed further purchase details, suggesting that the plan was still in preparation [5].
+
+In addition to Russia, Mexico's central bank reportedly holds a small amount of silver reserve assets. Because Mexico is the world's largest silver producer, Banxico maintains some silver holdings in its reserves, though the scale is relatively small. Mexico's silver holdings partly reflect the importance of domestic silver mining to its economy. This can be seen as a special case caused by historical and industrial factors rather than a recent policy shift, but it still shows that silver has a place in the reserve systems of some silver-producing countries [6].
+
+Saudi Arabia has not directly listed silver as an official reserve asset, but its central bank, also linked to sovereign wealth management, showed interest in silver assets in 2025. According to U.S. SEC filings, the Saudi central bank bought 932,000 shares of the iShares Silver Trust (SLV), worth about USD 30.58 million, in the second quarter of 2025, and also bought about USD 9.8 million of silver mining ETF shares. This investment totaled around USD 40 million and drew market attention to the idea of central banks buying silver. However, analysts noted that Saudi Arabia's move was more likely a financial investment through a sovereign fund rather than holding silver as a monetary reserve. The SLV position was small in the Saudi fund portfolio compared with its energy and U.S. equity ETF investments. Some analysts stressed that if a central bank truly wanted to monetize silver, it should buy physical silver rather than paper silver ETFs. Saudi Arabia's example therefore looks more like investment diversification than a fundamental official reserve policy shift [7].
+
+### Policy Signals and Willingness to Hold Silver Reserves
+
+Although formal actions remain limited, some countries have shown interest in or discussed the possibility of holding silver as a future reserve asset. Russia's clear plan to accumulate silver itself indicates such willingness. Against the background of Western sanctions and de-dollarization, Russia hopes to diversify risk by accumulating precious metals including silver. Some analysts interpret this as part of Russia's effort to reshape its foreign-exchange reserve structure and reduce dependence on the dollar.
+
+**Other BRICS countries are also speculated to potentially follow this trend.** Australian financial journalist Tim Treadgold argued that Russia's BRICS partners, such as China, India, and Brazil, may recognize the strategy of increasing precious-metal reserves, including silver, to bypass the dollar. However, it should be emphasized that as of the end of 2025, none of these countries had formally announced a central-bank policy of including silver in reserves. China's central bank has continued buying gold in recent years, but no public statement has involved silver reserves. India and Brazil have also not announced silver reserves, though market observers are watching whether they may be influenced by Russia.
+
+**India has not announced central-bank silver reserves, but it has released policy signals recognizing silver's value.** In 2025, the Reserve Bank of India decided that starting in April 2026, banks and NBFCs would be allowed to accept silver jewelry and silver coins as loan collateral. Under the new rules, borrowers may pledge up to 10 kilograms of silver jewelry or 1 kilogram of gold as collateral for small loans. **This effectively recognizes silver's value relative to gold at a 10:1 weight ratio.** Although this does not directly increase central-bank foreign-exchange reserves, it formally gives silver a financial function similar to gold for the first time. Some analysts describe it as a milestone in India's remonetization of silver. Indian economists have noted that the policy strengthens silver's monetary attribute at the grassroots financial level and objectively recognizes silver as a store of value.
+
+On the other hand, some countries have explicitly expressed caution or even rejected the idea of including silver in reserves. At the 2024 LBMA conference, representatives from the central banks of Mongolia and the Czech Republic publicly stated that silver was too volatile to serve as a central-bank reserve asset. They emphasized that compared with gold, silver has higher volatility, and they had no plans to increase silver reserves. Not all countries therefore accept the idea of silver entering reserve systems. Some central banks remain cautious or negative.
+
+## Next Questions
+
+- Changes in silver demand from Russia's trading partners
+- The survival line of silver as an industrial raw-material cost
+- Spot silver supply pressure, multi-collateral asset bubbles, and market speculation
+- Correlated volatility among silver, gold, photovoltaics, AI, electricity, and related assets
+
+[1]: Guosen Securities, Silver Industry Report: A Rising Precious Metal, 2024-11-23. https://pdf.dfcfw.com/pdf/H3_AP202411241641042449_1.pdf
+[2]: Explosive growth in global demand pushes silver prices to new highs. https://www.beijingprice.cn/c/2025-12-04/555418.shtml#:~:text=2025%E5%B9%B4%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E9%9C%80%E6%B1%82%E7%88%86%E5%8F%91%E5%BC%8F%E5%A2%9E%E9%95%BF%E6%98%AF%E6%A0%B8%E5%BF%83%E4%B8%AD%E7%9A%84%E6%A0%B8%E5%BF%83%E3%80%82%E5%85%89%E4%BC%8F%E4%BA%A7%E4%B8%9A%E6%88%90%E4%B8%BA%E6%9C%80%E5%A4%A7%E2%80%9C%E7%94%A8%E9%93%B6%E5%A4%A7%E6%88%B7%E2%80%9D%EF%BC%8C2025%E5%B9%B4%E4%B8%96%E7%95%8C%E5%85%89%E4%BC%8F%E7%94%A8%E9%93%B6%E9%87%8F%E8%BE%BE7560%E5%90%A8%EF%BC%8C%E8%BE%832022%E5%B9%B4%E7%BF%BB%E5%80%8D%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%8D%A0%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E6%80%BB%E9%9C%80%E6%B1%82%E7%9A%84%E6%AF%94%E9%87%8D%20%E4%BB%8E2022%E5%B9%B4%E7%9A%8420
+[3]: Explosive growth in global demand pushes silver prices to new highs. https://www.beijingprice.cn/c/2025-12-04/555418.shtml#:~:text=2025%E5%B9%B4%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E9%9C%80%E6%B1%82%E7%88%86%E5%8F%91%E5%BC%8F%E5%A2%9E%E9%95%BF%E6%98%AF%E6%A0%B8%E5%BF%83%E4%B8%AD%E7%9A%84%E6%A0%B8%E5%BF%83%E3%80%82%E5%85%89%E4%BC%8F%E4%BA%A7%E4%B8%9A%E6%88%90%E4%B8%BA%E6%9C%80%E5%A4%A7%E2%80%9C%E7%94%A8%E9%93%B6%E5%A4%A7%E6%88%B7%E2%80%9D%EF%BC%8C2025%E5%B9%B4%E4%B8%96%E7%95%8C%E5%85%89%E4%BC%8F%E7%94%A8%E9%93%B6%E9%87%8F%E8%BE%BE7560%E5%90%A8%EF%BC%8C%E8%BE%832022%E5%B9%B4%E7%BF%BB%E5%80%8D%E5%A2%9E%E9%95%BF%EF%BC%8C%E5%8D%A0%E5%85%A8%E7%90%83%E7%99%BD%E9%93%B6%E6%80%BB%E9%9C%80%E6%B1%82%E7%9A%84%E6%AF%94%E9%87%8D%20%E4%BB%8E2022%E5%B9%B4%E7%9A%8420
+[4]: Russia media report. https://www.jpost.com/business-and-innovation/precious-metals/article-823167#:~:text=The%20inclusion%20of%20silver%20in,financial%20strategy%20may%20be%20evolving
+[5]: Russian precious metal sales to China up 80% to USD 1 billion in H1 2025. https://kerdangold.com/russian-precious-metal-sales-to-china-up-80-to-1-billion-in-h1-2025/#:~:text=more%20heavily%20on%20precious%20metals%2C,buying%20by%20Russia%E2%80%99s%20central%20bank
+[6]: Saudi Central Bank buys USD 40 million in SLV and silver miners, but it's not what you think. https://www.silver-phoenix500.com/saudi-central-bank-buys-40-million-slv-and-silver-miners-its-not-what-you-think#:~:text=Meanwhile%2C%20Mexico%E2%80%99s%20central%20bank%20holds,the%20world%E2%80%99s%20top%20silver%20producer
+[7]: Saudi Central Bank buys USD 40 million in SLV and silver miners, but it's not what you think. https://www.silver-phoenix500.com/saudi-central-bank-buys-40-million-slv-and-silver-miners-its-not-what-you-think#:~:text=Meanwhile%2C%20Mexico%E2%80%99s%20central%20bank%20holds,the%20world%E2%80%99s%20top%20silver%20producer
