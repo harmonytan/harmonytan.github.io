@@ -1,84 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Contact · Hongming Tan</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <script>
-      (function () {
-        const storageKey = "hm-blog-theme";
-        try {
-          const stored = localStorage.getItem(storageKey);
-          const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-          const theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
-          document.documentElement.dataset.theme = theme;
-        } catch (_error) {
-          /* ignore theme init errors */
-        }
-      })();
-    </script>
-    <link rel="stylesheet" href="styles/main.css?v=inline-code-wrap-20260512" />
-    <script type="module" src="scripts/header.js?v=149c7b5931" defer></script>
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="site-shell">
-        <a class="brand" href="index.html">
-          <img class="brand-mark" src="assets/brand-h.svg?v=2" alt="" aria-hidden="true" />
-          <span class="brand-text">Hongming Tan</span>
-        </a>
-        <nav class="site-nav" id="site-navigation">
-          <a href="index.html">Home</a>
-          <a href="articles.html">Writing</a>
-          <a class="active" href="contact.html">Contact</a>
-          <div class="mobile-theme-switch" role="group" aria-label="Theme switch">
-            <button type="button" class="mobile-theme-option" data-theme-option="light" aria-pressed="false" aria-label="Light theme"></button>
-            <button type="button" class="mobile-theme-option" data-theme-option="dark" aria-pressed="false" aria-label="Dark theme"></button>
-          </div>
-        </nav>
-        <div class="header-actions">
-          <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
-            <span class="theme-toggle-icon" aria-hidden="true" data-theme-icon>☀️</span>
-          </button>
-          <button
-            class="menu-toggle"
-            type="button"
-            data-menu-toggle
-            aria-expanded="false"
-            aria-controls="site-navigation"
-            aria-label="Open navigation menu"
-          >
-            <span class="menu-toggle-icon" aria-hidden="true"></span>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <main class="site-main">
-      <section class="section contact-layout">
-        <article class="contact-panel about-panel">
-          <p class="contact-kicker">Contact</p>
-          <h1 class="contact-title">Hongming Tan</h1>
-          <p class="contact-bio">
-            For research discussions, writing feedback, or collaboration, email is the best starting point.
-          </p>
-        </article>
-
-        <aside class="contact-panel reach-panel" aria-label="Contact methods">
-          <p class="contact-kicker">Links</p>
-          <ul class="contact-list">
-            <li class="contact-item">
-              <span class="contact-label">Email</span>
-              <a href="mailto:hongming@stu.pku.edu.cn">hongming@stu.pku.edu.cn</a>
-            </li>
-            <li class="contact-item">
-              <span class="contact-label">GitHub</span>
-              <a href="https://github.com/harmonytan" target="_blank" rel="noopener">github.com/harmonytan</a>
-            </li>
-          </ul>
-        </aside>
-      </section>
-    </main>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <meta http-equiv="refresh" content="0; url=index.html" />
+  <title>Hongming Tan</title>
+  <script>
+    window.location.replace("index.html");
+  </script>
+</head>
+<body>
+  <p><a href="index.html">Return to Home</a></p>
+</body>
 </html>
