@@ -6,8 +6,10 @@
   --article-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", sans-serif;
   --article-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", sans-serif;
   --article-body-width: 704px;
+  --article-reading-width: 640px;
   --article-wide-width: 1072px;
   --article-page-width: 1072px;
+  --article-appendix-label-width: 152px;
   --article-accent: hsl(206deg 90% 31% / 78%);
   --article-direct-link: rgba(0, 0, 0, 0.6);
   --article-direct-link-rule: rgba(0, 0, 0, 0.4);
@@ -95,7 +97,7 @@ html[data-theme="dark"] .theme-distill {
   display: grid;
   grid-template-columns:
     [page-start] minmax(20px, 1fr)
-    [text-start] minmax(0, var(--article-body-width))
+    [text-start] minmax(0, var(--article-reading-width))
     [text-end] minmax(20px, 1fr)
     [page-end];
   width: 100%;
@@ -110,8 +112,8 @@ html[data-theme="dark"] .theme-distill {
 }
 
 .theme-distill .article-content h2 {
-  margin-top: 2rem;
-  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
   font-size: 36px;
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -119,8 +121,8 @@ html[data-theme="dark"] .theme-distill {
 }
 
 .theme-distill .article-content h3 {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: 1.3rem;
+  margin-bottom: 0.6rem;
   font-size: 26px;
   font-weight: 600;
   letter-spacing: -0.015em;
@@ -128,8 +130,8 @@ html[data-theme="dark"] .theme-distill {
 }
 
 .theme-distill .article-content h4 {
-  margin-top: 1.8rem;
-  margin-bottom: 0.7rem;
+  margin-top: 1.15rem;
+  margin-bottom: 0.45rem;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 0;
@@ -157,6 +159,12 @@ html[data-theme="dark"] .theme-distill {
 .theme-distill .article-content .citation a,
 .theme-distill .article-content a[data-footnote-ref] {
   color: var(--article-accent);
+}
+
+.theme-distill .article-figure {
+  grid-column: page;
+  width: min(var(--article-body-width), calc(100vw - 40px));
+  justify-self: center;
 }
 
 .theme-distill .article-figure--wide,
@@ -197,8 +205,11 @@ html[data-theme="dark"] .theme-distill {
 
 .theme-distill .article-appendix__section {
   display: grid;
-  grid-template-columns: 152px minmax(0, var(--article-body-width));
-  gap: 32px;
+  grid-template-columns: var(--article-appendix-label-width) minmax(0, var(--article-reading-width));
+  column-gap: calc(
+    (var(--article-page-width) - var(--article-reading-width)) / 2
+    - var(--article-appendix-label-width)
+  );
   width: min(var(--article-page-width), calc(100vw - 40px));
   margin: 0 auto 46px;
   color: var(--site-muted);
@@ -300,8 +311,11 @@ html[data-theme="dark"] .theme-distill {
 
 .theme-distill .article-footer {
   display: grid;
-  grid-template-columns: 152px minmax(0, var(--article-body-width));
-  gap: 32px;
+  grid-template-columns: var(--article-appendix-label-width) minmax(0, var(--article-reading-width));
+  column-gap: calc(
+    (var(--article-page-width) - var(--article-reading-width)) / 2
+    - var(--article-appendix-label-width)
+  );
   width: min(var(--article-page-width), calc(100vw - 40px));
   margin: 54px auto 0;
   padding: 20px 0 0;
@@ -344,13 +358,20 @@ html[data-theme="dark"] .theme-distill {
   }
 
   .theme-distill .article-content h2 {
-    margin-top: 1.9rem;
-    margin-bottom: 1.1rem;
+    margin-top: 1.3rem;
+    margin-bottom: 0.7rem;
     font-size: 24px;
   }
 
   .theme-distill .article-content h3 {
+    margin-top: 1.15rem;
+    margin-bottom: 0.5rem;
     font-size: 18px;
+  }
+
+  .theme-distill .article-content h4 {
+    margin-top: 1rem;
+    margin-bottom: 0.4rem;
   }
 
   .theme-distill .article-appendix {
@@ -361,7 +382,7 @@ html[data-theme="dark"] .theme-distill {
   .theme-distill .article-appendix__section {
     grid-template-columns: 1fr;
     gap: 12px;
-    width: calc(100vw - 32px);
+    width: calc(100vw - 40px);
     margin-bottom: 38px;
   }
 
@@ -373,21 +394,21 @@ html[data-theme="dark"] .theme-distill {
 
   .theme-distill .article-footer {
     display: block;
-    width: calc(100vw - 32px);
+    width: calc(100vw - 40px);
     margin-top: 42px;
   }
 }
 
 @media (min-width: 721px) and (max-width: 1111px) {
   .theme-distill .article-appendix__section {
-    grid-template-columns: minmax(0, var(--article-body-width));
+    grid-template-columns: minmax(0, var(--article-reading-width));
     gap: 12px;
-    width: min(var(--article-body-width), calc(100vw - 40px));
+    width: min(var(--article-reading-width), calc(100vw - 40px));
   }
 
   .theme-distill .article-footer {
     display: block;
-    width: min(var(--article-body-width), calc(100vw - 40px));
+    width: min(var(--article-reading-width), calc(100vw - 40px));
   }
 
   .theme-distill .article-footnotes ol,
