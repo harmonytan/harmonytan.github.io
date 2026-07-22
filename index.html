@@ -1,173 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hongming Tan · Researcher Blog</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <script>
-    (function () {
-      const storageKey = "hm-blog-theme";
-      try {
-        const stored = localStorage.getItem(storageKey);
-        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const theme = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
-        document.documentElement.dataset.theme = theme;
-      } catch (_error) {
-        /* ignore theme init errors */
-      }
-    })();
-  </script>
-  <link rel="stylesheet" href="styles/main.css?v=inline-code-wrap-20260512" />
-  <script type="module" src="scripts/header.js?v=149c7b5931" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Articles by Hongming Tan.">
+  <title>Hongming Tan · Articles</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <script>(function(){try{var k="hm-blog-theme",s=localStorage.getItem(k),d=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s==="light"||s==="dark"?s:d}catch(e){}})();</script>
+  <link rel="stylesheet" href="styles/site-header.css">
+  <link rel="stylesheet" href="styles/home-index.css">
+  <script type="module" src="scripts/header.js" defer></script>
 </head>
-
-<body class="home-page">
+<body class="publication-home">
   <header class="site-header">
-    <div class="site-shell">
-      <a class="brand" href="index.html">
-        <img class="brand-mark" src="assets/brand-h.svg?v=2" alt="" aria-hidden="true" />
-        <span class="brand-text">Hongming Tan</span>
+    <div class="site-header__inner">
+      <a class="site-brand" href="./" aria-label="Hongming Tan, articles home">
+        <svg class="site-brand__mark" viewBox="0 0 28 28" aria-hidden="true">
+          <path d="M5 3.5v21M23 3.5v21M5 14h18"></path>
+        </svg>
+        <span>Hongming Tan</span>
       </a>
-      <nav class="site-nav" id="site-navigation">
-        <a class="active" href="index.html">Home</a>
-        <a href="articles.html">Writing</a>
-        <div class="mobile-theme-switch" role="group" aria-label="Theme switch">
-          <button type="button" class="mobile-theme-option" data-theme-option="light" aria-pressed="false" aria-label="Light theme"></button>
-          <button type="button" class="mobile-theme-option" data-theme-option="dark" aria-pressed="false" aria-label="Dark theme"></button>
-        </div>
-      </nav>
-      <div class="header-actions">
-        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
-          <span class="theme-toggle-icon" aria-hidden="true" data-theme-icon>☀️</span>
-        </button>
-        <button
-          class="menu-toggle"
-          type="button"
-          data-menu-toggle
-          aria-expanded="false"
-          aria-controls="site-navigation"
-          aria-label="Open navigation menu"
-        >
-          <span class="menu-toggle-icon" aria-hidden="true"></span>
+      <div class="site-header__controls">
+        <nav class="site-nav" aria-label="Site links">
+          <a href="https://github.com/harmonytan" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+        <button class="site-theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme" aria-pressed="false">
+          <span data-theme-icon aria-hidden="true">☀</span>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="site-main academic-main">
-    <section class="academic-hero home-intro">
-      <div class="academic-hero-copy">
-        <h1>Hongming Tan <span class="name-cn">谭鸿铭</span></h1>
-        <div class="academic-link-row" aria-label="Primary links">
-          <a href="mailto:hongming@stu.pku.edu.cn">
-            <svg class="link-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4.5 6.5h15v11h-15z"></path>
-              <path d="m5 7 7 6 7-6"></path>
-            </svg>
-            Email
-          </a>
-          <a href="https://github.com/harmonytan" target="_blank" rel="noopener">
-            <svg class="link-icon link-icon-github" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2.7a9.4 9.4 0 0 0-3 18.3c.5.1.7-.2.7-.5v-1.8c-2.9.6-3.5-1.2-3.5-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 0 1.6 1.1 1.6 1.1.9 1.6 2.5 1.1 3 .9.1-.7.4-1.1.7-1.4-2.3-.3-4.7-1.2-4.7-5.2 0-1.1.4-2.1 1.1-2.8-.1-.3-.5-1.3.1-2.8 0 0 .9-.3 2.9 1.1a10 10 0 0 1 5.2 0c2-1.4 2.9-1.1 2.9-1.1.6 1.5.2 2.5.1 2.8.7.7 1.1 1.7 1.1 2.8 0 4-2.4 4.9-4.7 5.2.4.3.8 1 .8 2.1v3.1c0 .3.2.6.8.5A9.4 9.4 0 0 0 12 2.7Z"></path>
-            </svg>
-            GitHub
-          </a>
-          <a href="articles.html">
-            <svg class="link-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6.5 4.5h8l3 3v12h-11z"></path>
-              <path d="M14.5 4.5v3h3"></path>
-              <path d="M9 11h6"></path>
-              <path d="M9 14h6"></path>
-              <path d="M9 17h4"></path>
-            </svg>
-            Writing
-          </a>
+  <main class="publication-main">
+    <h1 class="visually-hidden">Articles by Hongming Tan</h1>
+    <section class="posts-list" aria-label="Published articles">
+      <article class="post-preview" style="--post-order: 0">
+        <div class="post-preview__metadata">
+          <time datetime="2026-01-26">January 26, 2026</time>
+          <span class="post-tag post-tag--finance">Finance</span>
         </div>
-      </div>
-    </section>
-
-    <section class="home-section home-biography" aria-labelledby="bio-heading">
-      <div class="home-section-head">
-        <div>
-          <h2 id="bio-heading">Biography</h2>
-        </div>
-      </div>
-      <p class="home-prose">
-        I am a student at <a href="https://www.pku.edu.cn/" target="_blank" rel="noopener">Peking University</a>.
-        Previously, I interned at <a href="https://about.jd.com/en/" target="_blank" rel="noopener">JD Explore Academy</a>
-        and <a href="https://longcat.chat/" target="_blank" rel="noopener">Meituan LongCat</a>.
-        My current research interests are <strong>AI Alignment</strong> and <strong>AI Simulation of Humans</strong>,
-        especially how AI systems can follow human intent, model human preferences, and reproduce human-like reasoning
-        or behavior in controlled settings.
-      </p>
-    </section>
-
-    <section class="home-section home-research" aria-labelledby="research-heading">
-      <div class="home-section-head">
-        <div>
-          <h2 id="research-heading">Research</h2>
-        </div>
-      </div>
-      <ul class="publication-list">
-        <li class="publication-item">
-          <strong class="paper-title">Can LLM Agents Internalize Externalities through Coasean Bargaining?</strong>
-          <span class="paper-authors">
-            <strong>Hongming Tan</strong>, Zhi Zhang, Wenxuan Jiang, Zijian Zhang, Xiaoyu Li, Xuezhi Cao
-          </span>
-          <span class="paper-venue">Working paper, 2026</span>
-          <span class="paper-summary">
-            A controlled multi-agent experiment on whether LLM agents can recover socially efficient outcomes
-            when local objectives create externalities. The project connects social alignment, Coasean bargaining,
-            simulated economic actors, and decision rights in multi-agent systems.
-          </span>
-          <span class="paper-links">[Draft available upon request]</span>
-        </li>
-      </ul>
-    </section>
-
-    <section class="home-section home-writing" aria-labelledby="writing-heading">
-        <div class="home-section-head">
-          <div>
-            <h2 id="writing-heading">Writing</h2>
+        <a class="post-preview__link" href="articles/recent-myths-in-the-silver-market/">
+          <div class="post-preview__description">
+            <h2>Recent Myths in the Silver Market</h2>
+            <p class="post-preview__authors">Hongming Tan</p>
+            <p class="post-preview__abstract">A long-form market note previewing the optional Transformer Circuits-style Markdown layout.</p>
           </div>
-          <a href="articles.html">All writing</a>
+        </a>
+      </article>
+      <article class="post-preview" style="--post-order: 1">
+        <div class="post-preview__metadata">
+          <time datetime="2026-01-21">January 21, 2026</time>
+          <span class="post-tag post-tag--finance">Finance</span>
         </div>
-        <ul class="writing-list">
-          <li>
-            <a href="article.html?post=recent-myths-in-the-silver-market">Recent Myths in the Silver Market</a>
-            <span>Finance · Jan 26, 2026</span>
-          </li>
-          <li>
-            <a href="article.html?post=model-in-speculative-market">Model in Speculative Market</a>
-            <span>Finance · Jan 21, 2026</span>
-          </li>
-          <li>
-            <a href="article.html?post=reward-hacking-in-life">Reward Hacking in Life</a>
-            <span>Thought · Nov 26, 2025</span>
-          </li>
-        </ul>
-    </section>
-
-    <section class="home-section home-news" aria-labelledby="news-heading">
-      <div class="home-section-head">
-        <div>
-          <h2 id="news-heading">News</h2>
+        <a class="post-preview__link" href="articles/model-in-speculative-market/">
+          <div class="post-preview__description">
+            <h2>Model in Speculative Market</h2>
+            <p class="post-preview__authors">Hongming Tan</p>
+          </div>
+        </a>
+      </article>
+      <article class="post-preview post-preview--with-image" style="--post-order: 2">
+        <div class="post-preview__metadata">
+          <time datetime="2025-11-26">November 26, 2025</time>
+          <span class="post-tag post-tag--thought">Thought</span>
         </div>
-      </div>
-      <ul class="news-list home-news-list">
-        <li>
-          <span class="news-date">[05/2026]</span>
-          <span>Working paper on LLM agents and externalities.</span>
-        </li>
-        <li>
-          <span class="news-date">[05/2026]</span>
-          <span>Reorganizing this site into a research blog.</span>
-        </li>
-      </ul>
+        <a class="post-preview__link" href="articles/reward-hacking-in-life/">
+          <div class="post-preview__description">
+            <h2>Reward Hacking in Life</h2>
+            <p class="post-preview__authors">Hongming Tan</p>
+          </div>
+          <figure class="post-preview__thumbnail">
+          <img src="articles/reward-hacking-in-life/assets/main.jpg" alt="" loading="lazy" decoding="async">
+        </figure>
+        </a>
+      </article>
+      <article class="post-preview" style="--post-order: 3">
+        <div class="post-preview__metadata">
+          <time datetime="2025-11-21">November 21, 2025</time>
+          <span class="post-tag post-tag--test">Test</span>
+        </div>
+        <a class="post-preview__link" href="articles/render-playground/">
+          <div class="post-preview__description">
+            <h2>Rendering Playground</h2>
+            <p class="post-preview__authors">Hongming Tan</p>
+            <p class="post-preview__abstract">A living fixture for Markdown, theme, and component contracts.</p>
+          </div>
+        </a>
+      </article>
     </section>
   </main>
-</body>
 
+  <footer class="journal-footer">
+    <div class="journal-footer__inner">
+      <p><strong>Hongming Tan</strong> writes to make technical and economic ideas clearer.</p>
+      <nav aria-label="Footer links">
+        <a href="https://github.com/harmonytan" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+</body>
 </html>

@@ -1,0 +1,6 @@
+name: comment
+scope: shared
+description: A Distill-style reader comment, replication note, or external response.
+requires:
+  - commentary
+

@@ -1,0 +1,7 @@
+name: render-spec
+scope: local
+description: A private disclosure showing the playground article contract.
+requires: []
+themes:
+  only:
+    - distill

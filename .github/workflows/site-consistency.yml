@@ -1,4 +1,4 @@
-name: Site Consistency
+name: Site consistency
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  verify-generated-files:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,22 +17,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: npm
 
-      - name: Regenerate posts index
-        run: node tools/update-posts-index.js
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Rebuild asset hash versions
-        run: node tools/build-site.js
+      - name: Validate generated article sources
+        run: npm run content:check
 
-      - name: Ensure generated files are committed
-        shell: bash
-        run: |
-          if ! git diff --quiet -- data/posts.json '*.html'; then
-            echo "Generated files are out of date."
-            echo "Run the following commands and commit the result:"
-            echo "  node tools/update-posts-index.js"
-            echo "  node tools/build-site.js"
-            echo
-            git --no-pager diff -- data/posts.json '*.html'
-            exit 1
-          fi
+      - name: Build static site
+        run: npm run build
+
+      - name: Verify the deployment artifact
+        run: test -f dist/index.html && test -f dist/articles/recent-myths-in-the-silver-market/index.html

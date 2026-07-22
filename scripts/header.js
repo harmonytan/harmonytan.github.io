@@ -1,15 +1,10 @@
 const header = document.querySelector(".site-header");
 const themeToggle = document.querySelector("[data-theme-toggle]");
 const themeIcon = document.querySelector("[data-theme-icon]");
-const themeOptionButtons = Array.from(document.querySelectorAll("[data-theme-option]"));
-const menuToggle = document.querySelector("[data-menu-toggle]");
-const siteNav = document.querySelector(".site-nav");
-const mobileNavQuery = window.matchMedia ? window.matchMedia("(max-width: 720px)") : null;
 const prefersDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 const THEME_STORAGE_KEY = "hm-blog-theme";
 
 let activeTheme = null;
-let isMenuOpen = false;
 
 const SUN_ICON = `
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -58,30 +53,6 @@ const getStoredTheme = () => {
 
 const getSystemTheme = () => (prefersDark && prefersDark.matches ? "dark" : "light");
 
-const getThemeLabel = (theme) => (theme === "dark" ? "Dark theme" : "Light theme");
-
-const decorateThemeOptions = () => {
-  for (const button of themeOptionButtons) {
-    const buttonTheme = normalizeTheme(button.dataset.themeOption);
-    if (!buttonTheme) {
-      continue;
-    }
-
-    let icon = button.querySelector(".mobile-theme-option-icon");
-
-    if (!icon) {
-      icon = document.createElement("span");
-      icon.className = "mobile-theme-option-icon";
-      icon.setAttribute("aria-hidden", "true");
-    }
-
-    button.setAttribute("aria-label", getThemeLabel(buttonTheme));
-    button.setAttribute("title", getThemeLabel(buttonTheme));
-    button.textContent = "";
-    button.append(icon);
-  }
-};
-
 const persistTheme = (theme) => {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
@@ -90,28 +61,15 @@ const persistTheme = (theme) => {
   }
 };
 
-const updateThemeOptionsUi = (theme) => {
-  for (const button of themeOptionButtons) {
-    const buttonTheme = normalizeTheme(button.dataset.themeOption);
-    const icon = button.querySelector(".mobile-theme-option-icon");
-    const isActive = buttonTheme === theme;
-    if (icon) {
-      icon.innerHTML = buttonTheme === "dark" ? MOON_ICON : SUN_ICON;
-    }
-    button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-pressed", isActive ? "true" : "false");
-  }
-};
-
 const updateToggleUi = (theme) => {
-  if (themeToggle) {
-    themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-    themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
-    if (themeIcon) {
-      themeIcon.innerHTML = theme === "dark" ? MOON_ICON : SUN_ICON;
-    }
+  if (!themeToggle) {
+    return;
   }
-  updateThemeOptionsUi(theme);
+  themeToggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+  themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  if (themeIcon) {
+    themeIcon.innerHTML = theme === "dark" ? MOON_ICON : SUN_ICON;
+  }
 };
 
 const applyTheme = (theme) => {
@@ -119,18 +77,6 @@ const applyTheme = (theme) => {
   activeTheme = finalTheme;
   document.documentElement.dataset.theme = finalTheme;
   updateToggleUi(finalTheme);
-};
-
-const isMobileView = () => (mobileNavQuery ? mobileNavQuery.matches : window.innerWidth <= 720);
-
-const setMenuOpen = (open) => {
-  if (!header || !menuToggle) {
-    return;
-  }
-  isMenuOpen = Boolean(open);
-  header.classList.toggle("is-menu-open", isMenuOpen);
-  menuToggle.setAttribute("aria-expanded", isMenuOpen ? "true" : "false");
-  menuToggle.setAttribute("aria-label", isMenuOpen ? "Close navigation menu" : "Open navigation menu");
 };
 
 const resolveInitialTheme = () => {
@@ -147,7 +93,6 @@ const resolveInitialTheme = () => {
   return getSystemTheme();
 };
 
-decorateThemeOptions();
 applyTheme(resolveInitialTheme());
 
 const syncSystemPreference = (event) => {
@@ -171,59 +116,6 @@ if (themeToggle) {
   });
 }
 
-for (const button of themeOptionButtons) {
-  button.addEventListener("click", () => {
-    const nextTheme = normalizeTheme(button.dataset.themeOption);
-    if (!nextTheme) {
-      return;
-    }
-    applyTheme(nextTheme);
-    persistTheme(nextTheme);
-  });
-}
-
-if (header && menuToggle && siteNav) {
-  menuToggle.addEventListener("click", () => {
-    setMenuOpen(!isMenuOpen);
-  });
-
-  siteNav.addEventListener("click", (event) => {
-    const targetLink = event.target instanceof Element ? event.target.closest("a") : null;
-    if (targetLink && isMobileView()) {
-      setMenuOpen(false);
-    }
-  });
-
-  document.addEventListener("click", (event) => {
-    if (!isMenuOpen || !(event.target instanceof Node)) {
-      return;
-    }
-    if (!header.contains(event.target)) {
-      setMenuOpen(false);
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && isMenuOpen) {
-      setMenuOpen(false);
-    }
-  });
-
-  const syncMenuWithViewport = (event) => {
-    if (!event.matches) {
-      setMenuOpen(false);
-    }
-  };
-
-  if (mobileNavQuery?.addEventListener) {
-    mobileNavQuery.addEventListener("change", syncMenuWithViewport);
-  } else if (mobileNavQuery?.addListener) {
-    mobileNavQuery.addListener(syncMenuWithViewport);
-  }
-
-  setMenuOpen(false);
-}
-
 if (header) {
   const HIDE_THRESHOLD = 10;
   let lastScrollY = window.scrollY;
@@ -235,14 +127,6 @@ if (header) {
     const scrollingDown = delta > HIDE_THRESHOLD;
     const scrollingUp = delta < -HIDE_THRESHOLD;
     const nearTop = currentY < 20;
-
-    if (isMenuOpen) {
-      header.classList.remove("is-hidden");
-      header.classList.add("is-floating");
-      lastScrollY = currentY;
-      ticking = false;
-      return;
-    }
 
     if (scrollingDown && currentY > header.offsetHeight * 1.5) {
       header.classList.add("is-hidden");

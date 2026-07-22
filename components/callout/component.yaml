@@ -1,0 +1,6 @@
+name: callout
+scope: shared
+description: A semantic aside for notes, cautions, and key claims.
+requires: []
+fallback: content
+

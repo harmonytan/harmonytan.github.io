@@ -1,0 +1,35 @@
+.render-spec {
+  width: min(var(--article-body-width), calc(100vw - 40px));
+  margin: 1.4rem auto 2.5rem;
+  border-top: 1px solid var(--site-rule);
+  border-bottom: 1px solid var(--site-rule);
+  font-family: var(--article-font-ui);
+}
+
+.render-spec__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  background: transparent;
+  color: var(--site-ink);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.render-spec__panel {
+  padding: 0 0 14px;
+  color: var(--site-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.render-spec__panel > :last-child {
+  margin-bottom: 0;
+}
+

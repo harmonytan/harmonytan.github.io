@@ -1,0 +1,34 @@
+{
+  "name": "harmonytan-blog",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A component-aware static Markdown publishing system.",
+  "scripts": {
+    "content": "node tools/build-content.mjs",
+    "content:check": "node tools/build-content.mjs --check",
+    "dev": "vite",
+    "build": "vite build",
+    "build:check": "node tools/build-content.mjs --check && vite build",
+    "preview": "vite preview"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "katex": "^0.18.1",
+    "rehype-katex": "^7.0.1",
+    "rehype-raw": "latest",
+    "rehype-stringify": "latest",
+    "remark-directive": "latest",
+    "remark-gfm": "latest",
+    "remark-math": "latest",
+    "remark-parse": "latest",
+    "remark-rehype": "latest",
+    "unified": "latest",
+    "unist-util-visit": "latest",
+    "yaml": "latest"
+  },
+  "devDependencies": {
+    "vite": "^8.1.5"
+  }
+}

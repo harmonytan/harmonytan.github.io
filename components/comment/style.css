@@ -1,0 +1,45 @@
+.component-comment {
+  width: min(var(--article-body-width), calc(100vw - 40px));
+  margin: 2rem auto 2.6rem;
+  padding: 18px 20px 16px;
+  border-left: 3px solid hsl(49deg 62% 52% / 70%);
+  background: hsl(54deg 78% 96%);
+  color: rgba(0, 0, 0, 0.67);
+  font-family: var(--article-font-ui);
+}
+
+html[data-theme="dark"] .component-comment {
+  border-left-color: hsl(49deg 55% 58% / 65%);
+  background: hsl(48deg 28% 16%);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.article-content .component-comment .component-comment__title {
+  margin: 0 0 4px;
+  color: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.component-comment .component-comment__byline {
+  margin: 0 0 13px;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.component-comment__byline a {
+  color: inherit;
+}
+
+.component-comment__body {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.component-comment__body > :last-child {
+  margin-bottom: 0;
+}

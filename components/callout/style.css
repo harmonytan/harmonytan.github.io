@@ -1,0 +1,31 @@
+.component-callout {
+  width: min(var(--article-body-width), calc(100vw - 40px));
+  margin: 2rem auto 2.4rem;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--site-rule);
+  border-left: 3px solid var(--component-accent, var(--article-accent));
+  background: color-mix(in srgb, var(--component-accent, var(--article-accent)) 5%, var(--site-paper));
+}
+
+.component-callout--caution {
+  --component-accent: #a95b18;
+}
+
+.component-callout--claim {
+  --component-accent: #316d53;
+}
+
+.component-callout__label {
+  margin: 0 0 8px !important;
+  color: var(--component-accent, var(--article-accent));
+  font-family: var(--article-font-ui) !important;
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.component-callout__body > :last-child {
+  margin-bottom: 0;
+}
+
