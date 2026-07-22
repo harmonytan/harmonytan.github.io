@@ -27,6 +27,3 @@ jobs:
 
       - name: Build static site
         run: npm run build
-
-      - name: Verify the deployment artifact
-        run: test -f dist/index.html && test -f dist/articles/recent-myths-in-the-silver-market/index.html

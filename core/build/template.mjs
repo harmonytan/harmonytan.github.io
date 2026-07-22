@@ -56,7 +56,6 @@ ${componentStyles}
 function renderHero(article, published) {
   const summary = article.summary ? `<p class="article-summary">${escapeHtml(article.summary)}</p>` : "";
   return `<header class="article-hero article-hero--research">
-    <p class="article-kicker">${escapeHtml(article.category)}</p>
     <h1>${escapeHtml(article.title)}</h1>
     ${summary}
     <div class="article-byline-grid">

@@ -46,7 +46,7 @@ npm run content:check
 npm run build
 ```
 
-`npm run dev` regenerates existing articles when Markdown, Theme, or component files change. Restart the dev server after adding an entirely new article directory so Vite can add its HTML entry.
+`npm run dev` watches the article tree itself. Adding, deleting, renaming, publishing, or drafting an article automatically rescans the currently published Markdown sources, regenerates the homepage, and updates article outputs without restarting Vite.
 
 ## Writing an article
 
@@ -68,6 +68,9 @@ theme: distill
 Article content.
 ```
 
+`title` and `date` are required. `category` is optional and, when present, is used
+only on the homepage article list. Individual article pages never render category labels.
+
 Asset paths are local to the article:
 
 ```markdown
@@ -78,7 +81,7 @@ Supported figure modifiers are `{wide}`, `{full}`, and percentage widths such as
 
 Current Theme:
 
-- `distill`: Transformer Circuits-inspired research layout with a centered research title, compact citations, and structured end matter. It does not render a table of contents.
+- `distill`: Transformer Circuits-inspired research layout with a left-aligned research title, compact citations, and structured end matter. It does not render a table of contents.
 
 The Theme manifest declares capabilities in `themes/distill/theme.yaml`. The content build rejects a component whose requirements are not provided by the selected Theme. The loader remains extensible, but `distill` is currently the only supported and default Theme.
 

@@ -11,7 +11,6 @@
   --site-muted: #6d7475;
   --site-rule: rgba(29, 37, 41, 0.14);
   --article-body-width: 704px;
-  --article-reading-width: 704px;
   --article-wide-width: 1056px;
   --article-page-width: 1160px;
   --article-font-body: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
@@ -65,20 +64,10 @@ a {
   text-wrap: balance;
 }
 
-.article-kicker,
 .article-summary,
 .article-byline-grid,
 .article-footer {
   font-family: var(--article-font-ui);
-}
-
-.article-kicker {
-  margin: 0 0 18px;
-  color: var(--article-accent);
-  font-size: 0.72rem;
-  font-weight: 650;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
 }
 
 .article-summary {

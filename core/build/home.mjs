@@ -31,7 +31,7 @@ ${articleList}
 
   <footer class="journal-footer">
     <div class="journal-footer__inner">
-      <p><strong>Hongming Tan</strong> writes to make technical and economic ideas clearer.</p>
+      <p><strong>Hongming Tan’s personal blog</strong> for recording articles and information.</p>
       <nav aria-label="Footer links">
         <a href="https://github.com/harmonytan" target="_blank" rel="noopener">GitHub</a>
       </nav>
@@ -43,8 +43,12 @@ ${articleList}
 }
 
 function renderPostPreview(post, index) {
-  const category = post.category || "Notebook";
+  const category = post.category;
   const href = post.href || `articles/${encodeURIComponent(post.slug)}/`;
+  const categoryTag = category
+    ? `
+          <span class="post-tag post-tag--${escapeAttribute(slugify(category))}">${escapeHtml(category)}</span>`
+    : "";
   const summary = post.summary
     ? `
             <p class="post-preview__abstract">${escapeHtml(post.summary)}</p>`
@@ -58,8 +62,7 @@ function renderPostPreview(post, index) {
 
   return `      <article class="post-preview${post.image ? " post-preview--with-image" : ""}" style="--post-order: ${index}">
         <div class="post-preview__metadata">
-          <time datetime="${escapeAttribute(post.date)}">${escapeHtml(formatDate(post.date))}</time>
-          <span class="post-tag post-tag--${escapeAttribute(slugify(category))}">${escapeHtml(category)}</span>
+          <time datetime="${escapeAttribute(post.date)}">${escapeHtml(formatDate(post.date))}</time>${categoryTag}
         </div>
         <a class="post-preview__link" href="${escapeAttribute(href)}">
           <div class="post-preview__description">

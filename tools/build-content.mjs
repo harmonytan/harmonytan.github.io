@@ -21,6 +21,7 @@ export async function buildContent({ check = false, quiet = false } = {}) {
     .map((entry) => entry.name)
     .sort();
   const outputs = [];
+  const removals = [];
   const posts = [];
 
   await validateComponentDirectory(path.join(ROOT, "components"), "shared");
@@ -29,13 +30,25 @@ export async function buildContent({ check = false, quiet = false } = {}) {
     assertSafeName(slug, "Article slug");
     const articleDir = path.join(ARTICLES_DIR, slug);
     const sourcePath = path.join(articleDir, "index.md");
-    if (!(await exists(sourcePath))) continue;
+    if (!(await exists(sourcePath))) {
+      removals.push(
+        path.join(articleDir, "index.html"),
+        path.join(articleDir, "article-entry.js")
+      );
+      continue;
+    }
     await validateComponentDirectory(path.join(articleDir, "components"), "local");
 
     const source = await fs.readFile(sourcePath, "utf8");
     const { attributes, body } = parseArticleSource(source, sourcePath);
     const article = normalizeArticleMeta(attributes, slug, sourcePath);
-    if (article.draft) continue;
+    if (article.draft) {
+      removals.push(
+        path.join(articleDir, "index.html"),
+        path.join(articleDir, "article-entry.js")
+      );
+      continue;
+    }
 
     const theme = await loadTheme(article.theme);
     const registry = new ComponentRegistry({ root: ROOT, articleDir, theme, articleSlug: slug });
@@ -76,6 +89,12 @@ export async function buildContent({ check = false, quiet = false } = {}) {
     if (current === output.content) continue;
     changed.push(path.relative(ROOT, output.filePath));
     if (!check) await fs.writeFile(output.filePath, output.content, "utf8");
+  }
+
+  for (const filePath of removals) {
+    if (!(await exists(filePath))) continue;
+    changed.push(path.relative(ROOT, filePath));
+    if (!check) await fs.rm(filePath, { force: true });
   }
 
   if (check && changed.length > 0) {

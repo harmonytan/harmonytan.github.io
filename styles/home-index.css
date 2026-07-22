@@ -244,9 +244,9 @@ a {
 .journal-footer {
   flex: 0 0 auto;
   padding: 40px 0 44px;
-  color: color-mix(in srgb, var(--site-gold) 68%, transparent);
+  color: color-mix(in srgb, var(--site-chrome-ink) 74%, transparent);
   background: var(--site-chrome);
-  border-top: 1px solid var(--site-gold-line);
+  border-top: 1px solid var(--site-chrome-line);
 }
 
 .journal-footer__inner {
@@ -265,7 +265,7 @@ a {
 }
 
 .journal-footer strong {
-  color: color-mix(in srgb, var(--site-gold-strong) 88%, transparent);
+  color: color-mix(in srgb, var(--site-chrome-ink-strong) 88%, transparent);
   font-weight: 400;
 }
 
@@ -275,12 +275,12 @@ a {
 }
 
 .journal-footer a {
-  color: color-mix(in srgb, var(--site-gold) 82%, transparent);
+  color: color-mix(in srgb, var(--site-chrome-ink) 86%, transparent);
   text-decoration: none;
 }
 
 .journal-footer a:hover {
-  color: var(--site-gold-strong);
+  color: var(--site-chrome-ink-strong);
   text-decoration: underline;
   text-underline-offset: 3px;
 }

@@ -6,7 +6,7 @@
   --article-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", sans-serif;
   --article-font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "PingFang SC", sans-serif;
   --article-body-width: 704px;
-  --article-reading-width: 640px;
+  --article-title-width: 880px;
   --article-wide-width: 1072px;
   --article-page-width: 1072px;
   --article-appendix-label-width: 152px;
@@ -33,42 +33,44 @@ html[data-theme="dark"] .theme-distill {
 }
 
 .theme-distill .article-hero {
+  --article-hero-inset: max(0px, calc((100% - var(--article-body-width)) / 2));
   width: min(var(--article-page-width), calc(100vw - 40px));
   margin: 0 auto;
   padding: 84px 0 0;
 }
 
-.theme-distill .article-kicker {
-  margin-bottom: 16px;
-  text-align: center;
-}
-
 .theme-distill .article-hero h1 {
-  width: min(var(--article-body-width), 100%);
-  margin: 0 auto;
+  width: min(
+    var(--article-title-width),
+    calc(100% - var(--article-hero-inset))
+  );
+  margin: 0 0 0 var(--article-hero-inset);
   font-family: var(--article-font-ui);
   font-size: 50px;
   font-weight: 700;
   letter-spacing: -0.035em;
   line-height: 1.1;
-  text-align: center;
+  text-align: left;
 }
 
 .theme-distill .article-summary {
-  width: min(var(--article-body-width), 100%);
-  margin: 20px auto 0;
+  width: min(
+    var(--article-title-width),
+    calc(100% - var(--article-hero-inset))
+  );
+  margin: 20px 0 0 var(--article-hero-inset);
   font-size: 17px;
   line-height: 1.55;
-  text-align: center;
+  text-align: left;
 }
 
 .theme-distill .article-byline-grid {
   display: grid;
   grid-template-columns: minmax(220px, 2fr) minmax(180px, 1fr) minmax(130px, 0.7fr);
   gap: 28px;
-  width: min(var(--article-body-width), 100%);
-  margin: 44px auto 0;
-  padding: 18px 0 20px;
+  width: 100vw;
+  margin: 44px 0 0 calc(50% - 50vw);
+  padding: 18px max(20px, calc((100vw - var(--article-body-width)) / 2)) 20px;
   border-top: 1px solid var(--site-rule);
   border-bottom: 1px solid var(--site-rule);
 }
@@ -97,7 +99,7 @@ html[data-theme="dark"] .theme-distill {
   display: grid;
   grid-template-columns:
     [page-start] minmax(20px, 1fr)
-    [text-start] minmax(0, var(--article-reading-width))
+    [text-start] minmax(0, var(--article-body-width))
     [text-end] minmax(20px, 1fr)
     [page-end];
   width: 100%;
@@ -205,9 +207,9 @@ html[data-theme="dark"] .theme-distill {
 
 .theme-distill .article-appendix__section {
   display: grid;
-  grid-template-columns: var(--article-appendix-label-width) minmax(0, var(--article-reading-width));
+  grid-template-columns: var(--article-appendix-label-width) minmax(0, var(--article-body-width));
   column-gap: calc(
-    (var(--article-page-width) - var(--article-reading-width)) / 2
+    (var(--article-page-width) - var(--article-body-width)) / 2
     - var(--article-appendix-label-width)
   );
   width: min(var(--article-page-width), calc(100vw - 40px));
@@ -311,9 +313,9 @@ html[data-theme="dark"] .theme-distill {
 
 .theme-distill .article-footer {
   display: grid;
-  grid-template-columns: var(--article-appendix-label-width) minmax(0, var(--article-reading-width));
+  grid-template-columns: var(--article-appendix-label-width) minmax(0, var(--article-body-width));
   column-gap: calc(
-    (var(--article-page-width) - var(--article-reading-width)) / 2
+    (var(--article-page-width) - var(--article-body-width)) / 2
     - var(--article-appendix-label-width)
   );
   width: min(var(--article-page-width), calc(100vw - 40px));
@@ -329,7 +331,7 @@ html[data-theme="dark"] .theme-distill {
 
 @media (max-width: 720px) {
   .theme-distill .article-hero {
-    width: calc(100vw - 32px);
+    width: calc(100vw - 40px);
     padding-top: 56px;
   }
 
@@ -401,14 +403,14 @@ html[data-theme="dark"] .theme-distill {
 
 @media (min-width: 721px) and (max-width: 1111px) {
   .theme-distill .article-appendix__section {
-    grid-template-columns: minmax(0, var(--article-reading-width));
+    grid-template-columns: minmax(0, var(--article-body-width));
     gap: 12px;
-    width: min(var(--article-reading-width), calc(100vw - 40px));
+    width: min(var(--article-body-width), calc(100vw - 40px));
   }
 
   .theme-distill .article-footer {
     display: block;
-    width: min(var(--article-reading-width), calc(100vw - 40px));
+    width: min(var(--article-body-width), calc(100vw - 40px));
   }
 
   .theme-distill .article-footnotes ol,

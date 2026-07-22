@@ -34,7 +34,7 @@ export function normalizeArticleMeta(attributes, slug, filePath) {
     title,
     date,
     theme: theme === "default" ? "distill" : theme,
-    category: String(attributes.category ?? "Notebook").trim(),
+    category: String(attributes.category ?? "").trim(),
     summary: String(attributes.summary ?? attributes.subtitle ?? "").trim(),
     author: normalizeAuthor(attributes.author),
     affiliation: String(attributes.affiliation ?? "Independent Researcher").trim(),
