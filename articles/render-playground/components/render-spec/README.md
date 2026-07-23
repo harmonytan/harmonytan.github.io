@@ -13,9 +13,9 @@ Private explanatory content.
 ## Theme compatibility
 
 - Requires no optional capabilities.
-- Allowed Theme: `distill`
+- Allowed Themes: `distill` and `anthropic`
 
-The build must fail if another article or Theme attempts to use this component.
+The build must fail if another article or an unlisted Theme attempts to use this component.
 
 ## JavaScript behavior
 

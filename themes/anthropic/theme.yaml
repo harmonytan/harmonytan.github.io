@@ -1,0 +1,11 @@
+id: anthropic
+label: Anthropic Editorial
+capabilities:
+  - figure
+  - wide-figure
+  - full-bleed-figure
+  - margin-note
+  - commentary
+  - end-matter
+  - footnotes
+  - references

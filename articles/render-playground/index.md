@@ -3,7 +3,7 @@ title: Rendering Playground
 date: 2025-11-21
 category: Test
 summary: A living fixture for Markdown, theme, and component contracts.
-theme: distill
+theme: anthropic
 ---
 
 Use this post to quickly verify whether the renderer, KaTeX, and styling look right after changes.

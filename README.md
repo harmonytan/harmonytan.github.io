@@ -15,6 +15,7 @@ themes/                  # Markdown presentation and layout
 core/build/               # Markdown AST and compatibility validation
 core/client/              # shared progressive enhancement
 styles/site-header.css    # shared homepage/article site chrome
+tools/create-article.mjs  # draft article workspace generator
 tools/build-content.mjs   # article and metadata generator
 index.html                # generated publication-style article homepage
 dist/                     # generated GitHub Pages artifact
@@ -46,11 +47,44 @@ npm run content:check
 npm run build
 ```
 
-`npm run dev` watches the article tree itself. Adding, deleting, renaming, publishing, or drafting an article automatically rescans the currently published Markdown sources, regenerates the homepage, and updates article outputs without restarting Vite.
+`npm run dev` watches the article tree itself. Adding, deleting, renaming,
+publishing, or drafting an article automatically rebuilds published outputs and
+in-memory draft previews without restarting Vite.
 
 ## Writing an article
 
-Create `articles/<slug>/index.md`:
+Create a draft writing workspace by specifying a Theme:
+
+```bash
+npm run article:new -- --theme anthropic
+```
+
+This creates `articles/<slug>/index.md`, `assets/`, and `components/`. The Theme
+is the only required CLI argument. The generated article defaults to today's
+date and `draft: true`, so it does not appear on the homepage until published.
+While `npm run dev` is running, the draft is still available directly at
+`/articles/<slug>/`. Its preview HTML and entry module are kept in memory and
+are never written as publishable article output.
+
+Common optional metadata:
+
+```bash
+npm run article:new -- \
+  --theme distill \
+  --title "Sparse Feature Geometry" \
+  --slug sparse-feature-geometry \
+  --summary "A short article summary." \
+  --category Research
+```
+
+Use `--publish` to omit the draft flag. Run
+`npm run article:new -- --help` for every supported option.
+
+To publish an existing draft, remove `draft: true` or change it to
+`draft: false`. The development server then writes its article output and adds
+it to the homepage automatically. Production builds always exclude drafts.
+
+The generated `index.md` follows this structure:
 
 ```markdown
 ---
@@ -79,11 +113,12 @@ Asset paths are local to the article:
 
 Supported figure modifiers are `{wide}`, `{full}`, and percentage widths such as `{70%}`.
 
-Current Theme:
+Current Themes:
 
 - `distill`: Transformer Circuits-inspired research layout with a left-aligned research title, compact citations, and structured end matter. It does not render a table of contents.
+- `anthropic`: Anthropic engineering-inspired editorial layout with a geometric hero, warm paper palette, sans-serif display typography, and a 640px serif reading column.
 
-The Theme manifest declares capabilities in `themes/distill/theme.yaml`. The content build rejects a component whose requirements are not provided by the selected Theme. The loader remains extensible, but `distill` is currently the only supported and default Theme.
+Each Theme manifest declares its capabilities in `themes/<theme>/theme.yaml`. The content build rejects a component whose requirements are not provided by the selected Theme. `distill` remains the default when front matter does not specify a Theme.
 
 ## Components
 

@@ -11,11 +11,16 @@ import { renderHomePage } from "../core/build/home.mjs";
 import { assertSafeName } from "../core/build/utils.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const ARTICLES_DIR = path.join(ROOT, "articles");
-const THEMES_DIR = path.join(ROOT, "themes");
 
-export async function buildContent({ check = false, quiet = false } = {}) {
-  const articleEntries = await fs.readdir(ARTICLES_DIR, { withFileTypes: true });
+export async function buildContent({
+  check = false,
+  quiet = false,
+  includeDrafts = false,
+  root = ROOT,
+} = {}) {
+  const articlesDir = path.join(root, "articles");
+  const themesDir = path.join(root, "themes");
+  const articleEntries = await fs.readdir(articlesDir, { withFileTypes: true });
   const slugs = articleEntries
     .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
     .map((entry) => entry.name)
@@ -23,12 +28,13 @@ export async function buildContent({ check = false, quiet = false } = {}) {
   const outputs = [];
   const removals = [];
   const posts = [];
+  const draftPreviews = new Map();
 
-  await validateComponentDirectory(path.join(ROOT, "components"), "shared");
+  await validateComponentDirectory(path.join(root, "components"), "shared");
 
   for (const slug of slugs) {
     assertSafeName(slug, "Article slug");
-    const articleDir = path.join(ARTICLES_DIR, slug);
+    const articleDir = path.join(articlesDir, slug);
     const sourcePath = path.join(articleDir, "index.md");
     if (!(await exists(sourcePath))) {
       removals.push(
@@ -47,14 +53,14 @@ export async function buildContent({ check = false, quiet = false } = {}) {
         path.join(articleDir, "index.html"),
         path.join(articleDir, "article-entry.js")
       );
-      continue;
+      if (!includeDrafts) continue;
     }
 
-    const theme = await loadTheme(article.theme);
-    const registry = new ComponentRegistry({ root: ROOT, articleDir, theme, articleSlug: slug });
+    const theme = await loadTheme(article.theme, themesDir);
+    const registry = new ComponentRegistry({ root, articleDir, theme, articleSlug: slug });
     const rendered = await renderMarkdown(body, { registry });
     const themeModule = await import(
-      `${pathToFileURL(path.join(THEMES_DIR, theme.id, "index.mjs")).href}?v=${Date.now()}`
+      `${pathToFileURL(path.join(themesDir, theme.id, "index.mjs")).href}?v=${Date.now()}`
     );
     if (typeof themeModule.renderPage !== "function") {
       throw new Error(`Theme "${theme.id}" must export renderPage().`);
@@ -70,6 +76,10 @@ export async function buildContent({ check = false, quiet = false } = {}) {
       theme,
     });
     const entry = renderArticleEntry(rendered.components);
+    if (article.draft) {
+      draftPreviews.set(slug, { html, entry });
+      continue;
+    }
     outputs.push(
       { filePath: path.join(articleDir, "index.html"), content: html },
       { filePath: path.join(articleDir, "article-entry.js"), content: entry }
@@ -81,19 +91,19 @@ export async function buildContent({ check = false, quiet = false } = {}) {
     const dateDiff = Date.parse(b.date) - Date.parse(a.date);
     return dateDiff || a.slug.localeCompare(b.slug);
   });
-  outputs.push({ filePath: path.join(ROOT, "index.html"), content: renderHomePage(posts) });
+  outputs.push({ filePath: path.join(root, "index.html"), content: renderHomePage(posts) });
 
   const changed = [];
   for (const output of outputs) {
     const current = await readIfExists(output.filePath);
     if (current === output.content) continue;
-    changed.push(path.relative(ROOT, output.filePath));
+    changed.push(path.relative(root, output.filePath));
     if (!check) await fs.writeFile(output.filePath, output.content, "utf8");
   }
 
   for (const filePath of removals) {
     if (!(await exists(filePath))) continue;
-    changed.push(path.relative(ROOT, filePath));
+    changed.push(path.relative(root, filePath));
     if (!check) await fs.rm(filePath, { force: true });
   }
 
@@ -102,14 +112,19 @@ export async function buildContent({ check = false, quiet = false } = {}) {
   }
   if (!quiet) {
     const verb = check ? "Validated" : "Built";
-    console.log(`${verb} ${posts.length} article(s)${changed.length ? `; updated ${changed.length} file(s)` : ""}.`);
+    const draftMessage = includeDrafts && draftPreviews.size
+      ? `; prepared ${draftPreviews.size} draft preview(s)`
+      : "";
+    console.log(
+      `${verb} ${posts.length} article(s)${draftMessage}${changed.length ? `; updated ${changed.length} file(s)` : ""}.`
+    );
   }
-  return { posts, changed };
+  return { posts, changed, draftPreviews };
 }
 
-async function loadTheme(themeId) {
+async function loadTheme(themeId, themesDir) {
   assertSafeName(themeId, "Theme id");
-  const directory = path.join(THEMES_DIR, themeId);
+  const directory = path.join(themesDir, themeId);
   const manifestPath = path.join(directory, "theme.yaml");
   const [source] = await Promise.all([
     fs.readFile(manifestPath, "utf8"),

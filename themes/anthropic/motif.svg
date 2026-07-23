@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 244 244" role="img" aria-labelledby="title">
+  <title id="title">Abstract evaluation diagrams</title>
+  <g fill="none" stroke="#141413" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+    <path d="M11 12v37c0 13 9 22 22 22h8c13 0 22-9 22-22V12"/>
+    <circle cx="11" cy="11" r="6" fill="#141413" stroke="none"/>
+    <circle cx="37" cy="11" r="6" fill="#141413" stroke="none"/>
+    <circle cx="63" cy="11" r="6" fill="#141413" stroke="none"/>
+
+    <path d="M92 11h46l-7 10 7 10-7 10 7 10-7 10 7 10H92l7-10-7-10 7-10-7-10 7-10z" fill="#141413"/>
+
+    <path d="M166 11h18v20h25V11h18v60h-18V49h-25v22h-18z" fill="#141413"/>
+
+    <path d="M12 101h39M12 101l22-18M12 101l22 18"/>
+    <circle cx="10" cy="101" r="7" fill="#141413" stroke="none"/>
+    <circle cx="55" cy="101" r="7" fill="#141413" stroke="none"/>
+    <circle cx="36" cy="81" r="7" fill="#141413" stroke="none"/>
+    <circle cx="36" cy="121" r="7" fill="#141413" stroke="none"/>
+
+    <path d="M91 119c0-22 11-38 29-38s29 16 29 38"/>
+    <path d="M101 119c0-15 7-26 19-26s19 11 19 26"/>
+    <path d="M111 119c0-8 3-14 9-14s9 6 9 14"/>
+    <path d="M120 82v45"/>
+
+    <rect x="166" y="81" width="61" height="47" rx="4"/>
+    <circle cx="166" cy="81" r="7" fill="#141413" stroke="none"/>
+    <circle cx="227" cy="81" r="7" fill="#141413" stroke="none"/>
+    <circle cx="166" cy="128" r="7" fill="#141413" stroke="none"/>
+    <circle cx="227" cy="128" r="7" fill="#141413" stroke="none"/>
+
+    <path d="M12 165l50 50M62 165l-50 50"/>
+    <circle cx="12" cy="165" r="7" fill="#141413" stroke="none"/>
+    <circle cx="62" cy="165" r="7" fill="#141413" stroke="none"/>
+    <circle cx="12" cy="215" r="7" fill="#141413" stroke="none"/>
+    <circle cx="62" cy="215" r="7" fill="#141413" stroke="none"/>
+    <circle cx="37" cy="190" r="7" fill="#141413" stroke="none"/>
+
+    <circle cx="99" cy="171" r="11"/>
+    <circle cx="123" cy="171" r="11"/>
+    <circle cx="99" cy="195" r="11"/>
+    <circle cx="123" cy="195" r="11"/>
+    <circle cx="99" cy="219" r="11"/>
+    <circle cx="123" cy="219" r="11"/>
+    <circle cx="147" cy="171" r="11"/>
+    <circle cx="147" cy="195" r="11"/>
+    <circle cx="147" cy="219" r="11"/>
+  </g>
+  <path fill="#879573" d="M181 160c10 0 16 7 16 16 0-9 7-16 17-16 9 0 16 7 16 16 0 10-7 16-16 16 9 0 16 7 16 17 0 9-7 16-16 16-10 0-17-7-17-16 0 9-6 16-16 16-9 0-16-7-16-16 0-10 7-17 16-17-9 0-16-6-16-16 0-9 7-16 16-16z"/>
+</svg>

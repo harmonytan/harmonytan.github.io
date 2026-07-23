@@ -5,3 +5,4 @@ requires: []
 themes:
   only:
     - distill
+    - anthropic

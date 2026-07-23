@@ -4,12 +4,14 @@
   "private": true,
   "description": "A component-aware static Markdown publishing system.",
   "scripts": {
+    "article:new": "node tools/create-article.mjs",
     "content": "node tools/build-content.mjs",
     "content:check": "node tools/build-content.mjs --check",
     "dev": "vite",
     "build": "vite build",
     "build:check": "node tools/build-content.mjs --check && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:tools": "node --test tools/*.test.mjs"
   },
   "engines": {
     "node": ">=20"
