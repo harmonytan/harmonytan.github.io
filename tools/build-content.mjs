@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { parse as parseYaml } from "yaml";
 import { ComponentRegistry } from "../core/build/components.mjs";
+import { validateComponentManifest } from "../core/build/component-contract.mjs";
 import { parseArticleSource, normalizeArticleMeta } from "../core/build/frontmatter.mjs";
 import { renderMarkdown } from "../core/build/markdown.mjs";
 import { renderHomePage } from "../core/build/home.mjs";
@@ -159,12 +160,11 @@ async function validateComponentDirectory(directory, scope) {
     ]).catch((error) => {
       throw new Error(`${scope} component "${entry.name}" is incomplete: ${error.message}`);
     });
-    const manifest = parseYaml(manifestSource) ?? {};
-    if (manifest.name !== entry.name || manifest.scope !== scope) {
-      throw new Error(
-        `${manifestPath}: expected name "${entry.name}" and scope "${scope}".`
-      );
-    }
+    validateComponentManifest(parseYaml(manifestSource), {
+      manifestPath,
+      expectedName: entry.name,
+      expectedScope: scope,
+    });
   }
 }
 

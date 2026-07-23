@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { parse as parseYaml } from "yaml";
-import { createArticle, parseArticleArgs } from "./create-article.mjs";
+import { createArticle, parseArticleArgs } from "../tools/create-article.mjs";
 
 test("parses required and optional article arguments", () => {
   assert.deepEqual(

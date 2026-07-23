@@ -1,6 +1,25 @@
+apiVersion: 1
 name: callout
 scope: shared
 description: A semantic aside for notes, cautions, and key claims.
 requires: []
 fallback: content
-
+props:
+  title:
+    type: string
+    default: Note
+    maxLength: 120
+  tone:
+    type: enum
+    values:
+      - note
+      - caution
+      - claim
+    default: note
+  size:
+    type: enum
+    values:
+      - compact
+      - normal
+      - prominent
+    default: normal

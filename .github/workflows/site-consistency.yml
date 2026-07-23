@@ -1,7 +1,6 @@
 name: Site consistency
 
 on:
-  push:
   pull_request:
   workflow_dispatch:
 
@@ -22,8 +21,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate generated article sources
-        run: npm run content:check
-
-      - name: Build static site
-        run: npm run build
+      - name: Verify project
+        run: npm run verify

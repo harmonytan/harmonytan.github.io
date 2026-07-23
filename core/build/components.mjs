@@ -3,6 +3,10 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { parse as parseYaml } from "yaml";
 import { assertSafeName } from "./utils.mjs";
+import {
+  normalizeComponentProps,
+  validateComponentManifest,
+} from "./component-contract.mjs";
 
 export class ComponentRegistry {
   constructor({ root, articleDir, theme, articleSlug }) {
@@ -36,11 +40,29 @@ export class ComponentRegistry {
       );
     }
 
-    const html = await component.module.render({
-      props,
+    const normalizedProps = normalizeComponentProps(
+      reference,
+      component.manifest.props,
+      props
+    );
+    const context = {
+      props: normalizedProps,
       content,
       article: { slug: this.articleSlug },
       theme: this.theme,
+    };
+    if (component.module.validate) {
+      try {
+        await component.module.validate(context);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(
+          `${this.articleSlug}: component "${reference}" rejected its properties: ${message}`
+        );
+      }
+    }
+    const html = await component.module.render({
+      ...context,
       escape: component.escape,
     });
 
@@ -83,22 +105,17 @@ export class ComponentRegistry {
       throw new Error(`${this.articleSlug}: incomplete component "${reference}": ${error.message}`);
     });
 
-    const manifest = parseYaml(manifestSource) ?? {};
-    if (manifest.name !== name) {
-      throw new Error(
-        `${manifestPath}: manifest name "${manifest.name}" does not match directory "${name}".`
-      );
-    }
-    if (manifest.scope !== scope) {
-      throw new Error(
-        `${manifestPath}: manifest scope must be "${scope}" for reference "${reference}".`
-      );
-    }
-
-    manifest.requires = Array.isArray(manifest.requires) ? manifest.requires : [];
+    const manifest = validateComponentManifest(parseYaml(manifestSource), {
+      manifestPath,
+      expectedName: name,
+      expectedScope: scope,
+    });
     const imported = await import(`${pathToFileURL(modulePath).href}?v=${Date.now()}`);
     if (typeof imported.render !== "function") {
       throw new Error(`${modulePath} must export a render() function.`);
+    }
+    if (imported.validate !== undefined && typeof imported.validate !== "function") {
+      throw new Error(`${modulePath} validate export must be a function.`);
     }
 
     const publicPath = (file) => scope === "shared"
@@ -140,4 +157,3 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
-

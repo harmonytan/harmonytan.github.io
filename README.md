@@ -43,9 +43,14 @@ npm run preview
 Validation used by CI:
 
 ```bash
-npm run content:check
-npm run build
+npm test
+npm run verify
 ```
+
+`npm test` runs the project tests under `tests/`. `npm run verify` runs those
+tests, checks that generated article output is current, and completes a
+production Vite build. Pull requests and GitHub Pages deployment both use this
+same command; deployment only uploads `dist/` after verification succeeds.
 
 `npm run dev` watches the article tree itself. Adding, deleting, renaming,
 publishing, or drafting an article automatically rebuilds published outputs and
@@ -151,6 +156,54 @@ component-name/
 ```
 
 Browser code must use ESM. The generated `article-entry.js` contains static imports so Vite can bundle private modules correctly for GitHub Pages. Do not construct production module URLs from arbitrary Markdown strings.
+
+Component manifests use a versioned, build-validated property contract:
+
+```yaml
+apiVersion: 1
+name: callout
+scope: shared
+description: A semantic article callout.
+requires: []
+themes:
+  only:
+    - distill
+    - anthropic
+props:
+  title:
+    type: string
+    default: Note
+    maxLength: 120
+  tone:
+    type: enum
+    values:
+      - note
+      - caution
+      - claim
+    default: note
+  size:
+    type: enum
+    values:
+      - compact
+      - normal
+      - prominent
+    default: normal
+```
+
+Supported property types are `string`, `enum`, `boolean`, `number`, `integer`,
+and `url`. Directive attributes are normalized to those types before
+`render()` is called. Defaults are applied centrally; unknown properties,
+invalid values, out-of-range numbers, and unsupported Theme combinations stop
+the build with a component-specific error.
+
+Prefer semantic variants such as `size="compact"` or `tone="claim"` over raw
+CSS values. Components should emit stable `data-*` attributes and allow each
+Theme to map those states to its own typography and spacing.
+
+Basic types belong in `component.yaml`. A component with relationships between
+properties may optionally export `validate({ props, content, article, theme })`
+from `index.mjs`; it should throw a descriptive error for an invalid
+combination. `render()` always receives the normalized property object.
 
 ## Footnotes, references, math, and code
 

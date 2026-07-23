@@ -1,6 +1,28 @@
+apiVersion: 1
 name: comment
 scope: shared
 description: A Distill-style reader comment, replication note, or external response.
 requires:
   - commentary
-
+props:
+  title:
+    type: string
+    default: Comment
+    maxLength: 160
+  author:
+    type: string
+    default: Guest contributor
+    maxLength: 120
+  affiliation:
+    type: string
+    default: ""
+    maxLength: 160
+  url:
+    type: url
+  size:
+    type: enum
+    values:
+      - compact
+      - normal
+      - prominent
+    default: normal

@@ -17,6 +17,15 @@ Private explanatory content.
 
 The build must fail if another article or an unlisted Theme attempts to use this component.
 
+## Properties
+
+| Property | Required | Default |
+| --- | --- | --- |
+| `title` | no | `Render specification` |
+
+The title is declared in `component.yaml`, defaults centrally, and is limited
+to 120 characters.
+
 ## JavaScript behavior
 
 The build emits readable collapsed markup. Vite bundles `client.js`, and the shared component runtime calls its `hydrate()` export. No global variables are created.

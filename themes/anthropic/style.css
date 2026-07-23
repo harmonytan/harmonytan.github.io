@@ -288,6 +288,32 @@ html[data-theme="dark"] .theme-anthropic .article-hero::before {
   line-height: 1.55;
 }
 
+.theme-anthropic .component-callout[data-size="compact"] .component-callout__body,
+.theme-anthropic .component-comment[data-size="compact"] .component-comment__body {
+  font-size: 15px;
+}
+
+.theme-anthropic .article-content .component-comment[data-size="compact"] .component-comment__title {
+  font-size: 15px;
+}
+
+.theme-anthropic .component-comment[data-size="compact"] .component-comment__byline {
+  font-size: 13px;
+}
+
+.theme-anthropic .component-callout[data-size="prominent"] .component-callout__body,
+.theme-anthropic .component-comment[data-size="prominent"] .component-comment__body {
+  font-size: 18px;
+}
+
+.theme-anthropic .article-content .component-comment[data-size="prominent"] .component-comment__title {
+  font-size: 19px;
+}
+
+.theme-anthropic .component-comment[data-size="prominent"] .component-comment__byline {
+  font-size: 15px;
+}
+
 .theme-anthropic .render-spec__trigger {
   padding: 11px 0;
   font-size: 13px;

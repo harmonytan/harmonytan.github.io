@@ -1,48 +1,87 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 244 244" role="img" aria-labelledby="title">
-  <title id="title">Abstract evaluation diagrams</title>
-  <g fill="none" stroke="#141413" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
-    <path d="M11 12v37c0 13 9 22 22 22h8c13 0 22-9 22-22V12"/>
-    <circle cx="11" cy="11" r="6" fill="#141413" stroke="none"/>
-    <circle cx="37" cy="11" r="6" fill="#141413" stroke="none"/>
-    <circle cx="63" cy="11" r="6" fill="#141413" stroke="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 244 244" role="img" aria-labelledby="title description">
+  <title id="title">Hongming Tan identity field</title>
+  <desc id="description">
+    A balanced three-by-three composition combining a personal monogram with
+    symbols for water, light, HTML, Markdown, conversation, knowledge, and writing.
+  </desc>
 
-    <path d="M92 11h46l-7 10 7 10-7 10 7 10-7 10 7 10H92l7-10-7-10 7-10-7-10 7-10z" fill="#141413"/>
+  <!--
+    Symbols are mixed by visual weight instead of grouped by category. Each row
+    combines solid, linear, and organic forms on the same 68 × 68 module.
+  -->
 
-    <path d="M166 11h18v20h25V11h18v60h-18V49h-25v22h-18z" fill="#141413"/>
-
-    <path d="M12 101h39M12 101l22-18M12 101l22 18"/>
-    <circle cx="10" cy="101" r="7" fill="#141413" stroke="none"/>
-    <circle cx="55" cy="101" r="7" fill="#141413" stroke="none"/>
-    <circle cx="36" cy="81" r="7" fill="#141413" stroke="none"/>
-    <circle cx="36" cy="121" r="7" fill="#141413" stroke="none"/>
-
-    <path d="M91 119c0-22 11-38 29-38s29 16 29 38"/>
-    <path d="M101 119c0-15 7-26 19-26s19 11 19 26"/>
-    <path d="M111 119c0-8 3-14 9-14s9 6 9 14"/>
-    <path d="M120 82v45"/>
-
-    <rect x="166" y="81" width="61" height="47" rx="4"/>
-    <circle cx="166" cy="81" r="7" fill="#141413" stroke="none"/>
-    <circle cx="227" cy="81" r="7" fill="#141413" stroke="none"/>
-    <circle cx="166" cy="128" r="7" fill="#141413" stroke="none"/>
-    <circle cx="227" cy="128" r="7" fill="#141413" stroke="none"/>
-
-    <path d="M12 165l50 50M62 165l-50 50"/>
-    <circle cx="12" cy="165" r="7" fill="#141413" stroke="none"/>
-    <circle cx="62" cy="165" r="7" fill="#141413" stroke="none"/>
-    <circle cx="12" cy="215" r="7" fill="#141413" stroke="none"/>
-    <circle cx="62" cy="215" r="7" fill="#141413" stroke="none"/>
-    <circle cx="37" cy="190" r="7" fill="#141413" stroke="none"/>
-
-    <circle cx="99" cy="171" r="11"/>
-    <circle cx="123" cy="171" r="11"/>
-    <circle cx="99" cy="195" r="11"/>
-    <circle cx="123" cy="195" r="11"/>
-    <circle cx="99" cy="219" r="11"/>
-    <circle cx="123" cy="219" r="11"/>
-    <circle cx="147" cy="171" r="11"/>
-    <circle cx="147" cy="195" r="11"/>
-    <circle cx="147" cy="219" r="11"/>
+  <!-- 01 · Personal H mark: solid -->
+  <g transform="translate(8 8)" fill="#141413">
+    <rect x="8" y="7" width="14" height="54" rx="3"/>
+    <rect x="46" y="7" width="14" height="54" rx="3"/>
+    <rect x="8" y="27" width="52" height="14" rx="3"/>
   </g>
-  <path fill="#879573" d="M181 160c10 0 16 7 16 16 0-9 7-16 17-16 9 0 16 7 16 16 0 10-7 16-16 16 9 0 16 7 16 17 0 9-7 16-16 16-10 0-17-7-17-16 0 9-6 16-16 16-9 0-16-7-16-16 0-10 7-17 16-17-9 0-16-6-16-16 0-9 7-16 16-16z"/>
+
+  <!-- 02 · 浩: moving water, organic and open -->
+  <g transform="translate(88 8)" fill="none" stroke="#141413" stroke-linecap="round"
+    stroke-width="5">
+    <path d="M7 17c9-10 18 10 27 0s18 10 27 0"/>
+    <path d="M7 34c9-10 18 10 27 0s18 10 27 0"/>
+    <path d="M7 51c9-10 18 10 27 0s18 10 27 0"/>
+  </g>
+
+  <!-- 03 · HTML: angle brackets and a source slash -->
+  <g transform="translate(168 8)" fill="none" stroke="#141413" stroke-linecap="round"
+    stroke-linejoin="round" stroke-width="6">
+    <path d="M25 13L7 34l18 21M43 13l18 21-18 21M39 8L29 60"/>
+  </g>
+
+  <!-- 04 · 明: sun and moon held in balance -->
+  <g transform="translate(8 88)">
+    <circle cx="20" cy="34" r="16" fill="none" stroke="#141413" stroke-width="5"/>
+    <circle cx="20" cy="34" r="5" fill="#141413"/>
+    <path d="M55 13a22 22 0 1 0 0 42c-10-3-16-11-16-21s6-18 16-21z" fill="#141413"/>
+  </g>
+
+  <!-- 05 · HT seal: the visual anchor -->
+  <g transform="translate(88 88)">
+    <rect x="4" y="4" width="60" height="60" rx="7" fill="#0f2e3d"/>
+    <g fill="none" stroke="#faf9f5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 15v38M32 15v38M15 34h17" stroke-width="6"/>
+      <path d="M38 17h17M46.5 17v36" stroke-width="5"/>
+    </g>
+  </g>
+
+  <!-- 06 · A manuscript with a visible margin and citation mark -->
+  <g transform="translate(168 88)" fill="none" stroke="#141413" stroke-linecap="round"
+    stroke-linejoin="round">
+    <rect x="9" y="5" width="50" height="58" rx="4" stroke-width="5"/>
+    <path d="M22 6v56" stroke-width="4"/>
+    <path d="M32 20h17M32 34h19M32 48h13" stroke-width="4"/>
+    <circle cx="15.5" cy="48" r="3.5" fill="#141413" stroke="none"/>
+  </g>
+
+  <!-- 07 · Knowledge as a connected constellation -->
+  <g transform="translate(8 168)" fill="none" stroke="#141413" stroke-linecap="round"
+    stroke-width="4">
+    <path d="M10 11l24 23 24-23M34 34L10 57M34 34l24 23"/>
+    <g fill="#141413" stroke="none">
+      <circle cx="10" cy="11" r="7"/>
+      <circle cx="58" cy="11" r="7"/>
+      <circle cx="34" cy="34" r="7"/>
+      <circle cx="10" cy="57" r="7"/>
+      <circle cx="58" cy="57" r="7"/>
+    </g>
+  </g>
+
+  <!-- 08 · Markdown: a heading mark followed by editorial lines -->
+  <g transform="translate(88 168)" fill="none" stroke="#141413" stroke-linecap="round"
+    stroke-width="5">
+    <path d="M14 10L9 58M32 10l-5 48M5 27h34M3 43h34"/>
+    <path d="M47 18h15M47 34h12M47 50h17" stroke-width="4"/>
+  </g>
+
+  <!-- 09 · 谈: two voices sharing the same space -->
+  <g transform="translate(168 168)" fill="none" stroke="#141413" stroke-linecap="round"
+    stroke-linejoin="round" stroke-width="5">
+    <path d="M9 7h34a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H25l-10 8v-8H9a6 6 0 0 1-6-6V13a6 6 0 0 1 6-6z"/>
+    <path d="M28 39h29a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6H47l-8 6v-6H28"
+      stroke-width="4"/>
+    <path d="M15 20h22" stroke-width="4"/>
+  </g>
 </svg>

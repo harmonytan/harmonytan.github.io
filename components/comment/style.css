@@ -43,3 +43,27 @@ html[data-theme="dark"] .component-comment {
 .component-comment__body > :last-child {
   margin-bottom: 0;
 }
+
+.component-comment[data-size="compact"] .component-comment__body {
+  font-size: 14px;
+}
+
+.article-content .component-comment[data-size="compact"] .component-comment__title {
+  font-size: 14px;
+}
+
+.component-comment[data-size="compact"] .component-comment__byline {
+  font-size: 12px;
+}
+
+.component-comment[data-size="prominent"] .component-comment__body {
+  font-size: 16px;
+}
+
+.article-content .component-comment[data-size="prominent"] .component-comment__title {
+  font-size: 17px;
+}
+
+.component-comment[data-size="prominent"] .component-comment__byline {
+  font-size: 14px;
+}

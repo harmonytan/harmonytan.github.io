@@ -12,7 +12,11 @@ theme: anthropic
 
 The Theme is self-contained and works as a static GitHub Pages build. It does
 not download Anthropic's proprietary fonts or reuse Anthropic brand artwork;
-the font stack is local-first and the hero motif is an original SVG asset.
+the font stack is local-first. The hero motif is a personal three-by-three
+identity field combining the H/HT marks with water, light, conversation,
+knowledge, manuscript, HTML, and Markdown symbols. The modules are mixed by
+visual weight rather than grouped by category, while a shared grid and drawing
+weight keep the composition coherent without reusing Anthropic's symbol set.
 
 ## Writing contract
 

@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { buildContent } from "./build-content.mjs";
+import { buildContent } from "../tools/build-content.mjs";
 
 test("serves drafts from memory in development without listing or writing them", async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "blog-draft-preview-"));
