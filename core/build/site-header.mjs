@@ -1,12 +1,11 @@
 import { escapeAttribute } from "./utils.mjs";
 
 export function renderSiteHeader({ homeHref }) {
+  const iconHref = `${homeHref}favicon.svg`;
   return `<header class="site-header">
     <div class="site-header__inner">
       <a class="site-brand" href="${escapeAttribute(homeHref)}" aria-label="Hongming Tan, articles home">
-        <svg class="site-brand__mark" viewBox="0 0 28 28" aria-hidden="true">
-          <path d="M5 3.5v21M23 3.5v21M5 14h18"></path>
-        </svg>
+        <img class="site-brand__mark" src="${escapeAttribute(iconHref)}" alt="" aria-hidden="true">
         <span>Hongming Tan</span>
       </a>
       <div class="site-header__controls">

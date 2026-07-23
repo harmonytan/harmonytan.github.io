@@ -54,16 +54,10 @@
 }
 
 .site-brand__mark {
+  display: block;
   width: 24px;
   height: 24px;
   flex: 0 0 auto;
-}
-
-.site-brand__mark path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.25;
-  stroke-linecap: square;
 }
 
 .site-header__controls,
