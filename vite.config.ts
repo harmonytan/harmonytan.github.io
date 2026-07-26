@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { ConfigEnv, Plugin, UserConfig } from "vite";
+import { createWorkbenchMiddleware } from "./core/workbench/server.ts";
 import { buildContent } from "./tools/build-content.ts";
 import type { DraftPreview } from "./tools/build-content.ts";
 
@@ -25,6 +26,8 @@ export default async function config({
   const articleContentPlugin: Plugin = {
         name: "article-content",
         configureServer(server) {
+          server.middlewares.use(createWorkbenchMiddleware(root));
+
           server.middlewares.use(async (request, response, next) => {
             if (!["GET", "HEAD"].includes(request.method ?? "GET")) {
               next();

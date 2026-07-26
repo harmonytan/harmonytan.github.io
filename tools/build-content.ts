@@ -162,7 +162,7 @@ export async function buildContent({
   return { posts, changed, draftPreviews };
 }
 
-async function loadTheme(
+export async function loadTheme(
   themeId: string,
   themesDir: string
 ): Promise<ThemeManifest> {

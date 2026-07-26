@@ -68,6 +68,32 @@ authoritative; static types do not replace those checks.
 publishing, or drafting an article automatically rebuilds published outputs and
 in-memory draft previews without restarting Vite.
 
+### Local Component Workbench
+
+While the development server is running, open:
+
+```text
+http://localhost:5173/__workbench/
+```
+
+The Workbench discovers every registered `component.yaml` automatically. Shared
+components are always available; selecting an article adds only that article's
+private components and switches to its declared Theme. Component fields are
+generated from the manifest property schema, examples provide initial values,
+and the preview uses the same Markdown parser, compatibility checks, component
+renderer, Theme CSS, and optional client hydration used by real articles.
+
+Use the Theme selector to test compatible variants, edit properties and Markdown
+body in place, then choose **Copy Markdown** to paste the generated directive
+into an article. Unsupported Theme/capability combinations remain visible only
+when **Show incompatible components** is enabled and fail with the same message
+as a content build.
+
+The Workbench is a development-server route, not a production page. Its source
+is committed so every local checkout has the authoring tool, but it is not a
+Vite production entry point. `npm run build:check` scans `dist/` and fails if a
+Workbench route, API marker, or client asset leaks into the GitHub Pages artifact.
+
 ## Writing an article
 
 Create a draft writing workspace by specifying a Theme:
