@@ -1,5 +1,22 @@
-import { escapeAttribute, escapeHtml, formatDate } from "./utils.mjs";
-import { renderSiteHeader, renderThemeBootstrap } from "./site-header.mjs";
+import { escapeAttribute, escapeHtml, formatDate } from "./utils.ts";
+import { renderSiteHeader, renderThemeBootstrap } from "./site-header.ts";
+import type { ComponentAsset, ThemeManifest } from "./components.ts";
+import type { ArticleMeta } from "./frontmatter.ts";
+
+export interface AppendixSection {
+  id: string;
+  html: string;
+}
+
+export interface ArticleRenderContext {
+  article: ArticleMeta;
+  contentHtml: string;
+  appendixSections: AppendixSection[];
+  footnotesHtml: string;
+  referencesHtml: string;
+  components: ComponentAsset[];
+  theme: ThemeManifest;
+}
 
 export function renderArticleDocument({
   article,
@@ -9,7 +26,7 @@ export function renderArticleDocument({
   referencesHtml = "",
   components,
   theme,
-}) {
+}: ArticleRenderContext): string {
   const componentStyles = components
     .filter((item) => item.styleHref)
     .map((item) => `  <link rel="stylesheet" href="${escapeAttribute(item.styleHref)}">`)
@@ -31,8 +48,8 @@ export function renderArticleDocument({
   <link rel="stylesheet" href="../../themes/${escapeAttribute(theme.id)}/style.css">
   <link rel="stylesheet" href="../../styles/site-header.css">
 ${componentStyles}
-  <script type="module" src="../../scripts/header.js" defer></script>
-  <script type="module" src="./article-entry.js" defer></script>
+  <script type="module" src="../../scripts/header.ts" defer></script>
+  <script type="module" src="./article-entry.ts" defer></script>
 </head>
 <body class="article-page theme-${escapeAttribute(theme.id)}">
   ${renderSiteHeader({ homeHref: "../../" })}
@@ -53,7 +70,7 @@ ${componentStyles}
 `;
 }
 
-function renderHero(article, published) {
+function renderHero(article: ArticleMeta, published: string): string {
   const summary = article.summary ? `<p class="article-summary">${escapeHtml(article.summary)}</p>` : "";
   return `<header class="article-hero article-hero--research">
     <h1>${escapeHtml(article.title)}</h1>
@@ -66,7 +83,12 @@ function renderHero(article, published) {
   </header>`;
 }
 
-function renderAppendix(article, appendixSections, footnotesHtml, referencesHtml) {
+function renderAppendix(
+  article: ArticleMeta,
+  appendixSections: AppendixSection[],
+  footnotesHtml: string,
+  referencesHtml: string
+): string {
   const hasCustomCitation = appendixSections.some((section) => section.id === "citation-information");
   const sections = [
     ...appendixSections.map((section) => section.html),
@@ -83,7 +105,7 @@ function renderAppendix(article, appendixSections, footnotesHtml, referencesHtml
   </section>`;
 }
 
-function renderCitationInformation(article) {
+function renderCitationInformation(article: ArticleMeta): string {
   const year = String(article.date).slice(0, 4);
   const citation = article.citation ?? {};
   const author = citation.author || article.author;

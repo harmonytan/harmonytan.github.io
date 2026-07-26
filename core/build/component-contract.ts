@@ -1,8 +1,61 @@
-const COMPONENT_API_VERSION = 1;
-const COMPONENT_SCOPES = new Set(["shared", "local"]);
-const PROP_TYPES = new Set(["string", "enum", "boolean", "number", "integer", "url"]);
+export const COMPONENT_API_VERSION = 1 as const;
+
+export type ComponentScope = "shared" | "local";
+export type ComponentPropType =
+  | "string"
+  | "enum"
+  | "boolean"
+  | "number"
+  | "integer"
+  | "url";
+export type ComponentPropValue = string | boolean | number;
+
+export interface ComponentPropDefinition {
+  type: ComponentPropType;
+  description?: string;
+  required?: true;
+  default?: ComponentPropValue;
+  values?: string[];
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+}
+
+export type ComponentPropSchema = Record<string, ComponentPropDefinition>;
+export type ComponentProps = Record<string, ComponentPropValue>;
+
+export interface ComponentManifest {
+  [key: string]: unknown;
+  apiVersion: typeof COMPONENT_API_VERSION;
+  name: string;
+  scope: ComponentScope;
+  description: string;
+  requires: string[];
+  themes?: {
+    only: string[];
+  };
+  fallback?: "content";
+  props: ComponentPropSchema;
+}
+
+export interface ManifestValidationOptions {
+  manifestPath?: string;
+  expectedName?: string;
+  expectedScope?: ComponentScope;
+}
+
+const COMPONENT_SCOPES = new Set<ComponentScope>(["shared", "local"]);
+const PROP_TYPES = new Set<ComponentPropType>([
+  "string",
+  "enum",
+  "boolean",
+  "number",
+  "integer",
+  "url",
+]);
 const COMMON_PROP_KEYS = new Set(["type", "description", "required", "default"]);
-const TYPE_PROP_KEYS = {
+const TYPE_PROP_KEYS: Record<ComponentPropType, ReadonlySet<string>> = {
   string: new Set(["minLength", "maxLength"]),
   enum: new Set(["values"]),
   boolean: new Set(),
@@ -12,9 +65,13 @@ const TYPE_PROP_KEYS = {
 };
 
 export function validateComponentManifest(
-  source,
-  { manifestPath = "component.yaml", expectedName, expectedScope } = {}
-) {
+  source: unknown,
+  {
+    manifestPath = "component.yaml",
+    expectedName,
+    expectedScope,
+  }: ManifestValidationOptions = {}
+): ComponentManifest {
   if (!isRecord(source)) {
     throw new Error(`${manifestPath}: component manifest must be a YAML object.`);
   }
@@ -26,7 +83,7 @@ export function validateComponentManifest(
 
   const name = requireIdentifier(source.name, `${manifestPath}: name`);
   const scope = String(source.scope ?? "");
-  if (!COMPONENT_SCOPES.has(scope)) {
+  if (!isComponentScope(scope)) {
     throw new Error(`${manifestPath}: scope must be "shared" or "local".`);
   }
   if (expectedName && name !== expectedName) {
@@ -55,7 +112,7 @@ export function validateComponentManifest(
   if (!isRecord(propsSource)) {
     throw new Error(`${manifestPath}: props must be a YAML object.`);
   }
-  const props = {};
+  const props: ComponentPropSchema = {};
   for (const [propName, definition] of Object.entries(propsSource)) {
     requirePropName(propName, `${manifestPath}: props`);
     props[propName] = normalizePropDefinition(
@@ -77,7 +134,11 @@ export function validateComponentManifest(
   };
 }
 
-export function normalizeComponentProps(reference, schema, rawProps = {}) {
+export function normalizeComponentProps(
+  reference: string,
+  schema: ComponentPropSchema,
+  rawProps: Record<string, unknown> = {}
+): ComponentProps {
   if (!isRecord(schema)) {
     throw new Error(`${reference}: component property schema is invalid.`);
   }
@@ -98,7 +159,7 @@ export function normalizeComponentProps(reference, schema, rawProps = {}) {
     );
   }
 
-  const normalized = {};
+  const normalized: ComponentProps = {};
   for (const [name, definition] of Object.entries(schema)) {
     if (Object.hasOwn(rawProps, name)) {
       normalized[name] = normalizePropValue(
@@ -109,7 +170,7 @@ export function normalizeComponentProps(reference, schema, rawProps = {}) {
       continue;
     }
     if (Object.hasOwn(definition, "default")) {
-      normalized[name] = definition.default;
+      normalized[name] = definition.default as ComponentPropValue;
       continue;
     }
     if (definition.required) {
@@ -119,13 +180,16 @@ export function normalizeComponentProps(reference, schema, rawProps = {}) {
   return normalized;
 }
 
-function normalizePropDefinition(source, label) {
+function normalizePropDefinition(
+  source: unknown,
+  label: string
+): ComponentPropDefinition {
   if (!isRecord(source)) {
     throw new Error(`${label} must be an object.`);
   }
 
   const type = String(source.type ?? "");
-  if (!PROP_TYPES.has(type)) {
+  if (!isComponentPropType(type)) {
     throw new Error(
       `${label}.type must be one of: ${[...PROP_TYPES].join(", ")}.`
     );
@@ -147,7 +211,7 @@ function normalizePropDefinition(source, label) {
     throw new Error(`${label}.description must be a string.`);
   }
 
-  const definition = {
+  const definition: ComponentPropDefinition = {
     type,
     ...(source.description ? { description: source.description.trim() } : {}),
     ...(required ? { required: true } : {}),
@@ -186,8 +250,12 @@ function normalizePropDefinition(source, label) {
   return definition;
 }
 
-function normalizePropValue(value, definition, label) {
-  let normalized;
+function normalizePropValue(
+  value: unknown,
+  definition: ComponentPropDefinition,
+  label: string
+): ComponentPropValue {
+  let normalized: ComponentPropValue;
   switch (definition.type) {
     case "string":
       if (typeof value !== "string") {
@@ -196,9 +264,12 @@ function normalizePropValue(value, definition, label) {
       normalized = value;
       break;
     case "enum":
-      if (typeof value !== "string" || !definition.values.includes(value)) {
+      if (
+        typeof value !== "string"
+        || !(definition.values ?? []).includes(value)
+      ) {
         throw new Error(
-          `${label} must be one of: ${definition.values.join(", ")}. Received ${JSON.stringify(value)}.`
+          `${label} must be one of: ${(definition.values ?? []).join(", ")}. Received ${JSON.stringify(value)}.`
         );
       }
       normalized = value;
@@ -242,7 +313,11 @@ function normalizePropValue(value, definition, label) {
   return normalized;
 }
 
-function normalizeNumber(value, type, label) {
+function normalizeNumber(
+  value: unknown,
+  type: "number" | "integer",
+  label: string
+): number {
   const source = typeof value === "string" ? value.trim() : value;
   if (source === "") throw new Error(`${label} must be a ${type}.`);
   const normalized = typeof source === "number" ? source : Number(source);
@@ -255,7 +330,7 @@ function normalizeNumber(value, type, label) {
   return normalized;
 }
 
-function normalizeUrl(value, label) {
+function normalizeUrl(value: unknown, label: string): string {
   if (typeof value !== "string" || !value.trim()) {
     throw new Error(`${label} must be a non-empty URL.`);
   }
@@ -272,14 +347,18 @@ function normalizeUrl(value, label) {
   return normalized;
 }
 
-function normalizeLengthBounds(source, label) {
-  const bounds = {};
-  for (const key of ["minLength", "maxLength"]) {
-    if (source[key] === undefined) continue;
-    if (!Number.isInteger(source[key]) || source[key] < 0) {
+function normalizeLengthBounds(
+  source: Record<string, unknown>,
+  label: string
+): Pick<ComponentPropDefinition, "minLength" | "maxLength"> {
+  const bounds: Pick<ComponentPropDefinition, "minLength" | "maxLength"> = {};
+  for (const key of ["minLength", "maxLength"] as const) {
+    const value = source[key];
+    if (value === undefined) continue;
+    if (!Number.isInteger(value) || (value as number) < 0) {
       throw new Error(`${label}.${key} must be a non-negative integer.`);
     }
-    bounds[key] = source[key];
+    bounds[key] = value as number;
   }
   if (
     bounds.minLength !== undefined
@@ -291,14 +370,17 @@ function normalizeLengthBounds(source, label) {
   return bounds;
 }
 
-function normalizeNumberBounds(source, label) {
-  const bounds = {};
-  for (const key of ["min", "max"]) {
+function normalizeNumberBounds(
+  source: Record<string, unknown>,
+  label: string
+): Pick<ComponentPropDefinition, "min" | "max"> {
+  const bounds: Pick<ComponentPropDefinition, "min" | "max"> = {};
+  for (const key of ["min", "max"] as const) {
     if (source[key] === undefined) continue;
     if (typeof source[key] !== "number" || !Number.isFinite(source[key])) {
       throw new Error(`${label}.${key} must be a finite number.`);
     }
-    bounds[key] = source[key];
+    bounds[key] = source[key] as number;
   }
   if (bounds.min !== undefined && bounds.max !== undefined && bounds.min > bounds.max) {
     throw new Error(`${label}.min must not exceed max.`);
@@ -306,8 +388,11 @@ function normalizeNumberBounds(source, label) {
   return bounds;
 }
 
-function normalizeThemes(source, manifestPath) {
-  if (source === undefined) return null;
+function normalizeThemes(
+  source: unknown,
+  manifestPath: string
+): ComponentManifest["themes"] | undefined {
+  if (source === undefined) return undefined;
   if (!isRecord(source)) {
     throw new Error(`${manifestPath}: themes must be an object.`);
   }
@@ -324,7 +409,11 @@ function normalizeThemes(source, manifestPath) {
   return { only };
 }
 
-function normalizeIdentifierList(source, label, { allowEmpty = true } = {}) {
+function normalizeIdentifierList(
+  source: unknown,
+  label: string,
+  { allowEmpty = true }: { allowEmpty?: boolean } = {}
+): string[] {
   if (source === undefined) return [];
   if (!Array.isArray(source)) {
     throw new Error(`${label} must be an array.`);
@@ -341,7 +430,7 @@ function normalizeIdentifierList(source, label, { allowEmpty = true } = {}) {
   return values;
 }
 
-function requireIdentifier(value, label) {
+function requireIdentifier(value: unknown, label: string): string {
   if (typeof value !== "string") {
     throw new Error(`${label} must be a string.`);
   }
@@ -352,7 +441,7 @@ function requireIdentifier(value, label) {
   return normalized;
 }
 
-function requirePropName(value, label) {
+function requirePropName(value: string, label: string): void {
   if (!/^[a-z][a-zA-Z0-9-]*$/.test(value)) {
     throw new Error(
       `${label} property "${value}" must start with a lowercase letter and use letters, numbers, or hyphens.`
@@ -360,10 +449,18 @@ function requirePropName(value, label) {
   }
 }
 
-function isRecord(value) {
+function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function pluralize(word, count) {
+function isComponentScope(value: string): value is ComponentScope {
+  return COMPONENT_SCOPES.has(value as ComponentScope);
+}
+
+function isComponentPropType(value: string): value is ComponentPropType {
+  return PROP_TYPES.has(value as ComponentPropType);
+}
+
+function pluralize(word: string, count: number): string {
   return count === 1 ? word : `${word}s`;
 }

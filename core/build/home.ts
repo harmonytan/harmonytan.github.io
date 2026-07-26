@@ -1,7 +1,19 @@
-import { escapeAttribute, escapeHtml, formatDate, slugify } from "./utils.mjs";
-import { renderSiteHeader, renderThemeBootstrap } from "./site-header.mjs";
+import { escapeAttribute, escapeHtml, formatDate, slugify } from "./utils.ts";
+import { renderSiteHeader, renderThemeBootstrap } from "./site-header.ts";
 
-export function renderHomePage(posts) {
+export interface PostEntry {
+  slug: string;
+  title: string;
+  summary: string;
+  author: string;
+  date: string;
+  category: string;
+  image: string;
+  theme: string;
+  href: string;
+}
+
+export function renderHomePage(posts: readonly PostEntry[]): string {
   const articleList = posts.length
     ? posts.map(renderPostPreview).join("\n")
     : `<p class="publication-empty">No published articles yet.</p>`;
@@ -17,7 +29,7 @@ export function renderHomePage(posts) {
   <script>${renderThemeBootstrap()}</script>
   <link rel="stylesheet" href="styles/site-header.css">
   <link rel="stylesheet" href="styles/home-index.css">
-  <script type="module" src="scripts/header.js" defer></script>
+  <script type="module" src="scripts/header.ts" defer></script>
 </head>
 <body class="publication-home">
   ${renderSiteHeader({ homeHref: "./" })}
@@ -42,7 +54,7 @@ ${articleList}
 `;
 }
 
-function renderPostPreview(post, index) {
+function renderPostPreview(post: PostEntry, index: number): string {
   const category = post.category;
   const href = post.href || `articles/${encodeURIComponent(post.slug)}/`;
   const categoryTag = category

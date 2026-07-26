@@ -1,10 +1,12 @@
-const header = document.querySelector(".site-header");
-const themeToggle = document.querySelector("[data-theme-toggle]");
-const themeIcon = document.querySelector("[data-theme-icon]");
+type ColorTheme = "dark" | "light";
+
+const header = document.querySelector<HTMLElement>(".site-header");
+const themeToggle = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
+const themeIcon = document.querySelector<HTMLElement>("[data-theme-icon]");
 const prefersDark = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
 const THEME_STORAGE_KEY = "hm-blog-theme";
 
-let activeTheme = null;
+let activeTheme: ColorTheme | null = null;
 
 const SUN_ICON = `
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -41,9 +43,10 @@ const MOON_ICON = `
 
 `;
 
-const normalizeTheme = (value) => (value === "dark" || value === "light" ? value : null);
+const normalizeTheme = (value: unknown): ColorTheme | null =>
+  value === "dark" || value === "light" ? value : null;
 
-const getStoredTheme = () => {
+const getStoredTheme = (): ColorTheme | null => {
   try {
     return normalizeTheme(localStorage.getItem(THEME_STORAGE_KEY));
   } catch (_error) {
@@ -51,9 +54,10 @@ const getStoredTheme = () => {
   }
 };
 
-const getSystemTheme = () => (prefersDark && prefersDark.matches ? "dark" : "light");
+const getSystemTheme = (): ColorTheme =>
+  prefersDark?.matches ? "dark" : "light";
 
-const persistTheme = (theme) => {
+const persistTheme = (theme: ColorTheme): void => {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   } catch (_error) {
@@ -61,7 +65,7 @@ const persistTheme = (theme) => {
   }
 };
 
-const updateToggleUi = (theme) => {
+const updateToggleUi = (theme: ColorTheme): void => {
   if (!themeToggle) {
     return;
   }
@@ -72,14 +76,14 @@ const updateToggleUi = (theme) => {
   }
 };
 
-const applyTheme = (theme) => {
+const applyTheme = (theme: unknown): void => {
   const finalTheme = normalizeTheme(theme) ?? getSystemTheme();
   activeTheme = finalTheme;
   document.documentElement.dataset.theme = finalTheme;
   updateToggleUi(finalTheme);
 };
 
-const resolveInitialTheme = () => {
+const resolveInitialTheme = (): ColorTheme => {
   const stored = getStoredTheme();
   if (stored) {
     return stored;
@@ -95,7 +99,7 @@ const resolveInitialTheme = () => {
 
 applyTheme(resolveInitialTheme());
 
-const syncSystemPreference = (event) => {
+const syncSystemPreference = (event: MediaQueryListEvent): void => {
   if (getStoredTheme()) {
     return;
   }
@@ -105,7 +109,9 @@ const syncSystemPreference = (event) => {
 if (prefersDark?.addEventListener) {
   prefersDark.addEventListener("change", syncSystemPreference);
 } else if (prefersDark?.addListener) {
-  prefersDark.addListener(syncSystemPreference);
+  prefersDark.addListener((event) => {
+    if (!getStoredTheme()) applyTheme(event.matches ? "dark" : "light");
+  });
 }
 
 if (themeToggle) {

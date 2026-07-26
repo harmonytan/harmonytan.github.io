@@ -4,21 +4,56 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { parse as parseYaml } from "yaml";
-import { ComponentRegistry } from "../core/build/components.mjs";
-import { validateComponentManifest } from "../core/build/component-contract.mjs";
-import { parseArticleSource, normalizeArticleMeta } from "../core/build/frontmatter.mjs";
-import { renderMarkdown } from "../core/build/markdown.mjs";
-import { renderHomePage } from "../core/build/home.mjs";
-import { assertSafeName } from "../core/build/utils.mjs";
+import { ComponentRegistry } from "../core/build/components.ts";
+import type {
+  ComponentAsset,
+  ThemeManifest,
+} from "../core/build/components.ts";
+import type { ComponentScope } from "../core/build/component-contract.ts";
+import { validateComponentManifest } from "../core/build/component-contract.ts";
+import { parseArticleSource, normalizeArticleMeta } from "../core/build/frontmatter.ts";
+import type { ArticleMeta } from "../core/build/frontmatter.ts";
+import { renderMarkdown } from "../core/build/markdown.ts";
+import { renderHomePage } from "../core/build/home.ts";
+import type { PostEntry } from "../core/build/home.ts";
+import type { ArticleRenderContext } from "../core/build/template.ts";
+import { assertSafeName } from "../core/build/utils.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+export interface DraftPreview {
+  html: string;
+  entry: string;
+}
+
+export interface BuildContentOptions {
+  check?: boolean;
+  quiet?: boolean;
+  includeDrafts?: boolean;
+  root?: string;
+}
+
+export interface BuildContentResult {
+  posts: PostEntry[];
+  changed: string[];
+  draftPreviews: Map<string, DraftPreview>;
+}
+
+interface GeneratedOutput {
+  filePath: string;
+  content: string;
+}
+
+interface ThemeModule {
+  renderPage: (context: ArticleRenderContext) => string | Promise<string>;
+}
 
 export async function buildContent({
   check = false,
   quiet = false,
   includeDrafts = false,
   root = ROOT,
-} = {}) {
+}: BuildContentOptions = {}): Promise<BuildContentResult> {
   const articlesDir = path.join(root, "articles");
   const themesDir = path.join(root, "themes");
   const articleEntries = await fs.readdir(articlesDir, { withFileTypes: true });
@@ -26,10 +61,10 @@ export async function buildContent({
     .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
     .map((entry) => entry.name)
     .sort();
-  const outputs = [];
-  const removals = [];
-  const posts = [];
-  const draftPreviews = new Map();
+  const outputs: GeneratedOutput[] = [];
+  const removals: string[] = [];
+  const posts: PostEntry[] = [];
+  const draftPreviews = new Map<string, DraftPreview>();
 
   await validateComponentDirectory(path.join(root, "components"), "shared");
 
@@ -40,6 +75,7 @@ export async function buildContent({
     if (!(await exists(sourcePath))) {
       removals.push(
         path.join(articleDir, "index.html"),
+        path.join(articleDir, "article-entry.ts"),
         path.join(articleDir, "article-entry.js")
       );
       continue;
@@ -52,6 +88,7 @@ export async function buildContent({
     if (article.draft) {
       removals.push(
         path.join(articleDir, "index.html"),
+        path.join(articleDir, "article-entry.ts"),
         path.join(articleDir, "article-entry.js")
       );
       if (!includeDrafts) continue;
@@ -60,14 +97,15 @@ export async function buildContent({
     const theme = await loadTheme(article.theme, themesDir);
     const registry = new ComponentRegistry({ root, articleDir, theme, articleSlug: slug });
     const rendered = await renderMarkdown(body, { registry });
-    const themeModule = await import(
-      `${pathToFileURL(path.join(themesDir, theme.id, "index.mjs")).href}?v=${Date.now()}`
+    const imported: Partial<ThemeModule> = await import(
+      `${pathToFileURL(path.join(themesDir, theme.id, "index.ts")).href}?v=${Date.now()}`
     );
-    if (typeof themeModule.renderPage !== "function") {
+    if (typeof imported.renderPage !== "function") {
       throw new Error(`Theme "${theme.id}" must export renderPage().`);
     }
 
-    const html = themeModule.renderPage({
+    const themeModule = imported as ThemeModule;
+    const html = await themeModule.renderPage({
       article,
       contentHtml: rendered.html,
       appendixSections: rendered.appendixSections,
@@ -83,8 +121,9 @@ export async function buildContent({
     }
     outputs.push(
       { filePath: path.join(articleDir, "index.html"), content: html },
-      { filePath: path.join(articleDir, "article-entry.js"), content: entry }
+      { filePath: path.join(articleDir, "article-entry.ts"), content: entry }
     );
+    removals.push(path.join(articleDir, "article-entry.js"));
     posts.push(toPostEntry(article));
   }
 
@@ -123,29 +162,41 @@ export async function buildContent({
   return { posts, changed, draftPreviews };
 }
 
-async function loadTheme(themeId, themesDir) {
+async function loadTheme(
+  themeId: string,
+  themesDir: string
+): Promise<ThemeManifest> {
   assertSafeName(themeId, "Theme id");
   const directory = path.join(themesDir, themeId);
   const manifestPath = path.join(directory, "theme.yaml");
   const [source] = await Promise.all([
     fs.readFile(manifestPath, "utf8"),
-    fs.access(path.join(directory, "index.mjs")),
+    fs.access(path.join(directory, "index.ts")),
     fs.access(path.join(directory, "style.css")),
     fs.access(path.join(directory, "README.md")),
-  ]).catch((error) => {
-    throw new Error(`Theme "${themeId}" is incomplete: ${error.message}`);
+  ]).catch((error: unknown) => {
+    throw new Error(`Theme "${themeId}" is incomplete: ${errorMessage(error)}`);
   });
-  const manifest = parseYaml(source) ?? {};
+  const manifest: unknown = parseYaml(source) ?? {};
+  if (!isRecord(manifest)) {
+    throw new Error(`${manifestPath}: theme manifest must be a YAML object.`);
+  }
   if (manifest.id !== themeId) {
     throw new Error(`${manifestPath}: id "${manifest.id}" does not match directory "${themeId}".`);
   }
   return {
     ...manifest,
-    capabilities: Array.isArray(manifest.capabilities) ? manifest.capabilities : [],
+    id: themeId,
+    capabilities: Array.isArray(manifest.capabilities)
+      ? manifest.capabilities.map(String)
+      : [],
   };
 }
 
-async function validateComponentDirectory(directory, scope) {
+async function validateComponentDirectory(
+  directory: string,
+  scope: ComponentScope
+): Promise<void> {
   if (!(await exists(directory))) return;
   const entries = await fs.readdir(directory, { withFileTypes: true });
   for (const entry of entries) {
@@ -155,10 +206,12 @@ async function validateComponentDirectory(directory, scope) {
     const manifestPath = path.join(componentDir, "component.yaml");
     const [manifestSource] = await Promise.all([
       fs.readFile(manifestPath, "utf8"),
-      fs.access(path.join(componentDir, "index.mjs")),
+      fs.access(path.join(componentDir, "index.ts")),
       fs.access(path.join(componentDir, "README.md")),
-    ]).catch((error) => {
-      throw new Error(`${scope} component "${entry.name}" is incomplete: ${error.message}`);
+    ]).catch((error: unknown) => {
+      throw new Error(
+        `${scope} component "${entry.name}" is incomplete: ${errorMessage(error)}`
+      );
     });
     validateComponentManifest(parseYaml(manifestSource), {
       manifestPath,
@@ -168,7 +221,7 @@ async function validateComponentDirectory(directory, scope) {
   }
 }
 
-function renderArticleEntry(components) {
+function renderArticleEntry(components: ComponentAsset[]): string {
   const clients = components.filter((component) => component.clientHref);
   const imports = clients.map((component, index) =>
     `import { hydrate as hydrate${index} } from ${JSON.stringify(component.clientHref)};`
@@ -177,8 +230,8 @@ function renderArticleEntry(components) {
     `hydrateComponent(${JSON.stringify(component.reference)}, hydrate${index});`
   );
   return [
-    `import "../../core/client/article-runtime.js";`,
-    clients.length ? `import { hydrateComponent } from "../../core/client/component-runtime.js";` : "",
+    `import "../../core/client/article-runtime.ts";`,
+    clients.length ? `import { hydrateComponent } from "../../core/client/component-runtime.ts";` : "",
     ...imports,
     "",
     ...calls,
@@ -186,7 +239,7 @@ function renderArticleEntry(components) {
   ].filter((line, index, lines) => line || index === lines.length - 1).join("\n");
 }
 
-function toPostEntry(article) {
+function toPostEntry(article: ArticleMeta): PostEntry {
   const image = article.image.startsWith("./")
     ? `articles/${article.slug}/${article.image.slice(2)}`
     : article.image;
@@ -203,7 +256,7 @@ function toPostEntry(article) {
   };
 }
 
-async function exists(filePath) {
+async function exists(filePath: string): Promise<boolean> {
   try {
     await fs.access(filePath);
     return true;
@@ -212,11 +265,11 @@ async function exists(filePath) {
   }
 }
 
-async function readIfExists(filePath) {
+async function readIfExists(filePath: string): Promise<string | null> {
   try {
     return await fs.readFile(filePath, "utf8");
-  } catch (error) {
-    if (error.code === "ENOENT") return null;
+  } catch (error: unknown) {
+    if (isNodeError(error) && error.code === "ENOENT") return null;
     throw error;
   }
 }
@@ -224,8 +277,20 @@ async function readIfExists(filePath) {
 const isCli = process.argv[1]
   && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCli) {
-  buildContent({ check: process.argv.includes("--check") }).catch((error) => {
-    console.error(error.message);
+  buildContent({ check: process.argv.includes("--check") }).catch((error: unknown) => {
+    console.error(errorMessage(error));
     process.exitCode = 1;
   });
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function isNodeError(error: unknown): error is NodeJS.ErrnoException {
+  return error instanceof Error;
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

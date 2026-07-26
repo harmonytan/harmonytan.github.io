@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "core/**/*.ts",
+    "components/**/*.ts",
+    "themes/**/*.ts",
+    "scripts/**/*.ts",
+    "articles/**/*.ts",
+    "tools/**/*.ts",
+    "tests/**/*.ts",
+    "vite.config.ts"
+  ]
+}

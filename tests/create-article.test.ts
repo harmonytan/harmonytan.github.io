@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { parse as parseYaml } from "yaml";
-import { createArticle, parseArticleArgs } from "../tools/create-article.mjs";
+import { createArticle, parseArticleArgs } from "../tools/create-article.ts";
 
 test("parses required and optional article arguments", () => {
   assert.deepEqual(
@@ -29,8 +29,12 @@ test("creates a draft workspace with safe defaults", async () => {
       argv: ["--theme", "anthropic"],
       now: new Date(2026, 6, 23),
     });
+    assert.equal(result.help, false);
+    if (result.help) return;
     const source = await fs.readFile(result.sourcePath, "utf8");
-    const metadata = parseYaml(source.match(/^---\n([\s\S]*?)\n---/)[1]);
+    const match = source.match(/^---\n([\s\S]*?)\n---/);
+    assert.ok(match);
+    const metadata = parseYaml(match[1]) as Record<string, unknown>;
 
     assert.equal(result.slug, "draft-2026-07-23");
     assert.equal(metadata.title, "Untitled Article");
@@ -60,8 +64,12 @@ test("writes optional metadata and publishes only when requested", async () => {
         "--publish",
       ],
     });
+    assert.equal(result.help, false);
+    if (result.help) return;
     const source = await fs.readFile(result.sourcePath, "utf8");
-    const metadata = parseYaml(source.match(/^---\n([\s\S]*?)\n---/)[1]);
+    const match = source.match(/^---\n([\s\S]*?)\n---/);
+    assert.ok(match);
+    const metadata = parseYaml(match[1]) as Record<string, unknown>;
 
     assert.equal(metadata.summary, "A compact field guide.");
     assert.equal(metadata.category, "Research");
@@ -83,14 +91,16 @@ test("requires a valid theme", async () => {
   });
 });
 
-async function withFixture(callback) {
+async function withFixture(
+  callback: (root: string) => Promise<void>
+): Promise<void> {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "blog-create-article-"));
   try {
     const themeDir = path.join(root, "themes", "anthropic");
     await fs.mkdir(themeDir, { recursive: true });
     await Promise.all([
       fs.writeFile(path.join(themeDir, "theme.yaml"), "id: anthropic\n", "utf8"),
-      fs.writeFile(path.join(themeDir, "index.mjs"), "export function renderPage() {}\n", "utf8"),
+      fs.writeFile(path.join(themeDir, "index.ts"), "export function renderPage() {}\n", "utf8"),
       fs.writeFile(path.join(themeDir, "style.css"), "", "utf8"),
       fs.writeFile(path.join(themeDir, "README.md"), "# Anthropic\n", "utf8"),
     ]);

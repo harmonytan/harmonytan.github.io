@@ -1,4 +1,9 @@
-export function escapeHtml(value) {
+interface TextNode {
+  value?: unknown;
+  children?: unknown;
+}
+
+export function escapeHtml(value: unknown): string {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -7,11 +12,11 @@ export function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-export function escapeAttribute(value) {
+export function escapeAttribute(value: unknown): string {
   return escapeHtml(value).replace(/`/g, "&#096;");
 }
 
-export function formatDate(value) {
+export function formatDate(value: unknown): string {
   if (!value) return "";
   const date = new Date(`${String(value).slice(0, 10)}T00:00:00Z`);
   if (Number.isNaN(date.valueOf())) return String(value);
@@ -23,7 +28,7 @@ export function formatDate(value) {
   }).format(date);
 }
 
-export function slugify(value, fallback = "section") {
+export function slugify(value: unknown, fallback = "section"): string {
   const slug = String(value ?? "")
     .normalize("NFKD")
     .toLowerCase()
@@ -34,14 +39,15 @@ export function slugify(value, fallback = "section") {
   return slug || fallback;
 }
 
-export function textFromNode(node) {
-  if (!node) return "";
-  if (typeof node.value === "string") return node.value;
-  if (!Array.isArray(node.children)) return "";
-  return node.children.map(textFromNode).join("");
+export function textFromNode(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const current = node as TextNode;
+  if (typeof current.value === "string") return current.value;
+  if (!Array.isArray(current.children)) return "";
+  return current.children.map(textFromNode).join("");
 }
 
-export function assertSafeName(value, label) {
+export function assertSafeName(value: unknown, label: string): void {
   if (!/^[a-z0-9][a-z0-9-]*$/.test(String(value ?? ""))) {
     throw new Error(`${label} must use lowercase letters, numbers, and hyphens: ${value}`);
   }

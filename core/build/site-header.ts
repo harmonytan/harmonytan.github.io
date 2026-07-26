@@ -1,6 +1,6 @@
-import { escapeAttribute } from "./utils.mjs";
+import { escapeAttribute } from "./utils.ts";
 
-export function renderSiteHeader({ homeHref }) {
+export function renderSiteHeader({ homeHref }: { homeHref: string }): string {
   const iconHref = `${homeHref}favicon.svg`;
   return `<header class="site-header">
     <div class="site-header__inner">
@@ -20,6 +20,6 @@ export function renderSiteHeader({ homeHref }) {
   </header>`;
 }
 
-export function renderThemeBootstrap() {
+export function renderThemeBootstrap(): string {
   return `(function(){try{var k="hm-blog-theme",s=localStorage.getItem(k),d=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=s==="light"||s==="dark"?s:d}catch(e){}})();`;
 }

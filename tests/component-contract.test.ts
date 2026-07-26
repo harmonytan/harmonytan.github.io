@@ -6,8 +6,8 @@ import test from "node:test";
 import {
   normalizeComponentProps,
   validateComponentManifest,
-} from "../core/build/component-contract.mjs";
-import { ComponentRegistry } from "../core/build/components.mjs";
+} from "../core/build/component-contract.ts";
+import { ComponentRegistry } from "../core/build/components.ts";
 
 test("component manifests are versioned and normalize typed properties", () => {
   const manifest = validateComponentManifest({
@@ -180,7 +180,9 @@ test("registry rejects components that are incompatible with the selected theme"
   });
 });
 
-async function withRegistryFixture(callback) {
+async function withRegistryFixture(
+  callback: (fixture: { root: string; articleDir: string }) => Promise<void>
+): Promise<void> {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "component-contract-"));
   const articleDir = path.join(root, "articles", "contract-test");
   const componentDir = path.join(root, "components", "sample");
@@ -217,7 +219,7 @@ props:
         "utf8"
       ),
       fs.writeFile(
-        path.join(componentDir, "index.mjs"),
+        path.join(componentDir, "index.ts"),
         `export function validate({ props }) {
   if (props.featured && props.count > 2) {
     throw new Error("featured samples may use at most two columns");

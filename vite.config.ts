@@ -1,10 +1,13 @@
 import path from "node:path";
-import { defineConfig } from "vite";
-import { buildContent } from "./tools/build-content.mjs";
+import type { ConfigEnv, Plugin, UserConfig } from "vite";
+import { buildContent } from "./tools/build-content.ts";
+import type { DraftPreview } from "./tools/build-content.ts";
 
 const root = process.cwd();
 
-export default defineConfig(async ({ command }) => {
+export default async function config({
+  command,
+}: ConfigEnv): Promise<UserConfig> {
   const previewDrafts = command === "serve";
   const initialBuild = await buildContent({
     quiet: true,
@@ -19,18 +22,7 @@ export default defineConfig(async ({ command }) => {
     ...articlePages,
   ];
 
-  return {
-    base: "./",
-    appType: "mpa",
-    build: {
-      outDir: "dist",
-      emptyOutDir: true,
-      rollupOptions: {
-        input: inputs,
-      },
-    },
-    plugins: [
-      {
+  const articleContentPlugin: Plugin = {
         name: "article-content",
         configureServer(server) {
           server.middlewares.use(async (request, response, next) => {
@@ -68,8 +60,14 @@ export default defineConfig(async ({ command }) => {
             .map((directory) => path.join(root, directory));
           server.watcher.add(watchedRoots);
 
-          const watchedEvents = ["add", "change", "unlink", "addDir", "unlinkDir"];
-          let rebuildTimer;
+          const watchedEvents: WatchEvent[] = [
+            "add",
+            "change",
+            "unlink",
+            "addDir",
+            "unlinkDir",
+          ];
+          let rebuildTimer: ReturnType<typeof setTimeout> | undefined;
           let rebuilding = false;
           let rebuildQueued = false;
 
@@ -94,23 +92,24 @@ export default defineConfig(async ({ command }) => {
                 if (result.changed.length > 0 || previewsChanged) {
                   server.ws.send({ type: "full-reload", path: "*" });
                 }
-              } catch (error) {
-                server.config.logger.error(error.stack ?? error.message);
+              } catch (error: unknown) {
+                server.config.logger.error(errorStack(error));
               }
             } while (rebuildQueued);
             rebuilding = false;
           };
 
-          const scheduleRebuild = (event, file) => {
+          const scheduleRebuild = (event: string, file: string): void => {
             if (!shouldRebuild(file, event)) return;
             clearTimeout(rebuildTimer);
             rebuildTimer = setTimeout(() => void rebuild(), 75);
           };
 
-          const listeners = watchedEvents.map((event) => {
-            const listener = (file) => scheduleRebuild(event, file);
+          const listeners: Array<[WatchEvent, (file: string) => void]> =
+            watchedEvents.map((event) => {
+            const listener = (file: string) => scheduleRebuild(event, file);
             server.watcher.on(event, listener);
-            return [event, listener];
+            return [event, listener] as [WatchEvent, (file: string) => void];
           });
 
           server.httpServer?.once("close", () => {
@@ -123,29 +122,51 @@ export default defineConfig(async ({ command }) => {
         generateBundle() {
           this.emitFile({ type: "asset", fileName: ".nojekyll", source: "" });
         },
-      },
-    ],
-  };
-});
+      };
 
-function shouldRebuild(file, event) {
+  return {
+    base: "./",
+    appType: "mpa",
+    build: {
+      outDir: "dist",
+      emptyOutDir: true,
+      rollupOptions: {
+        input: inputs,
+      },
+    },
+    plugins: [articleContentPlugin],
+  };
+}
+
+type WatchEvent = "add" | "change" | "unlink" | "addDir" | "unlinkDir";
+
+function shouldRebuild(file: string, event: string): boolean {
   const normalized = file.split(path.sep).join("/");
   if (normalized.endsWith("/index.md")) return true;
   if (
     (event === "addDir" || event === "unlinkDir")
     && /\/articles\/[^/]+$/.test(normalized)
   ) return true;
-  if (/\/(components|themes)\/.*\.(mjs|js|css|ya?ml|md)$/.test(normalized)) {
+  if (/\/(components|themes)\/.*\.(ts|css|ya?ml|md)$/.test(normalized)) {
     return true;
   }
-  return normalized.includes("/core/build/") && normalized.endsWith(".mjs");
+  return (
+    normalized.includes("/core/build/")
+    && normalized.endsWith(".ts")
+  );
 }
 
-function matchDraftRequest(requestUrl) {
+interface DraftRequest {
+  slug: string;
+  type: "entry" | "html";
+  pathname: string;
+}
+
+function matchDraftRequest(requestUrl: string | undefined): DraftRequest | null {
   if (!requestUrl) return null;
   const pathname = new URL(requestUrl, "http://vite.local").pathname;
   const entryMatch = pathname.match(
-    /^\/articles\/([a-z0-9][a-z0-9-]*)\/article-entry\.js$/
+    /^\/articles\/([a-z0-9][a-z0-9-]*)\/article-entry\.ts$/
   );
   if (entryMatch) {
     return { slug: entryMatch[1], type: "entry", pathname };
@@ -160,7 +181,10 @@ function matchDraftRequest(requestUrl) {
   return null;
 }
 
-function draftPreviewMapsEqual(left, right) {
+function draftPreviewMapsEqual(
+  left: Map<string, DraftPreview>,
+  right: Map<string, DraftPreview>
+): boolean {
   if (left.size !== right.size) return false;
   for (const [slug, preview] of left) {
     const next = right.get(slug);
@@ -171,9 +195,13 @@ function draftPreviewMapsEqual(left, right) {
   return true;
 }
 
-function injectViteClient(html) {
+function injectViteClient(html: string): string {
   const client = '  <script type="module" src="/@vite/client"></script>\n';
   return html.includes("</head>")
     ? html.replace("</head>", `${client}</head>`)
     : `${client}${html}`;
+}
+
+function errorStack(error: unknown): string {
+  return error instanceof Error ? error.stack ?? error.message : String(error);
 }

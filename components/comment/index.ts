@@ -1,4 +1,10 @@
-export function render({ props, content, escape }) {
+import type { ComponentContextWithEscape } from "../../core/build/components.ts";
+
+export function render({
+  props,
+  content,
+  escape,
+}: ComponentContextWithEscape): string {
   const authorLabel = props.url
     ? `<a href="${escape(props.url)}" target="_blank" rel="noopener noreferrer">${escape(props.author)}</a>`
     : escape(props.author);

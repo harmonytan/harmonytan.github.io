@@ -1,6 +1,6 @@
-export function hydrate(element) {
-  const trigger = element.querySelector(".render-spec__trigger");
-  const panel = element.querySelector(".render-spec__panel");
+export function hydrate(element: Element): void {
+  const trigger = element.querySelector<HTMLButtonElement>(".render-spec__trigger");
+  const panel = element.querySelector<HTMLElement>(".render-spec__panel");
   if (!trigger || !panel) return;
 
   trigger.addEventListener("click", () => {
@@ -11,4 +11,3 @@ export function hydrate(element) {
     if (icon) icon.textContent = expanded ? "+" : "−";
   });
 }
-

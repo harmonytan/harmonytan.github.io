@@ -1,4 +1,10 @@
-export function render({ props, content, escape }) {
+import type { ComponentContextWithEscape } from "../../../../core/build/components.ts";
+
+export function render({
+  props,
+  content,
+  escape,
+}: ComponentContextWithEscape): string {
   return `<section class="render-spec" data-component="local.render-spec">
   <button class="render-spec__trigger" type="button" aria-expanded="false">
     <span>${escape(props.title)}</span>

@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { buildContent } from "../tools/build-content.mjs";
+import { buildContent } from "../tools/build-content.ts";
 
 test("serves drafts from memory in development without listing or writing them", async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "blog-draft-preview-"));
@@ -18,7 +18,8 @@ test("serves drafts from memory in development without listing or writing them",
       draft: true,
     });
     await fs.writeFile(path.join(draftDir, "index.html"), "stale", "utf8");
-    await fs.writeFile(path.join(draftDir, "article-entry.js"), "stale", "utf8");
+    await fs.writeFile(path.join(draftDir, "article-entry.ts"), "stale", "utf8");
+    await fs.writeFile(path.join(draftDir, "article-entry.js"), "legacy", "utf8");
 
     const result = await buildContent({
       root,
@@ -30,9 +31,12 @@ test("serves drafts from memory in development without listing or writing them",
     assert.deepEqual(result.posts.map((post) => post.slug), ["published-note"]);
     assert.match(home, /Published Note/);
     assert.doesNotMatch(home, /Draft Note/);
-    assert.match(result.draftPreviews.get("draft-note").html, /Draft Note/);
-    assert.match(result.draftPreviews.get("draft-note").entry, /article-runtime/);
+    const preview = result.draftPreviews.get("draft-note");
+    assert.ok(preview);
+    assert.match(preview.html, /Draft Note/);
+    assert.match(preview.entry, /article-runtime/);
     await assert.rejects(fs.access(path.join(draftDir, "index.html")), /ENOENT/);
+    await assert.rejects(fs.access(path.join(draftDir, "article-entry.ts")), /ENOENT/);
     await assert.rejects(fs.access(path.join(draftDir, "article-entry.js")), /ENOENT/);
     await fs.access(path.join(root, "articles", "published-note", "index.html"));
 
@@ -44,7 +48,7 @@ test("serves drafts from memory in development without listing or writing them",
   }
 });
 
-async function createTheme(root) {
+async function createTheme(root: string): Promise<void> {
   const themeDir = path.join(root, "themes", "test");
   await fs.mkdir(themeDir, { recursive: true });
   await Promise.all([
@@ -54,7 +58,7 @@ async function createTheme(root) {
       "utf8"
     ),
     fs.writeFile(
-      path.join(themeDir, "index.mjs"),
+      path.join(themeDir, "index.ts"),
       `export function renderPage({ article, contentHtml }) {
   return \`<!doctype html><html><head><title>\${article.title}</title></head><body>\${contentHtml}</body></html>\`;
 }
@@ -66,7 +70,11 @@ async function createTheme(root) {
   ]);
 }
 
-async function createArticle(root, slug, { title, draft }) {
+async function createArticle(
+  root: string,
+  slug: string,
+  { title, draft }: { title: string; draft: boolean }
+): Promise<string> {
   const articleDir = path.join(root, "articles", slug);
   await fs.mkdir(articleDir, { recursive: true });
   await fs.writeFile(

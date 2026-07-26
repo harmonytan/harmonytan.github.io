@@ -28,7 +28,7 @@ to 120 characters.
 
 ## JavaScript behavior
 
-The build emits readable collapsed markup. Vite bundles `client.js`, and the shared component runtime calls its `hydrate()` export. No global variables are created.
+The build emits readable collapsed markup. Vite bundles `client.ts`, and the shared component runtime calls its `hydrate()` export. No global variables are created.
 
 ## Accessibility
 
