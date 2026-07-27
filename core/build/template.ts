@@ -16,6 +16,8 @@ export interface ArticleRenderContext {
   referencesHtml: string;
   components: ComponentAsset[];
   theme: ThemeManifest;
+  siteRootHref?: string;
+  entryHref?: string;
 }
 
 export function renderArticleDocument({
@@ -26,6 +28,8 @@ export function renderArticleDocument({
   referencesHtml = "",
   components,
   theme,
+  siteRootHref = "../../",
+  entryHref = "./article-entry.ts",
 }: ArticleRenderContext): string {
   const componentStyles = components
     .filter((item) => item.styleHref)
@@ -33,26 +37,35 @@ export function renderArticleDocument({
     .join("\n");
   const published = formatDate(article.date);
   const description = article.summary || `An article by ${article.author}.`;
-  const appendix = renderAppendix(article, appendixSections, footnotesHtml, referencesHtml);
+  const robots = article.visibility === "public"
+    ? ""
+    : '  <meta name="robots" content="noindex, nofollow">\n';
+  const appendix = renderAppendix(
+    article,
+    appendixSections,
+    footnotesHtml,
+    referencesHtml,
+    siteRootHref
+  );
 
   return `<!doctype html>
 <html lang="en" data-color-theme="light" data-article-theme="${escapeAttribute(theme.id)}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="${escapeAttribute(description)}">
+${robots}  <meta name="description" content="${escapeAttribute(description)}">
   <title>${escapeHtml(article.title)} · Hongming Tan</title>
-  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="${escapeAttribute(`${siteRootHref}favicon.svg`)}" type="image/svg+xml">
   <script>${renderThemeBootstrap()}</script>
-  <link rel="stylesheet" href="../../themes/base.css">
-  <link rel="stylesheet" href="../../themes/${escapeAttribute(theme.id)}/style.css">
-  <link rel="stylesheet" href="../../styles/site-header.css">
+  <link rel="stylesheet" href="${escapeAttribute(`${siteRootHref}themes/base.css`)}">
+  <link rel="stylesheet" href="${escapeAttribute(`${siteRootHref}themes/${theme.id}/style.css`)}">
+  <link rel="stylesheet" href="${escapeAttribute(`${siteRootHref}styles/site-header.css`)}">
 ${componentStyles}
-  <script type="module" src="../../scripts/header.ts" defer></script>
-  <script type="module" src="./article-entry.ts" defer></script>
+  <script type="module" src="${escapeAttribute(`${siteRootHref}scripts/header.ts`)}" defer></script>
+  <script type="module" src="${escapeAttribute(entryHref)}" defer></script>
 </head>
 <body class="article-page theme-${escapeAttribute(theme.id)}">
-  ${renderSiteHeader({ homeHref: "../../" })}
+  ${renderSiteHeader({ homeHref: siteRootHref })}
   <main class="article-layout">
     <article class="article-shell" id="article-top">
       ${renderHero(article, published)}
@@ -87,7 +100,8 @@ function renderAppendix(
   article: ArticleMeta,
   appendixSections: AppendixSection[],
   footnotesHtml: string,
-  referencesHtml: string
+  referencesHtml: string,
+  siteRootHref: string
 ): string {
   const hasCustomCitation = appendixSections.some((section) => section.id === "citation-information");
   const sections = [
@@ -100,7 +114,7 @@ function renderAppendix(
   return `<section class="article-appendix" aria-label="Article information">
     <div class="article-appendix__inner">
       ${sections}
-      <footer class="article-footer"><a href="../../">← All articles</a></footer>
+      <footer class="article-footer"><a href="${escapeAttribute(siteRootHref)}">← All articles</a></footer>
     </div>
   </section>`;
 }

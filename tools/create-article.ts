@@ -5,6 +5,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import { assertSafeName } from "../core/build/utils.ts";
+import { requirePrivateArticlesDir } from "../core/private-content.ts";
+import type { ArticleVisibility } from "../core/build/frontmatter.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const VALUE_OPTIONS = new Set<ArticleValueOption>([
@@ -18,7 +20,11 @@ const VALUE_OPTIONS = new Set<ArticleValueOption>([
   "category",
   "image",
 ]);
-const BOOLEAN_OPTIONS = new Set<ArticleBooleanOption>(["help", "publish"]);
+const BOOLEAN_OPTIONS = new Set<ArticleBooleanOption>([
+  "help",
+  "private",
+  "publish",
+]);
 
 type ArticleValueOption =
   | "theme"
@@ -30,7 +36,7 @@ type ArticleValueOption =
   | "affiliation"
   | "category"
   | "image";
-type ArticleBooleanOption = "help" | "publish";
+type ArticleBooleanOption = "help" | "private" | "publish";
 
 export interface ArticleCliOptions {
   theme?: string;
@@ -43,6 +49,7 @@ export interface ArticleCliOptions {
   category?: string;
   image?: string;
   help?: boolean;
+  private?: boolean;
   publish?: boolean;
 }
 
@@ -50,6 +57,7 @@ export interface CreateArticleOptions {
   root?: string;
   argv?: string[];
   now?: Date;
+  privateArticlesDir?: string;
 }
 
 export type CreateArticleResult =
@@ -64,6 +72,8 @@ export type CreateArticleResult =
       title: string;
       date: string;
       draft: boolean;
+      private: boolean;
+      visibility: ArticleVisibility;
       articleDir: string;
       sourcePath: string;
     };
@@ -72,9 +82,16 @@ export async function createArticle({
   root = ROOT,
   argv = process.argv.slice(2),
   now = new Date(),
+  privateArticlesDir,
 }: CreateArticleOptions = {}): Promise<CreateArticleResult> {
   const options = parseArticleArgs(argv);
   if (options.help) return { help: true, output: renderHelp() };
+  if (options.private && options.publish) {
+    throw new Error(
+      `--private and --publish cannot be used together. `
+      + `Create privately, then use npm run article:promote when ready.`
+    );
+  }
 
   const theme = requiredText(options.theme, "--theme").toLowerCase();
   assertSafeName(theme, "Theme id");
@@ -87,8 +104,10 @@ export async function createArticle({
   const requestedTitle = optionalText(options.title);
   const title = requestedTitle
     ?? (requestedSlug ? titleFromSlug(requestedSlug) : "Untitled Article");
-  const articlesDir = path.join(root, "articles");
-  await fs.mkdir(articlesDir, { recursive: true });
+  const articlesDir = options.private
+    ? await requirePrivateArticlesDir(root, privateArticlesDir)
+    : path.join(root, "articles");
+  if (!options.private) await fs.mkdir(articlesDir, { recursive: true });
 
   const generatedTitleSlug = requestedTitle ? slugFromTitle(requestedTitle) : "";
   const baseSlug = requestedSlug ?? (generatedTitleSlug || `draft-${date}`);
@@ -97,6 +116,11 @@ export async function createArticle({
     : await nextAvailableSlug(articlesDir, baseSlug);
   const articleDir = path.join(articlesDir, slug);
 
+  const visibility: ArticleVisibility = options.private
+    ? "private"
+    : options.publish
+      ? "public"
+      : "draft";
   const metadata = {
     title,
     date,
@@ -106,7 +130,7 @@ export async function createArticle({
     ...optionalField("category", options.category),
     ...optionalField("image", options.image),
     theme,
-    ...(options.publish ? {} : { draft: true }),
+    visibility,
   };
   const markdown = renderArticleTemplate(metadata);
   const stagingDir = path.join(
@@ -137,7 +161,9 @@ export async function createArticle({
     theme,
     title,
     date,
-    draft: !options.publish,
+    draft: visibility === "draft",
+    private: visibility === "private",
+    visibility,
     articleDir,
     sourcePath: path.join(articleDir, "index.md"),
   };
@@ -369,11 +395,13 @@ Optional:
   --affiliation <text>   Author affiliation
   --category <name>      Optional homepage category
   --image <path>         Optional cover image path
-  --publish              Create without "draft: true"
+  --private              Create in the independent private content repository
+  --publish              Create immediately with "visibility: public"
   --help                 Show this help
 
 Examples:
   npm run article:new -- --theme anthropic
+  npm run article:new -- --theme anthropic --private
   npm run article:new -- --theme distill --title "Sparse Feature Geometry"
   npm run article:new -- --theme anthropic --slug eval-notes --publish`;
 }
@@ -387,11 +415,18 @@ if (isCli) {
       return;
     }
     const relativeSource = path.relative(ROOT, result.sourcePath);
-    console.log(`Created ${result.draft ? "draft" : "article"}: ${relativeSource}`);
+    const kind = result.private ? "private article" : result.draft ? "draft" : "article";
+    console.log(`Created ${kind}: ${relativeSource}`);
     console.log(`Theme: ${result.theme}`);
-    if (result.draft) {
+    if (result.private) {
+      console.log(
+        `Preview route: /__private/articles/${result.slug}/ `
+        + `(available with npm run dev:private)`
+      );
+      console.log("Commit this article from the private-content Git repository.");
+    } else if (result.draft) {
       console.log(`Preview route: /articles/${result.slug}/ (available with npm run dev)`);
-      console.log("Set draft: false when it is ready to publish.");
+      console.log("Set visibility: public when it is ready to publish.");
     }
   }).catch((error: unknown) => {
     console.error(errorMessage(error));

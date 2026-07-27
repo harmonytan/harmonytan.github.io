@@ -10,6 +10,8 @@ export interface ArticleCitation {
   key?: string;
 }
 
+export type ArticleVisibility = "public" | "draft" | "private";
+
 export interface ArticleMeta {
   slug: string;
   title: string;
@@ -21,6 +23,7 @@ export interface ArticleMeta {
   affiliation: string;
   image: string;
   citation: ArticleCitation;
+  visibility: ArticleVisibility;
   draft: boolean;
 }
 
@@ -62,6 +65,7 @@ export function normalizeArticleMeta(
 
   if (!title) throw new Error(`${filePath} is missing front matter field "title".`);
   if (!date) throw new Error(`${filePath} is missing front matter field "date".`);
+  const visibility = normalizeVisibility(attributes, filePath);
 
   return {
     slug,
@@ -74,8 +78,44 @@ export function normalizeArticleMeta(
     affiliation: String(attributes.affiliation ?? "Independent Researcher").trim(),
     image: String(attributes.image ?? attributes.cover ?? "").trim(),
     citation: normalizeCitation(attributes.citation),
-    draft: attributes.draft === true,
+    visibility,
+    draft: visibility === "draft",
   };
+}
+
+function normalizeVisibility(
+  attributes: Record<string, unknown>,
+  filePath: string
+): ArticleVisibility {
+  const legacyDraft = attributes.draft;
+  if (legacyDraft !== undefined && typeof legacyDraft !== "boolean") {
+    throw new Error(`${filePath}: front matter field "draft" must be a boolean.`);
+  }
+
+  const explicit = attributes.visibility;
+  if (explicit !== undefined) {
+    if (
+      typeof explicit !== "string"
+      || !["public", "draft", "private"].includes(explicit)
+    ) {
+      throw new Error(
+        `${filePath}: visibility must be "public", "draft", or "private".`
+      );
+    }
+    if (legacyDraft === true && explicit !== "draft") {
+      throw new Error(
+        `${filePath}: draft: true conflicts with visibility: ${explicit}.`
+      );
+    }
+    if (legacyDraft === false && explicit === "draft") {
+      throw new Error(
+        `${filePath}: draft: false conflicts with visibility: draft.`
+      );
+    }
+    return explicit as ArticleVisibility;
+  }
+
+  return legacyDraft === true ? "draft" : "public";
 }
 
 function normalizeDate(value: unknown): string {

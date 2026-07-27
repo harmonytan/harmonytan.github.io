@@ -1,0 +1,107 @@
+:root {
+  --local-preview-paper: #f4f2eb;
+  --local-preview-line: rgba(20, 20, 19, 0.72);
+  --local-preview-private: #7a3928;
+  --local-preview-draft: #75611f;
+}
+
+html[data-theme="dark"] {
+  --local-preview-paper: #1d2221;
+  --local-preview-line: rgba(242, 240, 232, 0.62);
+  --local-preview-private: #e0a189;
+  --local-preview-draft: #d8c370;
+}
+
+.local-preview-notice {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(280px, 1.7fr) auto;
+  gap: 28px;
+  align-items: center;
+  margin: 0 0 18px;
+  padding: 18px 0 20px;
+  color: var(--journal-copy);
+  border-top: 2px solid var(--local-preview-line);
+  border-bottom: 1px solid var(--journal-line);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.local-preview-notice div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.local-preview-notice span {
+  color: var(--journal-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.local-preview-notice strong {
+  color: var(--journal-title);
+  font-size: 13px;
+  font-weight: 680;
+}
+
+.local-preview-notice p {
+  max-width: 540px;
+  margin: 0;
+}
+
+.local-preview-notice code {
+  justify-self: end;
+  padding: 0.3rem 0.45rem;
+  color: var(--journal-title);
+  background: var(--local-preview-paper);
+  border: 1px solid var(--journal-line);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+}
+
+.post-visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42em;
+  font-size: 9px;
+  font-weight: 720;
+  letter-spacing: 0.075em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.post-visibility::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+
+.post-visibility--private {
+  color: var(--local-preview-private);
+}
+
+.post-visibility--draft {
+  color: var(--local-preview-draft);
+}
+
+@media (max-width: 760px) {
+  .local-preview-notice {
+    grid-template-columns: 1fr auto;
+    gap: 12px 18px;
+    margin-bottom: 8px;
+  }
+
+  .local-preview-notice p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .local-preview-notice code {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

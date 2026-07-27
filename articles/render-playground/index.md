@@ -4,6 +4,7 @@ date: 2025-11-21
 category: Test
 summary: A living fixture for Markdown, theme, and component contracts.
 theme: anthropic
+visibility: public
 ---
 
 Use this post to quickly verify whether the renderer, KaTeX, and styling look right after changes.

@@ -18,8 +18,15 @@ import {
   normalizeArticleMeta,
   parseArticleSource,
 } from "../build/frontmatter.ts";
+import type {
+  ArticleVisibility,
+} from "../build/frontmatter.ts";
 import { renderMarkdown } from "../build/markdown.ts";
 import { escapeAttribute, escapeHtml } from "../build/utils.ts";
+import {
+  privateArticleKey,
+  publicArticleKey,
+} from "../private-content.ts";
 import { loadTheme } from "../../tools/build-content.ts";
 import type {
   WorkbenchArticle,
@@ -34,7 +41,18 @@ import type {
 const WORKBENCH_PATH = "/__workbench/";
 const MAX_REQUEST_BYTES = 256_000;
 
-export function createWorkbenchMiddleware(root: string) {
+interface WorkbenchOptions {
+  privateArticlesDir?: string;
+}
+
+interface WorkbenchArticleLocation extends WorkbenchArticle {
+  articleDir: string;
+}
+
+export function createWorkbenchMiddleware(
+  root: string,
+  options: WorkbenchOptions = {}
+) {
   return async (
     request: IncomingMessage,
     response: ServerResponse,
@@ -63,7 +81,7 @@ export function createWorkbenchMiddleware(root: string) {
         pathname === "/__workbench/api/catalog"
         && request.method === "GET"
       ) {
-        sendJson(response, 200, await createWorkbenchCatalog(root));
+        sendJson(response, 200, await createWorkbenchCatalog(root, options));
         return;
       }
 
@@ -72,7 +90,11 @@ export function createWorkbenchMiddleware(root: string) {
         && request.method === "POST"
       ) {
         const payload = await readJsonBody(request);
-        sendJson(response, 200, await renderWorkbenchPreview(root, payload));
+        sendJson(
+          response,
+          200,
+          await renderWorkbenchPreview(root, payload, options)
+        );
         return;
       }
 
@@ -88,26 +110,30 @@ export function createWorkbenchMiddleware(root: string) {
 }
 
 export async function createWorkbenchCatalog(
-  root: string
+  root: string,
+  { privateArticlesDir }: WorkbenchOptions = {}
 ): Promise<WorkbenchCatalog> {
-  const [themes, articles, sharedComponents] = await Promise.all([
+  const [themes, articleLocations, sharedComponents] = await Promise.all([
     discoverThemes(root),
-    discoverArticles(root),
+    discoverArticles(root, privateArticlesDir),
     discoverComponents(path.join(root, "components"), "shared"),
   ]);
   const localGroups = await Promise.all(
-    articles.map((article) =>
+    articleLocations.map((article) =>
       discoverComponents(
-        path.join(root, "articles", article.slug, "components"),
+        path.join(article.articleDir, "components"),
         "local",
-        article.slug
+        article.slug,
+        article.key
       )
     )
   );
 
   return {
     themes,
-    articles,
+    articles: articleLocations.map(({ articleDir: _articleDir, ...article }) =>
+      article
+    ),
     components: [
       ...sharedComponents,
       ...localGroups.flat(),
@@ -121,10 +147,14 @@ export async function createWorkbenchCatalog(
 
 export async function renderWorkbenchPreview(
   root: string,
-  source: unknown
+  source: unknown,
+  { privateArticlesDir }: WorkbenchOptions = {}
 ): Promise<WorkbenchRenderResponse> {
   const request = normalizeRenderRequest(source);
-  const catalog = await createWorkbenchCatalog(root);
+  const [catalog, articleLocations] = await Promise.all([
+    createWorkbenchCatalog(root, { privateArticlesDir }),
+    discoverArticles(root, privateArticlesDir),
+  ]);
   const component = catalog.components.find(
     (item) => item.key === request.componentKey
   );
@@ -133,7 +163,7 @@ export async function renderWorkbenchPreview(
   }
   if (
     component.scope === "local"
-    && component.ownerArticle !== request.articleSlug
+    && component.ownerArticleKey !== request.articleKey
   ) {
     throw new Error(
       `Private component "${component.reference}" belongs to article "${component.ownerArticle}".`
@@ -141,10 +171,14 @@ export async function renderWorkbenchPreview(
   }
 
   const theme = await loadTheme(request.theme, path.join(root, "themes"));
-  const articleSlug = request.articleSlug ?? "component-workbench";
-  const articleDir = request.articleSlug
-    ? path.join(root, "articles", request.articleSlug)
-    : path.join(root, "articles");
+  const articleLocation = request.articleKey
+    ? articleLocations.find((article) => article.key === request.articleKey)
+    : undefined;
+  if (request.articleKey && !articleLocation) {
+    throw new Error(`Unknown article context "${request.articleKey}".`);
+  }
+  const articleSlug = articleLocation?.slug ?? "component-workbench";
+  const articleDir = articleLocation?.articleDir ?? path.join(root, "articles");
   const registry = new ComponentRegistry({
     root,
     articleDir,
@@ -162,7 +196,7 @@ export async function renderWorkbenchPreview(
   return {
     document: renderPreviewDocument({
       themeId: theme.id,
-      articleSlug: request.articleSlug,
+      article: articleLocation,
       componentHtml,
       assets,
     }),
@@ -188,32 +222,67 @@ async function discoverThemes(root: string): Promise<WorkbenchTheme[]> {
   return themes.sort((left, right) => left.label.localeCompare(right.label));
 }
 
-async function discoverArticles(root: string): Promise<WorkbenchArticle[]> {
+async function discoverArticles(
+  root: string,
+  privateArticlesDir?: string
+): Promise<WorkbenchArticleLocation[]> {
   const articlesDir = path.join(root, "articles");
-  const slugs = await readDirectories(articlesDir);
-  const articles: WorkbenchArticle[] = [];
+  const articles = await discoverArticlesInDirectory(
+    articlesDir,
+    "public"
+  );
+  if (privateArticlesDir) {
+    articles.push(
+      ...await discoverArticlesInDirectory(privateArticlesDir, "private")
+    );
+  }
+  return articles.sort((left, right) =>
+    visibilityOrder(left.visibility) - visibilityOrder(right.visibility)
+    || left.title.localeCompare(right.title)
+  );
+}
 
+async function discoverArticlesInDirectory(
+  articlesDir: string,
+  repository: "public" | "private"
+): Promise<WorkbenchArticleLocation[]> {
+  const slugs = await readDirectories(articlesDir);
+  const articles: WorkbenchArticleLocation[] = [];
   for (const slug of slugs) {
     const sourcePath = path.join(articlesDir, slug, "index.md");
     if (!(await exists(sourcePath))) continue;
-    const source = await fs.readFile(sourcePath, "utf8");
-    const parsed = parseArticleSource(source, sourcePath);
+    const markdownSource = await fs.readFile(sourcePath, "utf8");
+    const parsed = parseArticleSource(markdownSource, sourcePath);
     const article = normalizeArticleMeta(parsed.attributes, slug, sourcePath);
+    if (repository === "public" && article.visibility === "private") {
+      throw new Error(
+        `${sourcePath}: private articles must live outside the public articles directory.`
+      );
+    }
+    if (repository === "private" && article.visibility !== "private") {
+      throw new Error(
+        `${sourcePath}: private repository articles must declare visibility: private.`
+      );
+    }
     articles.push({
+      key: repository === "private"
+        ? privateArticleKey(slug)
+        : publicArticleKey(slug),
       slug,
       title: article.title,
       theme: article.theme,
-      draft: article.draft,
+      visibility: article.visibility,
+      articleDir: path.join(articlesDir, slug),
     });
   }
-
-  return articles.sort((left, right) => left.title.localeCompare(right.title));
+  return articles;
 }
 
 async function discoverComponents(
   directory: string,
   scope: ComponentScope,
-  ownerArticle?: string
+  ownerArticle?: string,
+  ownerArticleKey?: string
 ): Promise<WorkbenchComponent[]> {
   if (!(await exists(directory))) return [];
   const names = await readDirectories(directory);
@@ -233,11 +302,12 @@ async function discoverComponents(
     });
     const reference = `${scope}.${manifest.name}`;
     return {
-      key: ownerArticle ? `${ownerArticle}::${reference}` : reference,
+      key: ownerArticleKey ? `${ownerArticleKey}::${reference}` : reference,
       reference,
       name: manifest.name,
       scope,
       ...(ownerArticle ? { ownerArticle } : {}),
+      ...(ownerArticleKey ? { ownerArticleKey } : {}),
       description: manifest.description,
       requires: manifest.requires,
       ...(manifest.themes ? { themes: manifest.themes } : {}),
@@ -288,8 +358,8 @@ function normalizeRenderRequest(source: unknown): WorkbenchRenderRequest {
   if (!isRecord(source)) throw new Error("Render request must be a JSON object.");
   const theme = requireString(source.theme, "theme");
   const componentKey = requireString(source.componentKey, "componentKey");
-  const articleSlug = typeof source.articleSlug === "string" && source.articleSlug
-    ? source.articleSlug
+  const articleKey = typeof source.articleKey === "string" && source.articleKey
+    ? source.articleKey
     : undefined;
   if (!isRecord(source.props)) {
     throw new Error("props must be a JSON object.");
@@ -300,7 +370,7 @@ function normalizeRenderRequest(source: unknown): WorkbenchRenderRequest {
   return {
     theme,
     componentKey,
-    ...(articleSlug ? { articleSlug } : {}),
+    ...(articleKey ? { articleKey } : {}),
     props: source.props,
     body: source.body,
   };
@@ -308,12 +378,12 @@ function normalizeRenderRequest(source: unknown): WorkbenchRenderRequest {
 
 function renderPreviewDocument({
   themeId,
-  articleSlug,
+  article,
   componentHtml,
   assets,
 }: {
   themeId: string;
-  articleSlug?: string;
+  article?: WorkbenchArticleLocation;
   componentHtml: string;
   assets: ComponentAsset[];
 }): string {
@@ -321,7 +391,7 @@ function renderPreviewDocument({
     .filter((asset) => asset.styleHref)
     .map((asset) =>
       `<link rel="stylesheet" href="${escapeAttribute(
-        componentAssetPath(asset.reference, "style.css", articleSlug)
+        componentAssetPath(asset.reference, "style.css", article)
       )}">`
     )
     .join("\n");
@@ -331,7 +401,7 @@ function renderPreviewDocument({
 import { hydrateComponent } from "/core/client/component-runtime.ts";
 ${clientAssets.map((asset, index) =>
     `import { hydrate as hydrate${index} } from ${JSON.stringify(
-      componentAssetPath(asset.reference, "client.ts", articleSlug)
+      componentAssetPath(asset.reference, "client.ts", article)
     )};`
   ).join("\n")}
 ${clientAssets.map((asset, index) =>
@@ -367,7 +437,7 @@ ${clientAssets.map((asset, index) =>
 function componentAssetPath(
   reference: string,
   file: string,
-  articleSlug?: string
+  article?: WorkbenchArticleLocation
 ): string {
   const [, scope, name] = reference.match(
     /^(shared|local)\.([a-z0-9][a-z0-9-]*)$/
@@ -376,10 +446,17 @@ function componentAssetPath(
     throw new Error(`Invalid component asset reference "${reference}".`);
   }
   if (scope === "shared") return `/components/${name}/${file}`;
-  if (!articleSlug) {
+  if (!article) {
     throw new Error(`Private component "${reference}" requires an article.`);
   }
-  return `/articles/${articleSlug}/components/${name}/${file}`;
+  const prefix = article.visibility === "private"
+    ? "/__private/articles"
+    : "/articles";
+  return `${prefix}/${article.slug}/components/${name}/${file}`;
+}
+
+function visibilityOrder(visibility: ArticleVisibility): number {
+  return visibility === "public" ? 0 : visibility === "draft" ? 1 : 2;
 }
 
 function serializeComponentMarkdown(

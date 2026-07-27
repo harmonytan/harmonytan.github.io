@@ -2,7 +2,7 @@
 title: Untitled Article
 date: 2026-07-23
 theme: anthropic
-draft: true
+visibility: draft
 ---
 
 Write the opening paragraph here.

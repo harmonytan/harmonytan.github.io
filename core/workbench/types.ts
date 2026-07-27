@@ -2,6 +2,7 @@ import type {
   ComponentPropSchema,
   ComponentScope,
 } from "../build/component-contract.ts";
+import type { ArticleVisibility } from "../build/frontmatter.ts";
 
 export interface WorkbenchTheme {
   id: string;
@@ -10,10 +11,11 @@ export interface WorkbenchTheme {
 }
 
 export interface WorkbenchArticle {
+  key: string;
   slug: string;
   title: string;
   theme: string;
-  draft: boolean;
+  visibility: ArticleVisibility;
 }
 
 export interface WorkbenchExample {
@@ -29,6 +31,7 @@ export interface WorkbenchComponent {
   name: string;
   scope: ComponentScope;
   ownerArticle?: string;
+  ownerArticleKey?: string;
   description: string;
   requires: string[];
   themes?: {
@@ -47,7 +50,7 @@ export interface WorkbenchCatalog {
 
 export interface WorkbenchRenderRequest {
   theme: string;
-  articleSlug?: string;
+  articleKey?: string;
   componentKey: string;
   props: Record<string, unknown>;
   body: string;

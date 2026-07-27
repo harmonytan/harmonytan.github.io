@@ -1,4 +1,4 @@
-import type { ComponentContextWithEscape } from "../../../../core/build/components.ts";
+import type { ComponentContextWithEscape } from "@blog/component-api";
 
 export function render({
   props,

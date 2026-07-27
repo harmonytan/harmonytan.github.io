@@ -58,6 +58,8 @@ interface ComponentRegistryOptions {
   articleDir: string;
   theme: ThemeManifest;
   articleSlug: string;
+  sharedPublicBase?: string;
+  localPublicBase?: string;
 }
 
 export class ComponentRegistry {
@@ -65,6 +67,8 @@ export class ComponentRegistry {
   readonly articleDir: string;
   readonly theme: ThemeManifest;
   readonly articleSlug: string;
+  readonly sharedPublicBase: string;
+  readonly localPublicBase: string;
   readonly cache = new Map<string, LoadedComponent>();
   readonly used = new Map<string, LoadedComponent>();
 
@@ -73,11 +77,15 @@ export class ComponentRegistry {
     articleDir,
     theme,
     articleSlug,
+    sharedPublicBase = "../../components",
+    localPublicBase = "./components",
   }: ComponentRegistryOptions) {
     this.root = root;
     this.articleDir = articleDir;
     this.theme = theme;
     this.articleSlug = articleSlug;
+    this.sharedPublicBase = sharedPublicBase.replace(/\/+$/, "");
+    this.localPublicBase = localPublicBase.replace(/\/+$/, "");
   }
 
   async render(
@@ -192,8 +200,8 @@ export class ComponentRegistry {
 
     const module = imported as ComponentModule;
     const publicPath = (file: string) => scope === "shared"
-      ? `../../components/${name}/${file}`
-      : `./components/${name}/${file}`;
+      ? `${this.sharedPublicBase}/${name}/${file}`
+      : `${this.localPublicBase}/${name}/${file}`;
     const [hasStyle, hasClient] = await Promise.all([
       exists(path.join(directory, "style.css")),
       exists(path.join(directory, "client.ts")),

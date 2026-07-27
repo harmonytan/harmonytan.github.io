@@ -13,7 +13,7 @@ import type {
 interface WorkbenchState {
   catalog: WorkbenchCatalog;
   themeId: string;
-  articleSlug: string;
+  articleKey: string;
   componentKey: string;
   showIncompatible: boolean;
   query: string;
@@ -43,16 +43,16 @@ async function initialize(): Promise<void> {
 
     const params = new URLSearchParams(location.search);
     const requestedArticle = catalog.articles.find(
-      (article) => article.slug === params.get("article")
+      (article) => article.key === params.get("article")
     );
     const requestedTheme = catalog.themes.find(
       (theme) => theme.id === params.get("theme")
     );
-    const articleSlug = requestedArticle?.slug ?? "";
+    const articleKey = requestedArticle?.key ?? "";
     const themeId = requestedTheme?.id
       ?? requestedArticle?.theme
       ?? catalog.themes[0].id;
-    const visible = visibleComponents(catalog, articleSlug);
+    const visible = visibleComponents(catalog, articleKey);
     const requestedComponent = visible.find(
       (component) => component.key === params.get("component")
     );
@@ -63,7 +63,7 @@ async function initialize(): Promise<void> {
     state = {
       catalog,
       themeId,
-      articleSlug,
+      articleKey,
       componentKey: component.key,
       showIncompatible: false,
       query: "",
@@ -105,11 +105,7 @@ function renderApplication(): void {
             <span>Article context</span>
             <select id="article-select">
               <option value="">Shared components only</option>
-              ${state.catalog.articles.map((article) =>
-                `<option value="${escapeAttribute(article.slug)}"${
-                  article.slug === state.articleSlug ? " selected" : ""
-                }>${escapeHtml(article.title)}${article.draft ? " · Draft" : ""}</option>`
-              ).join("")}
+              ${renderArticleOptions()}
             </select>
           </label>
         </div>
@@ -181,6 +177,28 @@ function renderApplication(): void {
   renderCompatibilityMessage();
 }
 
+function renderArticleOptions(): string {
+  const groups = [
+    { visibility: "public", label: "Published" },
+    { visibility: "draft", label: "Drafts" },
+    { visibility: "private", label: "Private · Local only" },
+  ] as const;
+
+  return groups.map(({ visibility, label }) => {
+    const articles = state.catalog.articles.filter(
+      (article) => article.visibility === visibility
+    );
+    if (articles.length === 0) return "";
+    return `<optgroup label="${escapeAttribute(label)}">
+      ${articles.map((article) =>
+        `<option value="${escapeAttribute(article.key)}"${
+          article.key === state.articleKey ? " selected" : ""
+        }>${visibility === "private" ? "🔒 " : ""}${escapeHtml(article.title)}</option>`
+      ).join("")}
+    </optgroup>`;
+  }).join("");
+}
+
 function bindApplicationEvents(): void {
   requireElement<HTMLSelectElement>("#theme-select").addEventListener(
     "change",
@@ -195,7 +213,7 @@ function bindApplicationEvents(): void {
   requireElement<HTMLSelectElement>("#article-select").addEventListener(
     "change",
     (event) => {
-      state.articleSlug = (event.currentTarget as HTMLSelectElement).value;
+      state.articleKey = (event.currentTarget as HTMLSelectElement).value;
       const article = currentArticle();
       if (article) state.themeId = article.theme;
       ensureSelectedComponent();
@@ -244,7 +262,7 @@ function renderComponentList(): void {
   const list = requireElement<HTMLDivElement>("#component-list");
   const theme = currentTheme();
   const query = state.query.trim().toLowerCase();
-  const candidates = visibleComponents(state.catalog, state.articleSlug)
+  const candidates = visibleComponents(state.catalog, state.articleKey)
     .filter((component) =>
       !query
       || component.name.includes(query)
@@ -259,7 +277,7 @@ function renderComponentList(): void {
 
   list.innerHTML = [
     renderComponentGroup("Shared library", shared),
-    state.articleSlug
+    state.articleKey
       ? renderComponentGroup("Private to this article", local)
       : "",
     candidates.length === 0
@@ -459,7 +477,7 @@ async function updatePreview(): Promise<void> {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           theme: state.themeId,
-          ...(state.articleSlug ? { articleSlug: state.articleSlug } : {}),
+          ...(state.articleKey ? { articleKey: state.articleKey } : {}),
           componentKey: state.componentKey,
           props,
           body: state.body,
@@ -493,7 +511,7 @@ async function copyMarkdown(): Promise<void> {
 }
 
 function ensureSelectedComponent(): void {
-  const visible = visibleComponents(state.catalog, state.articleSlug);
+  const visible = visibleComponents(state.catalog, state.articleKey);
   if (visible.some((component) => component.key === state.componentKey)) return;
   state.componentKey = (
     visible.find((component) => isCompatible(component, currentTheme()))
@@ -507,7 +525,7 @@ function currentTheme(): WorkbenchTheme {
 
 function currentArticle(): WorkbenchArticle | undefined {
   return state.catalog.articles.find(
-    (article) => article.slug === state.articleSlug
+    (article) => article.key === state.articleKey
   );
 }
 
@@ -521,12 +539,12 @@ function currentComponent(): WorkbenchComponent {
 
 function visibleComponents(
   catalog: WorkbenchCatalog,
-  articleSlug: string
+  articleKey: string
 ): WorkbenchComponent[] {
   return catalog.components.filter(
     (component) =>
       component.scope === "shared"
-      || component.ownerArticle === articleSlug
+      || component.ownerArticleKey === articleKey
   );
 }
 
@@ -574,7 +592,7 @@ function coerceExampleValue(
 function syncUrl(): void {
   const params = new URLSearchParams();
   params.set("theme", state.themeId);
-  if (state.articleSlug) params.set("article", state.articleSlug);
+  if (state.articleKey) params.set("article", state.articleKey);
   params.set("component", state.componentKey);
   history.replaceState(null, "", `${location.pathname}?${params}`);
 }

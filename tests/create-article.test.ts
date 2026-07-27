@@ -40,7 +40,8 @@ test("creates a draft workspace with safe defaults", async () => {
     assert.equal(metadata.title, "Untitled Article");
     assert.equal(String(metadata.date).slice(0, 10), "2026-07-23");
     assert.equal(metadata.theme, "anthropic");
-    assert.equal(metadata.draft, true);
+    assert.equal(metadata.visibility, "draft");
+    assert.equal(metadata.draft, undefined);
     await fs.access(path.join(result.articleDir, "assets", ".gitkeep"));
     await fs.access(path.join(result.articleDir, "components", ".gitkeep"));
   });
@@ -73,8 +74,61 @@ test("writes optional metadata and publishes only when requested", async () => {
 
     assert.equal(metadata.summary, "A compact field guide.");
     assert.equal(metadata.category, "Research");
-    assert.equal(metadata.draft, undefined);
+    assert.equal(metadata.visibility, "public");
     assert.equal(result.draft, false);
+  });
+});
+
+test("creates private articles in the independent private content root", async () => {
+  await withFixture(async (root) => {
+    const privateArticlesDir = path.join(root, "private-content", "articles");
+    await fs.mkdir(privateArticlesDir, { recursive: true });
+    const result = await createArticle({
+      root,
+      privateArticlesDir,
+      argv: [
+        "--theme",
+        "anthropic",
+        "--title",
+        "Private Research Notes",
+        "--private",
+      ],
+    });
+    assert.equal(result.help, false);
+    if (result.help) return;
+    const source = await fs.readFile(result.sourcePath, "utf8");
+    const match = source.match(/^---\n([\s\S]*?)\n---/);
+    assert.ok(match);
+    const metadata = parseYaml(match[1]) as Record<string, unknown>;
+
+    assert.equal(result.private, true);
+    assert.equal(result.visibility, "private");
+    assert.equal(metadata.visibility, "private");
+    assert.ok(result.articleDir.startsWith(privateArticlesDir));
+  });
+});
+
+test("does not silently create an unsynchronized private content directory", async () => {
+  await withFixture(async (root) => {
+    await assert.rejects(
+      createArticle({
+        root,
+        argv: ["--theme", "anthropic", "--private"],
+      }),
+      /Private articles directory was not found/
+    );
+  });
+});
+
+test("does not allow private articles to be published directly", async () => {
+  await withFixture(async (root) => {
+    await assert.rejects(
+      createArticle({
+        root,
+        argv: ["--theme", "anthropic", "--private", "--publish"],
+      }),
+      /--private and --publish cannot be used together/
+    );
   });
 });
 

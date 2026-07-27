@@ -6,16 +6,22 @@
   "description": "A component-aware static Markdown publishing system.",
   "scripts": {
     "article:new": "node --import=tsx tools/create-article.ts",
+    "article:promote": "node --import=tsx tools/promote-article.ts",
     "content": "node --import=tsx tools/build-content.ts",
     "content:check": "node --import=tsx tools/build-content.ts --check",
-    "dev": "vite",
+    "dev": "vite --mode public",
+    "dev:public": "vite --mode public",
+    "dev:private": "vite --mode private",
     "build": "vite build",
     "build:check": "node --import=tsx tools/build-content.ts --check && vite build && npm run dist:check",
     "dist:check": "node --import=tsx tools/check-dist.ts",
     "preview": "vite preview",
     "test": "node --import=tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "verify": "npm test && npm run typecheck && npm run build:check"
+    "typecheck:private": "node --import=tsx tools/typecheck-private.ts",
+    "private:check": "npm run typecheck:private && node --import=tsx tools/verify-private.ts",
+    "verify": "npm test && npm run typecheck && npm run build:check",
+    "verify:private": "npm run verify && npm run private:check"
   },
   "engines": {
     "node": ">=24"

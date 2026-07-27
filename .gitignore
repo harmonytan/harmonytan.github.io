@@ -20,5 +20,8 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local-only archive and unpublished material; never deployed or synced
+# Local-only archive for retired project files; never deployed or synced
 /artifacts/
+
+# Independent private writing repository; synced through its own Git remote
+/private-content/

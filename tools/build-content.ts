@@ -24,19 +24,24 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export interface DraftPreview {
   html: string;
   entry: string;
+  articleDir: string;
+  visibility: "draft" | "private";
 }
 
 export interface BuildContentOptions {
   check?: boolean;
   quiet?: boolean;
   includeDrafts?: boolean;
+  privateArticlesDir?: string;
   root?: string;
 }
 
 export interface BuildContentResult {
   posts: PostEntry[];
+  previewPosts: PostEntry[];
   changed: string[];
   draftPreviews: Map<string, DraftPreview>;
+  privatePreviews: Map<string, DraftPreview>;
 }
 
 interface GeneratedOutput {
@@ -48,23 +53,45 @@ interface ThemeModule {
   renderPage: (context: ArticleRenderContext) => string | Promise<string>;
 }
 
+interface RenderArticleOptions {
+  root: string;
+  themesDir: string;
+  articleDir: string;
+  slug: string;
+  prepared?: PreparedArticle;
+  siteRootHref?: string;
+  entryHref?: string;
+  runtimeBase?: string;
+  sharedPublicBase?: string;
+}
+
+interface PreparedArticle {
+  article: ArticleMeta;
+  body: string;
+}
+
+interface RenderedArticle {
+  article: ArticleMeta;
+  html: string;
+  entry: string;
+}
+
 export async function buildContent({
   check = false,
   quiet = false,
   includeDrafts = false,
+  privateArticlesDir,
   root = ROOT,
 }: BuildContentOptions = {}): Promise<BuildContentResult> {
   const articlesDir = path.join(root, "articles");
   const themesDir = path.join(root, "themes");
-  const articleEntries = await fs.readdir(articlesDir, { withFileTypes: true });
-  const slugs = articleEntries
-    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
-    .map((entry) => entry.name)
-    .sort();
+  const slugs = await readArticleSlugs(articlesDir, true);
   const outputs: GeneratedOutput[] = [];
   const removals: string[] = [];
   const posts: PostEntry[] = [];
+  const previewPosts: PostEntry[] = [];
   const draftPreviews = new Map<string, DraftPreview>();
+  const privatePreviews = new Map<string, DraftPreview>();
 
   await validateComponentDirectory(path.join(root, "components"), "shared");
 
@@ -82,9 +109,13 @@ export async function buildContent({
     }
     await validateComponentDirectory(path.join(articleDir, "components"), "local");
 
-    const source = await fs.readFile(sourcePath, "utf8");
-    const { attributes, body } = parseArticleSource(source, sourcePath);
-    const article = normalizeArticleMeta(attributes, slug, sourcePath);
+    const prepared = await readArticle(articleDir, slug);
+    const { article } = prepared;
+    if (article.visibility === "private") {
+      throw new Error(
+        `${sourcePath}: private articles must live outside the public articles directory.`
+      );
+    }
     if (article.draft) {
       removals.push(
         path.join(articleDir, "index.html"),
@@ -94,43 +125,77 @@ export async function buildContent({
       if (!includeDrafts) continue;
     }
 
-    const theme = await loadTheme(article.theme, themesDir);
-    const registry = new ComponentRegistry({ root, articleDir, theme, articleSlug: slug });
-    const rendered = await renderMarkdown(body, { registry });
-    const imported: Partial<ThemeModule> = await import(
-      `${pathToFileURL(path.join(themesDir, theme.id, "index.ts")).href}?v=${Date.now()}`
-    );
-    if (typeof imported.renderPage !== "function") {
-      throw new Error(`Theme "${theme.id}" must export renderPage().`);
-    }
-
-    const themeModule = imported as ThemeModule;
-    const html = await themeModule.renderPage({
-      article,
-      contentHtml: rendered.html,
-      appendixSections: rendered.appendixSections,
-      footnotesHtml: rendered.footnotesHtml,
-      referencesHtml: rendered.referencesHtml,
-      components: rendered.components,
-      theme,
+    const rendered = await renderArticle({
+      root,
+      themesDir,
+      articleDir,
+      slug,
+      prepared,
     });
-    const entry = renderArticleEntry(rendered.components);
+
     if (article.draft) {
-      draftPreviews.set(slug, { html, entry });
+      draftPreviews.set(slug, {
+        html: rendered.html,
+        entry: rendered.entry,
+        articleDir,
+        visibility: "draft",
+      });
+      previewPosts.push(toPostEntry(article));
       continue;
     }
     outputs.push(
-      { filePath: path.join(articleDir, "index.html"), content: html },
-      { filePath: path.join(articleDir, "article-entry.ts"), content: entry }
+      { filePath: path.join(articleDir, "index.html"), content: rendered.html },
+      { filePath: path.join(articleDir, "article-entry.ts"), content: rendered.entry }
     );
     removals.push(path.join(articleDir, "article-entry.js"));
-    posts.push(toPostEntry(article));
+    const post = toPostEntry(article);
+    posts.push(post);
+    previewPosts.push(post);
   }
 
-  posts.sort((a, b) => {
-    const dateDiff = Date.parse(b.date) - Date.parse(a.date);
-    return dateDiff || a.slug.localeCompare(b.slug);
-  });
+  if (privateArticlesDir) {
+    const privateSlugs = await readArticleSlugs(privateArticlesDir, true);
+    for (const slug of privateSlugs) {
+      assertSafeName(slug, "Private article slug");
+      const articleDir = path.join(privateArticlesDir, slug);
+      const sourcePath = path.join(articleDir, "index.md");
+      if (!(await exists(sourcePath))) continue;
+      await validateComponentDirectory(path.join(articleDir, "components"), "local");
+
+      const rendered = await renderArticle({
+        root,
+        themesDir,
+        articleDir,
+        slug,
+        siteRootHref: "/",
+        entryHref: "./article-entry.ts",
+        runtimeBase: "/core/client",
+        sharedPublicBase: "/components",
+      });
+      if (rendered.article.visibility !== "private") {
+        throw new Error(
+          `${sourcePath}: articles in the private content repository must declare visibility: private.`
+        );
+      }
+      privatePreviews.set(slug, {
+        html: rendered.html,
+        entry: rendered.entry,
+        articleDir,
+        visibility: "private",
+      });
+      previewPosts.push(toPostEntry(rendered.article, {
+        href: `/__private/articles/${slug}/`,
+        relativeImageBase: `/__private/articles/${slug}/`,
+      }));
+    }
+  }
+
+  const sortPosts = (left: PostEntry, right: PostEntry): number => {
+    const dateDiff = Date.parse(right.date) - Date.parse(left.date);
+    return dateDiff || left.slug.localeCompare(right.slug);
+  };
+  posts.sort(sortPosts);
+  previewPosts.sort(sortPosts);
   outputs.push({ filePath: path.join(root, "index.html"), content: renderHomePage(posts) });
 
   const changed = [];
@@ -155,11 +220,74 @@ export async function buildContent({
     const draftMessage = includeDrafts && draftPreviews.size
       ? `; prepared ${draftPreviews.size} draft preview(s)`
       : "";
+    const privateMessage = privatePreviews.size
+      ? `; prepared ${privatePreviews.size} private preview(s)`
+      : "";
     console.log(
-      `${verb} ${posts.length} article(s)${draftMessage}${changed.length ? `; updated ${changed.length} file(s)` : ""}.`
+      `${verb} ${posts.length} article(s)${draftMessage}${privateMessage}${changed.length ? `; updated ${changed.length} file(s)` : ""}.`
     );
   }
-  return { posts, changed, draftPreviews };
+  return { posts, previewPosts, changed, draftPreviews, privatePreviews };
+}
+
+async function renderArticle({
+  root,
+  themesDir,
+  articleDir,
+  slug,
+  prepared,
+  siteRootHref,
+  entryHref,
+  runtimeBase = "../../core/client",
+  sharedPublicBase,
+}: RenderArticleOptions): Promise<RenderedArticle> {
+  const { article, body } = prepared ?? await readArticle(articleDir, slug);
+  const theme = await loadTheme(article.theme, themesDir);
+  const registry = new ComponentRegistry({
+    root,
+    articleDir,
+    theme,
+    articleSlug: slug,
+    ...(sharedPublicBase ? { sharedPublicBase } : {}),
+  });
+  const markdown = await renderMarkdown(body, { registry });
+  const imported: Partial<ThemeModule> = await import(
+    `${pathToFileURL(path.join(themesDir, theme.id, "index.ts")).href}?v=${Date.now()}`
+  );
+  if (typeof imported.renderPage !== "function") {
+    throw new Error(`Theme "${theme.id}" must export renderPage().`);
+  }
+
+  const themeModule = imported as ThemeModule;
+  const html = await themeModule.renderPage({
+    article,
+    contentHtml: markdown.html,
+    appendixSections: markdown.appendixSections,
+    footnotesHtml: markdown.footnotesHtml,
+    referencesHtml: markdown.referencesHtml,
+    components: markdown.components,
+    theme,
+    ...(siteRootHref ? { siteRootHref } : {}),
+    ...(entryHref ? { entryHref } : {}),
+  });
+  return {
+    article,
+    html,
+    entry: renderArticleEntry(markdown.components, runtimeBase),
+  };
+}
+
+async function readArticle(
+  articleDir: string,
+  slug: string
+): Promise<PreparedArticle> {
+  const sourcePath = path.join(articleDir, "index.md");
+  const source = await fs.readFile(sourcePath, "utf8");
+  const { attributes, body } = parseArticleSource(source, sourcePath);
+  return {
+    article: normalizeArticleMeta(attributes, slug, sourcePath),
+    body,
+  };
 }
 
 export async function loadTheme(
@@ -221,7 +349,10 @@ async function validateComponentDirectory(
   }
 }
 
-function renderArticleEntry(components: ComponentAsset[]): string {
+function renderArticleEntry(
+  components: ComponentAsset[],
+  runtimeBase: string
+): string {
   const clients = components.filter((component) => component.clientHref);
   const imports = clients.map((component, index) =>
     `import { hydrate as hydrate${index} } from ${JSON.stringify(component.clientHref)};`
@@ -230,8 +361,10 @@ function renderArticleEntry(components: ComponentAsset[]): string {
     `hydrateComponent(${JSON.stringify(component.reference)}, hydrate${index});`
   );
   return [
-    `import "../../core/client/article-runtime.ts";`,
-    clients.length ? `import { hydrateComponent } from "../../core/client/component-runtime.ts";` : "",
+    `import ${JSON.stringify(`${runtimeBase}/article-runtime.ts`)};`,
+    clients.length
+      ? `import { hydrateComponent } from ${JSON.stringify(`${runtimeBase}/component-runtime.ts`)};`
+      : "",
     ...imports,
     "",
     ...calls,
@@ -239,9 +372,35 @@ function renderArticleEntry(components: ComponentAsset[]): string {
   ].filter((line, index, lines) => line || index === lines.length - 1).join("\n");
 }
 
-function toPostEntry(article: ArticleMeta): PostEntry {
+async function readArticleSlugs(
+  directory: string,
+  required: boolean
+): Promise<string[]> {
+  let entries;
+  try {
+    entries = await fs.readdir(directory, { withFileTypes: true });
+  } catch (error: unknown) {
+    if (!required && isNodeError(error) && error.code === "ENOENT") return [];
+    throw new Error(`Article directory is unavailable: ${directory}`);
+  }
+  return entries
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
+    .map((entry) => entry.name)
+    .sort();
+}
+
+function toPostEntry(
+  article: ArticleMeta,
+  {
+    href = `articles/${article.slug}/`,
+    relativeImageBase = `articles/${article.slug}/`,
+  }: {
+    href?: string;
+    relativeImageBase?: string;
+  } = {}
+): PostEntry {
   const image = article.image.startsWith("./")
-    ? `articles/${article.slug}/${article.image.slice(2)}`
+    ? `${relativeImageBase}${article.image.slice(2)}`
     : article.image;
   return {
     slug: article.slug,
@@ -252,7 +411,8 @@ function toPostEntry(article: ArticleMeta): PostEntry {
     category: article.category,
     image,
     theme: article.theme,
-    href: `articles/${article.slug}/`,
+    href,
+    visibility: article.visibility,
   };
 }
 

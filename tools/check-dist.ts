@@ -8,6 +8,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const FORBIDDEN = [
   "__workbench",
+  "__private",
+  "private-content",
+  "home-local",
+  "local-preview-notice",
   "/__workbench/api/catalog",
   'id="workbench-app"',
 ];
@@ -30,7 +34,7 @@ export async function checkDistForWorkbench(dist = DIST): Promise<void> {
   const leaks = [...new Set([...leakedPaths, ...leakedContent])];
   if (leaks.length > 0) {
     throw new Error(
-      `Local Component Workbench leaked into dist:\n${
+      `Local-only authoring content leaked into dist:\n${
         leaks.map((file) => `- ${file}`).join("\n")
       }`
     );
@@ -50,7 +54,11 @@ const isCli = process.argv[1]
   && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCli) {
   checkDistForWorkbench()
-    .then(() => console.log("Validated production output: Workbench is absent."))
+    .then(() => {
+      console.log(
+        "Validated production output: Workbench and private preview markers are absent."
+      );
+    })
     .catch((error: unknown) => {
       console.error(error instanceof Error ? error.message : String(error));
       process.exitCode = 1;

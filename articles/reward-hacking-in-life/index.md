@@ -3,6 +3,7 @@ title: Reward Hacking in Life
 date: 2025-11-26
 category: Thought
 theme: distill
+visibility: public
 image: ./assets/main.jpg
 ---
 
