@@ -163,6 +163,19 @@ html[data-theme="dark"] .theme-distill {
   color: var(--article-accent);
 }
 
+.theme-distill .article-content > .katex-display {
+  margin: 1em 0 !important;
+  padding: 0.25em 0;
+}
+
+.theme-distill .article-content > .katex-display > .katex {
+  font-size: 1em;
+}
+
+.theme-distill .article-content > .katex-display + .katex-display {
+  margin-top: 0.25em !important;
+}
+
 .theme-distill .article-figure {
   grid-column: page;
   width: min(var(--article-body-width), calc(100vw - 40px));
